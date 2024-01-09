@@ -1,18 +1,21 @@
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Dropdown from './Dropdown';
-import NumberInput from './NumberInput';
+import Input from './Input';
+import RadioGroup from './inputs/RadioGroup';
+import Dropdown from './inputs/Dropdown';
 
-const NewMatch = () => {
+const NewMatch = (props) => {
   return (
     <View style={styles.NewMatchView}>
-      <View>
-        <Text style={styles.Text}>Competition:</Text>
-        <Dropdown style={styles.Dropdown}/>
-
-        <Text style={styles.Text}>Match Number:</Text>
-        <NumberInput style={styles.TextInput} />
-      </View>
+      {props.logged_in ? (
+        <View>
+          <Input {...{type:"Number", title : "Match Number:", title_style : styles.Text, style : styles.TextInput}}/>
+          <Input {...{type:"Dropdown"}} />
+          <RadioGroup />
+        </View>
+      ) : (
+        <Text style={[styles.Text, {margin: 0}]}>PLEASE LOG IN</Text>
+      )}
     </View>
   );
 };
@@ -30,15 +33,14 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: 'sans-serif-condensed',
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   TextInput: {
     backgroundColor: 'white',
     textAlign: 'center',
     fontSize: 20,
-    fontWeight:   900
+    marginBottom: 50,
+    fontWeight: '900',
   },
-  Dropdown: {
-
-  }
+  Dropdown: {},
 });

@@ -1,13 +1,19 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import NewMatch from '../components/NewMatch';
+import Input from '../components/Input';
 
-const ScoutingPage = () => {
+const ScoutingPage = props => {
   return (
     <SafeAreaView style={styles.MainView}>
-      <NewMatch />
+      <NewMatch logged_in={props.logged_in} />
+
+      {/* <Input type={"text"} title={"Teleop"} titleStyle={styles.SmallText} style={styles.Dropdown} />
+      <Input type={"text"} title={"Auton"} titleStyle={styles.SmallText} style={styles.Dropdown} /> */}
     </SafeAreaView>
+
+    
   );
 };
 
