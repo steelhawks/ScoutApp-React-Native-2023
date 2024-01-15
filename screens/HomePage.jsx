@@ -17,7 +17,7 @@ const HomePage = props => {
   const login = () => {
     // if (usernameVal === '1' && passwordVal === '2') {
     //   props.setLogin(true);
-    // }
+    // }  
     if (true) {
       props.setLogin(true);
     }

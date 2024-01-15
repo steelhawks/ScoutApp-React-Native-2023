@@ -1,8 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Input from './Input';
-import RadioGroup from './inputs/RadioGroup';
-import Dropdown from './inputs/Dropdown';
 
 const NewMatch = (props) => {
   return (
@@ -10,8 +8,7 @@ const NewMatch = (props) => {
       {props.logged_in ? (
         <View>
           <Input {...{type:"Number", title : "Match Number:", title_style : styles.Text, style : styles.TextInput}}/>
-          <Input {...{type:"Dropdown"}} />
-          <RadioGroup />
+          <Input {...{type:"CheckboxGroup", opts: ["test", "test2", "test3", "test4"]}}/>
         </View>
       ) : (
         <Text style={[styles.Text, {margin: 0}]}>PLEASE LOG IN</Text>

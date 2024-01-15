@@ -11,8 +11,6 @@ const Dropdown = (props) => {
   );
 };
 
-export default Dropdown;
-
 const styles = StyleSheet.create({
   Dropdown: {
     backgroundColor: "white"
@@ -22,3 +20,5 @@ const styles = StyleSheet.create({
     fontSize: 20
   }
 });
+
+export default Dropdown;
