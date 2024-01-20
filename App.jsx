@@ -11,7 +11,7 @@ const Drawer = createDrawerNavigator();
 
 const App = () => {
   const [logged_in, setLogin] = useState(false);
-
+  
   const HomePageNavigate = props => {
     return <HomePage setLogin={setLogin} />;
   };
