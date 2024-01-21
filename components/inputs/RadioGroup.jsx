@@ -3,11 +3,7 @@ import {useState} from 'react';
 import {TextInput, View, Text} from 'react-native';
 
 const RadioGroup = props => {
-  return (
-    <>
-        
-    </>
-  );
+    return <></>;
 };
 
 export default RadioGroup;

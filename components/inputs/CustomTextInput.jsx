@@ -3,10 +3,7 @@ import {useState} from 'react';
 import {TextInput, View, Text} from 'react-native';
 
 const CustomTextInput = props => {
-  return (
-    <>
-    </>
-  );
+	return <></>;
 };
 
 export default CustomTextInput;
