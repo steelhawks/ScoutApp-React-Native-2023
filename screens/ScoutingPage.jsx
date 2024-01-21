@@ -4,6 +4,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import NewMatch from '../components/NewMatch';
 import Input from '../components/Input';
 import {useState} from 'react';
+import NumberInput from '../components/inputs/NumberInput';
 
 const ScoutingPage = props => {
     const [dict, setDict] = useState({
@@ -32,7 +33,7 @@ const ScoutingPage = props => {
             <TouchableOpacity onPress={() => updateDict('alliance', newNumVal)}>
                 <Text style={{color: 'white', fontSize: 30}}>SAVE DATA</Text>
             </TouchableOpacity>
-            // TEST FOR INPUT
+            {/* // TEST FOR INPUT */}
             <TouchableOpacity onPress={console.log(dict)}>
                 <Text style={{color: 'white', fontSize: 30}}>PRINT NUM</Text>
             </TouchableOpacity>

@@ -4,7 +4,7 @@ import SensitiveInfo from 'react-native-sensitive-info';
 
 const encryptionKey = 'ENTER_STRONG_KEY';
 
-const saveCredentials = async (username, password) => {
+export const saveCredentials = async (username, password) => {
     try {
         const credentials = JSON.stringify({username, password});
         await SensitiveInfo.setItem('credentials', credentials, {
