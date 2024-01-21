@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import Login from './components/Login';
 import HomePage from './screens/HomePage';
 import ScoutingPage from './screens/ScoutingPage';
 import DataPage from './screens/DataPage';
@@ -21,8 +22,9 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer initialRouteName="Home" backBehavior="firstRoute">
+    <NavigationContainer initialRouteName="Login" backBehavior="firstRoute">
       <Drawer.Navigator>
+        <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Home" component={HomePageNavigate} />
         <Drawer.Screen name="Scouting" component={ScoutingPageNavigate} />
         <Drawer.Screen name="Data" component={DataPage} />

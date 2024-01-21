@@ -33,6 +33,7 @@ const ScoutingPage = props => {
           <Text style={{color: 'white', fontSize: 30}}>SAVE DATA</Text>
         </TouchableOpacity>
 
+        // TEST FOR INPUT
         <TouchableOpacity onPress={console.log(dict)}>
           <Text style={{color: 'white', fontSize: 30}}>PRINT NUM</Text>
         </TouchableOpacity>
