@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
-import {View, TextInput, Text, Alert, StyleSheet, Image} from 'react-native';
+import React, { useState } from 'react';
+import {View, TextInput, Text, Alert, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import { returnUserCredentials } from '../authentication/auth';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Login = ({setLogin}) => {
     const [username, setUsername] = useState('');
@@ -10,9 +9,9 @@ const Login = ({setLogin}) => {
     const handleLogin = async () => {
 
         try {
-            const usersData = await returnUserCredentials();
-            const user = usersData.find(userData => userData.username === username && userData.password === password);
-            
+            const userCredentials = await returnUserCredentials();
+            const user = userCredentials.find(userData => userData.username === username && userData.password === password);
+
             if (username === '' || password === '') {
                 Alert.alert('Login Failed', 'Please enter username and password.');
                 return;
@@ -21,14 +20,13 @@ const Login = ({setLogin}) => {
             if (user) {
                 Alert.alert('Login Successful.');
                 setLogin(true);
+                Alert.alert('Welcome ' + user.name + '!', 'OSIS: ' + user.osis);
             } else {
                 Alert.alert('Login Failed', 'Please enter a valid username and password.');
             }
         } catch (error) {
             console.error('Error getting user credentials:', error);
         }
-
-        // console.log(returnUserCredentials());
     };
 
     return (
