@@ -1,39 +1,27 @@
-import React, { useState } from'react';
-import { AsyncStorage } from 'react-native';
-import SensitiveInfo from 'react-native-sensitive-info';
+import React, { useEffect, useState } from 'react';
+import fs from 'react-native-fs';
+import { Alert } from 'react-native';
+import file from './login.json';
 
-const encryptionKey = 'ENTER_STRONG_KEY';
-
-export const saveCredentials = async (username, password) => {
+export const returnUserCredentials = async () => {
     try {
-        const credentials = JSON.stringify({username, password});
-        await SensitiveInfo.setItem('credentials', credentials, {
-            sharedPreferencesName: 'mySharedPrefs',
-            keychainService: 'myKeychain',
-            encrypt: true,
-        });
-        console.log('Credentials saved successfully!');
+        const usersData = file; // Assuming 'file' is already a JSON object
+        return usersData;
     } catch (error) {
-        console.error('Error saving credentials:', error);
+        console.log(file);
+        console.error('Error reading JSON file:', error);
+        throw error;
     }
 };
 
-// DECRYPTS AND RETRIEVES CREDS
-const getCredentials = async () => {
-    try {
-        const encryptedCredentials = await SensitiveInfo.getItem('credentials', {
-            sharedPreferencesName:'mySharedPrefs',
-            keychainService:'myKeychain',
-        });
-    } catch (error) {
-        console.log('Error getting credentials:', error);
-        return null;
-    }
-};
+const auth = () => {
+    const [userData, setUserData] = useState(null);
 
-// EXAMPLE USAGE
-if (__DEV__) {
-    saveCredentials('testUser', 'testPassword');
+    useEffect(() => {
+        // Access the JSON content directly
+        const parsedData = file;
+        setUserData(parsedData);
+    }, []);
 }
 
-getCredentials();
+export default auth;

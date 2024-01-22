@@ -1,33 +1,34 @@
 import React, {useState} from 'react';
 import {View, TextInput, Text, Alert, StyleSheet, Image} from 'react-native';
-import {saveCredentials, getCredentials} from '../authentication/auth'; // Assuming you have saved the functions in a file
+import { returnUserCredentials } from '../authentication/auth';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-// import SvgUri from 'react-native-svg-uri';
 
 const Login = ({setLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-        // For simplicity, let's assume username and password are correct
-        const isAuthenticated = true;
 
-        // keep disabled during development
-        // if (username === '' || password === '') {
-        //     Alert.alert('Login Failed', 'Please enter username and password.');
-        //     return;
-        // }
-
-        if (isAuthenticated) {
-            await saveCredentials(username, password);
-            Alert.alert('Login Successful', 'Credentials saved securely.');
-            setLogin(true);
-        } else {
-            Alert.alert(
-                'Login Failed',
-                'Invalid credentials. Please try again.',
-            );
+        try {
+            const usersData = await returnUserCredentials();
+            const user = usersData.find(userData => userData.username === username && userData.password === password);
+            
+            if (username === '' || password === '') {
+                Alert.alert('Login Failed', 'Please enter username and password.');
+                return;
+            }
+            
+            if (user) {
+                Alert.alert('Login Successful.');
+                setLogin(true);
+            } else {
+                Alert.alert('Login Failed', 'Please enter a valid username and password.');
+            }
+        } catch (error) {
+            console.error('Error getting user credentials:', error);
         }
+
+        // console.log(returnUserCredentials());
     };
 
     return (
@@ -54,8 +55,8 @@ const Login = ({setLogin}) => {
                     marginLeft: 60,
                     width: '40%',
                     color: 'white',
-                    placeholderTextColor: 'white',
                 }}
+                placeholderTextColor={'white'}
                 placeholder="Username"
                 onChangeText={text => setUsername(text)}
                 value={username}
@@ -70,8 +71,8 @@ const Login = ({setLogin}) => {
                     marginLeft: 60,
                     width: '40%', // Set the width as needed
                     color: 'white',
-                    placeholderTextColor: 'white',
                 }}
+                placeholderTextColor={'white'}
                 placeholder="Password"
                 onChangeText={text => setPassword(text)}
                 value={password}
