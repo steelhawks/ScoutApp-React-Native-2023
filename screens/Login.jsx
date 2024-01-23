@@ -12,11 +12,13 @@ const Login = ({setLogin}) => {
             const userCredentials = await returnUserCredentials();
             const user = userCredentials.find(userData => userData.username === username && userData.password === password);
 
-            if (username === '' || password === '') {
-                Alert.alert('Login Failed', 'Please enter username and password.');
-                return;
-            }
+            // keep commented during development
+            // if (username === '' || password === '') {
+            //     Alert.alert('Login Failed', 'Please enter username and password.');
+            //     return;
+            // }
             
+            // replace true with user (true is for testing purposes)
             if (user) {
                 Alert.alert('Login Successful.');
                 setLogin(true);

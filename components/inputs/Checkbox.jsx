@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
 import {Text, Image, Pressable, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
 
 const Checkbox = props => {
     const [checked, setChecked] = useState(false);

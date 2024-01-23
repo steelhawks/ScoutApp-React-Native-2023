@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import fs from 'react-native-fs';
 import { Alert } from 'react-native';
-import file from './login.json';
+import loginCredentialsFile from './login.json';
 
 export const returnUserCredentials = async () => {
     try {
-        const usersData = file; // Assuming 'file' is already a JSON object
+        const usersData = loginCredentialsFile; // Assuming 'file' is already a JSON object
         return usersData;
     } catch (error) {
-        console.log(file);
+        console.log(loginCredentialsFile);
         console.error('Error reading JSON file:', error);
         throw error;
     }
@@ -19,7 +19,7 @@ const auth = () => {
 
     useEffect(() => {
         // Access the JSON content directly
-        const parsedData = file;
+        const parsedData = loginCredentialsFile;
         setUserData(parsedData);
     }, []);
 }

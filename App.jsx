@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-// import { ReturnUser } from './screens/Login'; // function import
 import Login from './screens/Login';
 import HomePage from './screens/HomePage';
 import ScoutingPage from './screens/ScoutingPage';
@@ -10,7 +9,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {StyleSheet, Alert} from 'react-native';
 import Orientation from 'react-native-orientation-locker';
-import DeviceInfo from 'react-native-device-info'
+import DeviceInfo, { getApplicationName } from 'react-native-device-info'
 
 const Drawer = createDrawerNavigator();
 
@@ -29,8 +28,11 @@ const App = () => {
 
     useEffect(() => {
         if (!DeviceInfo.isTablet()) {
-            Alert.alert('Please use a tablet device to use this app.');
+            Alert.alert('Please use a tablet device to use this app.', '', [
+                {text: 'OK', onPress: () => BackHandler.exitApp()},
+            ]);
         }
+
 
         return () => {
             if (!DeviceInfo.isTablet()) {

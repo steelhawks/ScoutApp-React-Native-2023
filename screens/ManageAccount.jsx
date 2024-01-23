@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+// import user from "./Login"
 
-const ManageAccount = (props) => {
+const ManageAccount = ({user}) => {
   return (
     <View style={styles.container}>
       <Text>Manage Account</Text>
