@@ -1,139 +1,141 @@
-import {StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
-import React, { useState } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+} from 'react-native';
+import React, {useState} from 'react';
 import Input from './Input';
 import Dropdown from './inputs/Dropdown';
 import ScoutingPage from '../screens/ScoutingPage';
-
-// team number
-// match number
-// scouter name
-// drive station
+import {ScrollView} from 'react-native-gesture-handler';
+import CounterInput from 'react-native-counter-input';
 
 const NewMatch = props => {
+    const [scouterName, setScouterName] = useState('');
     const [teamNumber, setTeamNumber] = useState(0);
     const [matchNumber, setMatchNumber] = useState(0);
-    const [scouterName, setScouterName] = useState('');
     const [driveStation, setDriveStation] = useState(0);
-
-    const updateScouterName = newScouterName => {
-        setScouterName(newScouterName);
-    };
 
     return (
         <View style={styles.background}>
-            <Text
-                style={{
-                    fontSize: 50,
-                    fontWeight: 'bold',
-                    alignSelf: 'left',
-                    marginBottom: 50,
-                    marginLeft: 20,
-                    color: 'white',
-                }}>
-                Enter Team Number:
-            </Text>
-
-            <TextInput
-                style={{
-                    padding: 10,
-                    borderRadius: 5,
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    marginBottom: 10,
-                    marginLeft: 60,
-                    width: '40%', // Set the width as needed
-                    color: 'white',
-                }}
-                placeholderTextColor={'white'}
-                placeholder="Team Number"
-                onChangeText={console.log("test")}
-                value={teamNumber}
-                secureTextEntry
-            />
-
-            <Text
-                style={{
-                    fontSize: 50,
-                    fontWeight: 'bold',
-                    alignSelf: 'left',
-                    marginBottom: 50,
-                    marginLeft: 20,
-                    color: 'white',
-                }}>
-                Enter Match Number:
-            </Text>
-            
-            <TextInput
-                style={{
-                    padding: 10,
-                    borderRadius: 5,
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    marginBottom: 10,
-                    marginLeft: 60,
-                    width: '40%', // Set the width as needed
-                    color: 'white',
-                }}
-                placeholderTextColor={'white'}
-                placeholder="Match Number"
-                onChangeText={console.log("test")}
-                value={matchNumber}
-                secureTextEntry
-            />
-
-            <Text
-                style={{
-                    fontSize: 50,
-                    fontWeight: 'bold',
-                    alignSelf: 'left',
-                    marginBottom: 50,
-                    marginLeft: 20,
-                    color: 'white',
-                }}>
-                Scouter Name: {scouterName}
-            </Text>
-
-            <Text
-                style={{
-                    fontSize: 50,
-                    fontWeight: 'bold',
-                    alignSelf: 'left',
-                    marginBottom: 50,
-                    marginLeft: 20,
-                    color: 'white',
-                }}>
-                Enter Driver Station (1-6):
-            </Text>
-
-            <Dropdown>
-
-            </Dropdown>
-
-            <TouchableOpacity onPress={() => props.setMatchCreated(true)}>
-                <View
+            <ScrollView>
+                <Text
                     style={{
-                        backgroundColor: 'lightblue',
-                        padding: 15,
-                        borderRadius: 5,
-                        marginBottom: 20,
-                        marginLeft: 250,
-                        width: '10%', // Set the width as needed
+                        fontSize: 50,
+                        fontWeight: 'bold',
+                        alignSelf: 'left',
+                        marginBottom: 50,
+                        marginLeft: 20,
+                        color: 'white',
                     }}>
-                    <Text
+                    Welcome {scouterName}
+                </Text>
+
+                <Text
+                    style={{
+                        fontSize: 50,
+                        fontWeight: 'bold',
+                        alignSelf: 'left',
+                        marginBottom: 50,
+                        marginLeft: 20,
+                        color: 'white',
+                    }}>
+                    Enter Team Number:
+                </Text>
+
+                <TextInput
+                    style={{
+                        padding: 10,
+                        borderRadius: 5,
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        marginBottom: 10,
+                        marginLeft: 60,
+                        width: '40%', // Set the width as needed
+                        color: 'white',
+                    }}
+                    placeholderTextColor={'white'}
+                    placeholder="Team Number"
+                    onChangeText={console.log('test')}
+                    value={teamNumber}
+                />
+
+                <Text
+                    style={{
+                        fontSize: 50,
+                        fontWeight: 'bold',
+                        alignSelf: 'left',
+                        marginBottom: 50,
+                        marginLeft: 20,
+                        color: 'white',
+                    }}>
+                    Enter Match Number:
+                </Text>
+
+                <TextInput
+                    style={{
+                        padding: 10,
+                        borderRadius: 5,
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        marginBottom: 10,
+                        marginLeft: 60,
+                        width: '40%', // Set the width as needed
+                        color: 'white',
+                    }}
+                    placeholderTextColor={'white'}
+                    placeholder="Match Number"
+                    onChangeText={console.log('test')}
+                    value={matchNumber}
+                />
+
+                <Text
+                    style={{
+                        fontSize: 50,
+                        fontWeight: 'bold',
+                        alignSelf: 'left',
+                        marginBottom: 50,
+                        marginLeft: 20,
+                        color: 'white',
+                    }}>
+                    Enter Driver Station (1-6):
+                </Text>
+
+                <CounterInput
+                    min={0}
+                    max={6}
+                    horizontal={true}
+                    onChange={counter => {
+                        setDriveStation(counter);
+                    }}
+                />
+
+                <TouchableOpacity onPress={() => props.setMatchCreated(true)}>
+                    <View
                         style={{
-                            color: 'black',
-                            fontSize: 20,
-                            alignSelf: 'center',
-                            fontWeight: 'bold',
+                            backgroundColor: 'lightblue',
+                            padding: 15,
+                            borderRadius: 5,
+                            marginBottom: 20,
+                            marginLeft: 250,
+                            width: '20%', // Set the width as needed
                         }}>
-                        Create Match
-                    </Text>
-                </View>
-            </TouchableOpacity>
-            
+                        <Text
+                            style={{
+                                color: 'black',
+                                fontSize: 20,
+                                alignSelf: 'center',
+                                fontWeight: 'bold',
+                            }}>
+                            Create Match
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </ScrollView>
         </View>
-        
-    )
+    );
 };
 
 export default NewMatch;

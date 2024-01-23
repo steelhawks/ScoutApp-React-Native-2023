@@ -10,11 +10,22 @@ import {NavigationContainer} from '@react-navigation/native';
 import {StyleSheet, Alert} from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import DeviceInfo, { getApplicationName } from 'react-native-device-info'
+// import loginCredentialsFile from './login.json';
 
 const Drawer = createDrawerNavigator();
 
 const App = () => {
     const [logged_in, setLogin] = useState(false);
+    const [user, setUser] = useState(null);
+
+    // this is to receive user data and use it in any file in this project
+    // useEffect(() => {
+    //     const storedUserData = loginCredentialsFile;
+    //     if (storedUserData) {
+    //       setUser(storedUserData);
+    //       setLogin(true);
+    //     }
+    //   }, []);
 
     // Let the app only work when device is in landscape
     useEffect(() => {
@@ -77,12 +88,6 @@ const App = () => {
                     }}>
                     
                     {/* Remove login screen after successful authentication */}
-                    {/* <Drawer.Screen
-                        name="Login"
-                        component={props => (
-                            <Login {...props} setLogin={setLogin} />
-                        )}
-                    /> */}
                     {/* DEPRECATED LOGIN SCREEN */}
                     {/* <Drawer.Screen name="Home" component={HomePageNavigate} /> */}
                     <Drawer.Screen
@@ -100,8 +105,10 @@ const App = () => {
                         component={ExtraInfoPage}
                     />
                     <Drawer.Screen
-                        name={'Manage Account'}
-                        component={ManageAccount}
+                        name="Manage Account"
+                        component={props => (
+                            <Login {...props} setLogin={setLogin} />
+                        )}
                     />
                 </Drawer.Navigator>
             ) : (

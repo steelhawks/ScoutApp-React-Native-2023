@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {View, TextInput, Text, Alert, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import { returnUserCredentials } from '../authentication/auth';
 
-const Login = ({setLogin}) => {
+const Login = ({setLogin, setUser}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -11,6 +11,7 @@ const Login = ({setLogin}) => {
         try {
             const userCredentials = await returnUserCredentials();
             const user = userCredentials.find(userData => userData.username === username && userData.password === password);
+            // setUser(user);
 
             // keep commented during development
             // if (username === '' || password === '') {
@@ -18,7 +19,6 @@ const Login = ({setLogin}) => {
             //     return;
             // }
             
-            // replace true with user (true is for testing purposes)
             if (user) {
                 Alert.alert('Login Successful.');
                 setLogin(true);
