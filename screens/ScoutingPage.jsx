@@ -5,7 +5,7 @@ import {
     Text,
     View,
 } from 'react-native';
-import React from 'react';
+import React, { Component } from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../components/Input';
 import {useState} from 'react';
@@ -21,7 +21,7 @@ import CounterInput from 'react-native-counter-input';
 import {ScrollView} from 'react-native-gesture-handler';
 import fs from 'react-native-fs';
 
-const ScoutingPage = props => {
+const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const [matchCreated, setMatchCreated] = useState(false);
 
     const [dict, setDict] = useState({
@@ -58,13 +58,13 @@ const ScoutingPage = props => {
     };
 
     const endMatch = () => {
-        saveToJson(dict, 'data');
+        saveToJson(dict);
     };
 
-    const saveToJson = async (data, fileName) => {
+    const saveToJson = async (data) => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/${fileName}.json`;
+            const filePath = `${docDir}/data-${user.name}.json`;
             const jsonData = JSON.stringify(data);
 
             await fs.writeFile(filePath, jsonData, 'utf8');
@@ -938,7 +938,13 @@ const ScoutingPage = props => {
                     </ScrollView>
                 </View>
             ) : (
-                <NewMatch setMatchCreated={setMatchCreated} />
+                <NewMatch
+                    setMatchCreated={setMatchCreated}
+                    user={user}
+                />
+                    
+
+                
             )}
         </SafeAreaView>
     );

@@ -97,7 +97,14 @@ const App = () => {
                             activeTintColor: 'white',
                         }}
                         name="Scouting"
-                        component={ScoutingPageNavigate}
+                        component={props => (
+                            <ScoutingPage
+                                {...props}
+                                logged_in={logged_in}
+                                setLogin={setLogin}
+                                user={user}
+                            />
+                        )}
                     />
                     <Drawer.Screen name="Data" component={DataPage} />
                     <Drawer.Screen
@@ -105,9 +112,15 @@ const App = () => {
                         component={ExtraInfoPage}
                     />
                     <Drawer.Screen
-                        name="Manage Account"
+                        name={user.name}
                         component={props => (
-                            <Login {...props} setLogin={setLogin} />
+                            <ManageAccount
+                                {...props}
+                                setLogin={setLogin}
+                                setUser={setUser}
+                                logged_in={logged_in}
+                                user={user}
+                            />
                         )}
                     />
                 </Drawer.Navigator>
@@ -121,7 +134,12 @@ const App = () => {
                     <Drawer.Screen
                         name="Login"
                         component={props => (
-                            <Login {...props} setLogin={setLogin} />
+                            <Login 
+                                {...props} 
+                                setLogin={setLogin} 
+                                setUser={setUser}
+                                logged_in={logged_in}
+                            />
                         )}
                     />
                 </Drawer.Navigator>

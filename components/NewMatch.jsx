@@ -30,7 +30,8 @@ const NewMatch = props => {
                         marginLeft: 20,
                         color: 'white',
                     }}>
-                    Welcome {scouterName}
+                    Hello {props.user.name}!{'\n'}
+                    OSIS: {props.user.osis}
                 </Text>
 
                 <Text
