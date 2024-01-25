@@ -5,10 +5,10 @@ import {
     Text,
     View,
 } from 'react-native';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../components/Input';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import NumberInput from '../components/inputs/NumberInput';
 import NewMatch from '../components/NewMatch';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -24,7 +24,33 @@ import fs from 'react-native-fs';
 const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const [matchCreated, setMatchCreated] = useState(false);
 
+    const [formattedDate, setFormattedDate] = useState('');
+
+    useEffect(() => {
+        // Update the formatted date every second
+        const interval = setInterval(() => {
+            const currentDate = new Date();
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false, // Use 24-hour format
+            };
+            const formatted = currentDate.toLocaleString('en-US', options);
+            setFormattedDate(formatted);
+        }, 1000);
+
+        // Cleanup the interval on component unmount
+        return () => clearInterval(interval);
+    }, []); // Empty dependency array to run the effect only once on mount
+
     const [dict, setDict] = useState({
+        scouterName: user.name,
+        teamNumber: 0,
+        matchNumber: 0,
+        driveStation: 0,
         alliance: 'EMPTY', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
@@ -53,19 +79,15 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
         setDict({...dict, [key]: value});
     };
 
-    const number = newNumVal => {
-        setNewNumVal(newNumVal);
-    };
-
     const endMatch = () => {
         saveToJson(dict);
     };
 
-    const saveToJson = async (data) => {
+    const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/data-${user.name}.json`;
-            const jsonData = JSON.stringify(data);
+            const filePath = `${docDir}/scoutdata-${user.name}-${dict.matchNumber}.json`;
+            const jsonData = JSON.stringify(data, null, 4);
 
             await fs.writeFile(filePath, jsonData, 'utf8');
 
@@ -108,7 +130,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: 'yes',
+                                    id: 'RED',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -118,13 +140,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('alliance', 'red');
-                                    },
                                 },
                                 {
-                                    id: 'no',
+                                    id: 'BLUE',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -134,18 +152,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('alliance', 'blue');
-                                    },
                                 },
                             ]}
-                            onChange={selectedItem => {
-                                console.log(
-                                    'SelectedItem: ',
-                                    JSON.stringify(selectedItem),
-                                );
-                            }}
+                            onChange={selectedItem =>
+                                updateDict('alliance', selectedItem.id)
+                            }
                         />
 
                         <Text
@@ -172,10 +183,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('preloaded', true);
-                                    },
                                 },
                                 {
                                     id: 'no',
@@ -188,18 +195,14 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('preloaded', false);
-                                    },
                                 },
                             ]}
-                            onChange={selectedItem => {
-                                console.log(
-                                    'SelectedItem: ',
-                                    JSON.stringify(selectedItem),
-                                );
-                            }}
+                            onChange={selectedItem =>
+                                updateDict(
+                                    'preloaded',
+                                    selectedItem.id === 'yes',
+                                )
+                            } // returns true if the id says yes
                         />
 
                         <Text
@@ -239,10 +242,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('robotLeft', true);
-                                    },
                                 },
                                 {
                                     id: 'no',
@@ -255,18 +254,14 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('robotLeft', false);
-                                    },
                                 },
                             ]}
-                            onChange={selectedItem => {
-                                console.log(
-                                    'SelectedItem: ',
-                                    JSON.stringify(selectedItem),
-                                );
-                            }}
+                            onChange={selectedItem =>
+                                updateDict(
+                                    'robotLeft',
+                                    selectedItem.id === 'yes',
+                                )
+                            } // returns true if the id says yes
                         />
 
                         <Text
@@ -364,7 +359,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: '0',
+                                    id: 'NOT_MOVING',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -374,13 +369,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('autonIssues', 'NOT_MOVING');
-                                    },
                                 },
                                 {
-                                    id: '1',
+                                    id: 'STOPPED',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -390,13 +381,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('autonIssues', 'STOPPED');
-                                    },
                                 },
                                 {
-                                    id: '2',
+                                    id: 'OUT_OF_CONTROL',
                                     size: 25,
                                     fillColor: 'green',
                                     unfillColor: '#FFFFFF',
@@ -406,15 +393,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict(
-                                            'autonIssues',
-                                            'OUT_OF_CONTROL',
-                                        );
-                                    },
                                 },
                             ]}
+                            onChange={selectedItem =>
+                                updateDict('autonIssues', selectedItem.id)
+                            }
                         />
 
                         <Text
@@ -618,7 +601,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: '0',
+                                    id: 'PARKED',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -628,13 +611,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('endGame', 'PARKED');
-                                    },
                                 },
                                 {
-                                    id: '1',
+                                    id: 'ONSTAGE',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -644,13 +623,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('endGame', 'ONSTAGE');
-                                    },
                                 },
                                 {
-                                    id: '2',
+                                    id: 'SPOTLIGHT',
                                     size: 25,
                                     fillColor: 'green',
                                     unfillColor: '#FFFFFF',
@@ -660,12 +635,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('endGame', 'SPOTLIGHT');
-                                    },
                                 },
                             ]}
+                            onChange={selectedItem =>
+                                updateDict('endGame', selectedItem.id)
+                            }
                         />
 
                         <Text
@@ -703,7 +677,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: '0',
+                                    id: 'FOUL',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -713,13 +687,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('penalties', 'FOUL');
-                                    },
                                 },
                                 {
-                                    id: '1',
+                                    id: 'TECH_FOUL',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -729,13 +699,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('penalties', 'TECH_FOUL');
-                                    },
                                 },
                                 {
-                                    id: '2',
+                                    id: 'YELLOW_CARD',
                                     size: 25,
                                     fillColor: 'green',
                                     unfillColor: '#FFFFFF',
@@ -745,13 +711,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('penalties', 'YELLOW_CARD');
-                                    },
                                 },
                                 {
-                                    id: '3',
+                                    id: 'RED_CARD',
                                     size: 25,
                                     fillColor: 'purple',
                                     unfillColor: '#FFFFFF',
@@ -761,12 +723,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('penalties', 'RED_CARD');
-                                    },
                                 },
                             ]}
+                            onChange={selectedItem =>
+                                updateDict('penalities', selectedItem.id)
+                            }
                         />
 
                         <Text
@@ -784,7 +745,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: '0',
+                                    id: 'NOT_MOVING',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -794,13 +755,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('telopIssues', 'NOT_MOVING');
-                                    },
                                 },
                                 {
-                                    id: '1',
+                                    id: 'LOST_CONNECTION',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -810,16 +767,9 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict(
-                                            'telopIssues',
-                                            'LOST_CONNECTION',
-                                        );
-                                    },
                                 },
                                 {
-                                    id: '2',
+                                    id: 'FMS_ISSUES',
                                     size: 25,
                                     fillColor: 'green',
                                     unfillColor: '#FFFFFF',
@@ -828,10 +778,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     innerIconStyle: {borderWidth: 2},
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
-                                    },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('telopIssues', 'FMS_ISSUES');
                                     },
                                 },
                                 {
@@ -845,12 +791,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('telopIssues', 'DISABLED');
-                                    },
                                 },
                             ]}
+                            onChange={selectedItem =>
+                                updateDict('telopIssues', selectedItem.id)
+                            }
                         />
 
                         <Text
@@ -890,10 +835,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('didTeamPlayDefense', true);
-                                    },
                                 },
                                 {
                                     id: '1',
@@ -906,12 +847,14 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     textStyle: {
                                         fontFamily: 'JosefinSans-Regular',
                                     },
-                                    onChange: selectedItem => {
-                                        console.log(selectedItem);
-                                        updateDict('didTeamPlayDefense', false);
-                                    },
                                 },
                             ]}
+                            onChange={selectedItem =>
+                                updateDict(
+                                    'didTeamPlayDefense',
+                                    selectedItem.id,
+                                )
+                            }
                         />
 
                         <TouchableOpacity onPress={() => endMatch()}>
@@ -941,10 +884,8 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                 <NewMatch
                     setMatchCreated={setMatchCreated}
                     user={user}
+                    updateDict={updateDict}
                 />
-                    
-
-                
             )}
         </SafeAreaView>
     );

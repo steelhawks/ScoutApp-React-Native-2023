@@ -13,10 +13,9 @@ import {ScrollView} from 'react-native-gesture-handler';
 import CounterInput from 'react-native-counter-input';
 
 const NewMatch = props => {
-    const [scouterName, setScouterName] = useState('');
-    const [teamNumber, setTeamNumber] = useState(0);
-    const [matchNumber, setMatchNumber] = useState(0);
-    const [driveStation, setDriveStation] = useState(0);
+    // const [teamNumber, setTeamNumber] = useState(0);
+    // const [matchNumber, setMatchNumber] = useState(0);
+    // const [driveStation, setDriveStation] = useState(0);
 
     return (
         <View style={styles.background}>
@@ -59,8 +58,7 @@ const NewMatch = props => {
                     }}
                     placeholderTextColor={'white'}
                     placeholder="Team Number"
-                    onChangeText={console.log('test')}
-                    value={teamNumber}
+                    onChangeText={value => props.updateDict('teamNumber', value )}
                 />
 
                 <Text
@@ -88,8 +86,7 @@ const NewMatch = props => {
                     }}
                     placeholderTextColor={'white'}
                     placeholder="Match Number"
-                    onChangeText={console.log('test')}
-                    value={matchNumber}
+                    onChangeText={value => props.updateDict('matchNumber', value)}
                 />
 
                 <Text
@@ -109,7 +106,7 @@ const NewMatch = props => {
                     max={6}
                     horizontal={true}
                     onChange={counter => {
-                        setDriveStation(counter);
+                        props.updateDict('driveStation', counter);
                     }}
                 />
 
