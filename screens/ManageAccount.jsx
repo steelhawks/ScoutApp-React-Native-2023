@@ -1,63 +1,30 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-// import user from "./Login"
 
-const ManageAccount = ({setLogin, setUser, logged_in, user}) => {
+const ManageAccount = ({setLogin, setUser, user}) => {
     const logOut = () => {
         setLogin(false);
         setUser(null);
     };
-    //style={styles.container}>
+
     return (
-        <View>
-            <ScrollView>
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <TouchableOpacity onPress={() => logOut()}>
-                    <View
-                        style={{
-                            backgroundColor: 'lightblue',
-                            padding: 15,
-                            borderRadius: 5,
-                            marginTop: 20,
-                            marginBottom: 20,
-                            marginLeft: 20,
-                            width: '10%',
-                        }}>
-                        <Text
-                            style={{
-                                color: 'black',
-                                fontSize: 20,
-                                alignSelf: 'center',
-                                fontWeight: 'bold',
-                            }}>
-                            Log Out
-                        </Text>
+                    <View style={styles.logoutButton}>
+                        <Text style={styles.buttonText}>Log Out</Text>
                     </View>
                 </TouchableOpacity>
 
-                <Text
-                    style={{
-                        fontSize: 50,
-                        fontWeight: 'bold',
-                        alignSelf: 'left',
-                        marginBottom: 50,
-                        marginLeft: 20,
-                        color: 'white',
-                    }}>
-                    Welcome {user.name}
-                    {'\n'}
-                    Username: {user.username}
-                    {'\n'}
-                    OSIS: {user.osis}
-                    {'\n'}
+                <Text style={styles.welcomeText}>
+                    Welcome {user.name} {'\n'}
+                    Username: {user.username} {'\n'}
+                    OSIS: {user.osis} {'\n'}
                 </Text>
 
-                <Text
-                    style={{
-                        alignSelf: 'middle',
-                        color: 'white',
-                    }}>
-                    Any issues with login or requested changes, please email
+                <Text style={styles.infoText}>
+                    Any issues with login or requested changes, please email{' '}
                     farhanj2@nycstudents.net
                 </Text>
             </ScrollView>
@@ -68,8 +35,37 @@ const ManageAccount = ({setLogin, setUser, logged_in, user}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#282c34', // Change this to your desired background color
+    },
+    scrollContainer: {
         alignItems: 'center',
+        paddingVertical: 40,
+    },
+    logoutButton: {
+        backgroundColor: 'lightblue',
+        padding: 15,
+        borderRadius: 5,
+        marginVertical: 20,
+        width: '40%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    welcomeText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        marginBottom: 30,
+        color: 'white',
+    },
+    infoText: {
+        color: 'white',
+        textAlign: 'center',
+        position: 'absolute',
+        bottom: 0,
     },
 });
 

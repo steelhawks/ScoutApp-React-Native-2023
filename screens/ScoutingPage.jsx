@@ -4,6 +4,7 @@ import {
     TextInput,
     Text,
     View,
+    Alert,
 } from 'react-native';
 import React, {Component} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,7 +24,6 @@ import fs from 'react-native-fs';
 
 const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const [matchCreated, setMatchCreated] = useState(false);
-
     const [formattedDate, setFormattedDate] = useState('');
 
     useEffect(() => {
@@ -92,6 +92,11 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
             await fs.writeFile(filePath, jsonData, 'utf8');
 
             console.log('File saved!');
+            Alert.alert('Match ' + dict.matchNumber + ' Saved!', '', [
+                {text: 'New Match', onPress: () => setMatchCreated(false)},
+                {text: 'View Match', onPress: () => setMatchCreated(false)},
+                {text: 'OK'},
+            ]);
         } catch (error) {
             console.error('Error saving data to file:', error.message);
         }
@@ -114,6 +119,29 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                             }}>
                             Pre Match
                         </Text>
+
+                        <TouchableOpacity onPress={() => setMatchCreated(false)}>
+                            <View
+                                style={{
+                                    backgroundColor: 'lightblue',
+                                    padding: 15,
+                                    borderRadius: 5,
+                                    marginBottom: 20,
+                                    marginLeft: 250,
+                                    width: '10%', // Set the width as needed
+                                    right: 220,
+                                }}>
+                                <Text
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 20,
+                                        alignSelf: 'center',
+                                        fontWeight: 'bold',
+                                    }}>
+                                        Back
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
 
                         <Text
                             style={{
@@ -726,7 +754,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                 },
                             ]}
                             onChange={selectedItem =>
-                                updateDict('penalities', selectedItem.id)
+                                updateDict('penalties', selectedItem.id)
                             }
                         />
 
@@ -825,7 +853,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         <BouncyCheckboxGroup
                             data={[
                                 {
-                                    id: '0',
+                                    id: 'YES',
                                     size: 25,
                                     fillColor: 'red',
                                     unfillColor: '#FFFFFF',
@@ -837,7 +865,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                     },
                                 },
                                 {
-                                    id: '1',
+                                    id: 'NO',
                                     size: 25,
                                     fillColor: 'blue',
                                     unfillColor: '#FFFFFF',
@@ -850,10 +878,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                 },
                             ]}
                             onChange={selectedItem =>
-                                updateDict(
-                                    'didTeamPlayDefense',
-                                    selectedItem.id,
-                                )
+                                updateDict('didTeamPlayDefense', selectedItem.id === 'YES')
                             }
                         />
 
@@ -895,7 +920,7 @@ export default ScoutingPage;
 
 const styles = StyleSheet.create({
     MainView: {
-        backgroundColor: 'black',
+        backgroundColor: '#282c34',
         height: '100%',
         flex: 1,
         justifyContent: 'center',
