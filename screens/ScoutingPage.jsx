@@ -215,8 +215,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
 
                         <TouchableOpacity
                             onPress={() => setMatchCreated(false)}>
-                        <TouchableOpacity
-                            onPress={() => setMatchCreated(false)}>
                             <View
                                 style={{
                                     backgroundColor: 'lightblue',
