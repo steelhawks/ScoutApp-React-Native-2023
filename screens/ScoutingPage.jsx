@@ -87,7 +87,8 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/scoutdata-${user.name}-${dict.matchNumber}.json`;
+            const filePath = `${docDir}/scoutdata-${user.name.replace(/\s/g, '')}-${dict.matchNumber}.json`;
+
             const jsonData = JSON.stringify(data, null, 4);
 
             await fs.writeFile(filePath, jsonData, 'utf8');
@@ -200,6 +201,20 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
             {matchCreated ? (
                 <View>
                     <ScrollView>
+                        <Text
+                            style={{
+                                fontSize: 50,
+                                fontWeight: 'bold',
+                                alignSelf: 'left',
+                                // marginBottom: 50,
+                                marginLeft: 20,
+                                color: 'white',
+                            }}>
+                            Pre Match
+                        </Text>
+
+                        <TouchableOpacity
+                            onPress={() => setMatchCreated(false)}>
                         <TouchableOpacity
                             onPress={() => setMatchCreated(false)}>
                             <View
@@ -219,6 +234,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                         alignSelf: 'center',
                                         fontWeight: 'bold',
                                     }}>
+                                    Back
                                     Back
                                 </Text>
                             </View>
