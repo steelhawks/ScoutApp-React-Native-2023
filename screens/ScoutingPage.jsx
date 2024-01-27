@@ -86,7 +86,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
 
     const saveToJson = async data => {
         try {
-            const docDir = fs.DocumentDirectoryPath;
+            const docDir = fs.ExternalDirectoryPath;
             const filePath = `${docDir}/scoutdata-${user.name.replace(/\s/g, '')}-${dict.matchNumber}.json`;
 
             const jsonData = JSON.stringify(data, null, 4);

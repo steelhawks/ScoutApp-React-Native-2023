@@ -12,7 +12,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 // Make the names of the files not the json but the match number team number, and scouter name
 
 const DataPage = () => {
-    const docDir = fs.DocumentDirectoryPath;
+    const docDir = fs.ExternalDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
 
@@ -63,7 +63,8 @@ const DataPage = () => {
 
     const handleJsonSelection = async selectedJson => {
         try {
-            const path = fs.DocumentDirectoryPath + '/' + selectedJson;
+            const path = fs.ExternalDirectoryPath + '/' + selectedJson;
+            console.log(path);
             const content = await fs.readFile(path, 'utf8');
 
             // Parse the JSON content and update the dictionary
