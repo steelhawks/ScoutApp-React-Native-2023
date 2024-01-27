@@ -24,7 +24,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-orientation-locker": "^1.6.0",
-    "react-native-reanimated": "^3.6.1",
+    "react-native-reanimated": "^3.6.2",
     "react-native-safe-area-context": "^4.7.1",
     "react-native-screens": "^3.24.0",
     "react-native-sensitive-info": "^5.5.8",

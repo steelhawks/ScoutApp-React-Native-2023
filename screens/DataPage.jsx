@@ -41,6 +41,7 @@ const DataPage = () => {
         penalties: 'EMPTY', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
         telopIssues: 'EMPTY', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
+        robotType: 'Empty', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
     });
 
     // use this to change values after the match
@@ -60,17 +61,19 @@ const DataPage = () => {
             });
     }, []); // Empty dependency array ensures this effect runs once on component mount
 
-    const handleJsonSelection = async (selectedJson) => {
+    const handleJsonSelection = async selectedJson => {
         try {
             const path = fs.DocumentDirectoryPath + '/' + selectedJson;
             const content = await fs.readFile(path, 'utf8');
-    
+
             // Parse the JSON content and update the dictionary
             const jsonData = JSON.parse(content);
             setDict(jsonData);
 
             // updates the boolean to false when the selected json is deselected
-            setJsonSelected((prev) => (prev === selectedJson ? '' : selectedJson));
+            setJsonSelected(prev =>
+                prev === selectedJson ? '' : selectedJson,
+            );
         } catch (error) {
             console.error('Error reading or parsing JSON file:', error);
         }
@@ -82,42 +85,71 @@ const DataPage = () => {
                 <Text style={styles.welcomeText}>Previous Matches</Text>
                 <View style={styles.scrollContainer}>
                     {jsonFiles.map(file => (
-                            <TouchableOpacity
-                                key={file}
-                                onPress={() => 
-                                    handleJsonSelection(file)
-                                }>
-                                <Text style={styles.infoText}>{file}</Text>
-                            </TouchableOpacity>
-                        ))}
+                        <TouchableOpacity
+                            key={file}
+                            onPress={() => handleJsonSelection(file)}>
+                            <Text style={styles.infoText}>{file}</Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
-                
+
                 {jsonSelected ? (
                     <Text style={styles.infoText}>
-                        Scouter Name: {dict.scouterName}{'\n'}
-                        Team Number: {dict.teamNumber}{'\n'}
-                        Match Number: {dict.matchNumber}{'\n'}
-                        Drive Station: {dict.driveStation}{'\n'}
-                        Alliance: {dict.alliance}{'\n'}
-                        Preloaded: {dict.preloaded}{'\n'}
-                        Robot Left: {dict.robotLeft}{'\n'}
-                        Auton Speaker Notes Scored: {dict.autonSpeakerNotesScored}{'\n'}
-                        Auton Amp Notes Scored: {dict.autonAmpNotesScored}{'\n'}
-                        Auton Missed: {dict.autonMissed}{'\n'}
-                        Auton Notes Received: {dict.autonNotesReceived}{'\n'}
-                        Auton Issues: {dict.autonIssues}{'\n'}
-                        Telop Speaker Notes Scored: {dict.telopSpeakerNotesScored}{'\n'}
-                        Telop Amp Notes Scored: {dict.telopAmpNotesScored}{'\n'}
-                        Telop Amplified Speaker Notes: {dict.telopAmplifiedSpeakerNotes}{'\n'}
-                        Telop Speaker Notes Missed: {dict.telopSpeakerNotesMissed}{'\n'}
-                        Telop Amp Notes Missed: {dict.telopAmpNotesMissed}{'\n'}
-                        Telop Notes Received From Human Player: {dict.telopNotesReceivedFromHumanPlayer}{'\n'}
-                        Telop Notes Received From Ground: {dict.telopNotesReceivedFromGround}{'\n'}
-                        End Game: {dict.endGame}{'\n'}
-                        Trap: {dict.trap}{'\n'}
-                        Penalties: {dict.penalties}{'\n'}
-                        Telop Issues: {dict.telopIssues}{'\n'}
-                        Did Team Play Defense: {dict.didTeamPlayDefense}{'\n'}
+                        Scouter Name: {dict.scouterName}
+                        {'\n'}
+                        Team Number: {dict.teamNumber}
+                        {'\n'}
+                        Match Number: {dict.matchNumber}
+                        {'\n'}
+                        Drive Station: {dict.driveStation}
+                        {'\n'}
+                        Alliance: {dict.alliance}
+                        {'\n'}
+                        Preloaded: {dict.preloaded}
+                        {'\n'}
+                        Robot Left: {dict.robotLeft}
+                        {'\n'}
+                        Auton Speaker Notes Scored:{' '}
+                        {dict.autonSpeakerNotesScored}
+                        {'\n'}
+                        Auton Amp Notes Scored: {dict.autonAmpNotesScored}
+                        {'\n'}
+                        Auton Missed: {dict.autonMissed}
+                        {'\n'}
+                        Auton Notes Received: {dict.autonNotesReceived}
+                        {'\n'}
+                        Auton Issues: {dict.autonIssues}
+                        {'\n'}
+                        Telop Speaker Notes Scored:{' '}
+                        {dict.telopSpeakerNotesScored}
+                        {'\n'}
+                        Telop Amp Notes Scored: {dict.telopAmpNotesScored}
+                        {'\n'}
+                        Telop Amplified Speaker Notes:{' '}
+                        {dict.telopAmplifiedSpeakerNotes}
+                        {'\n'}
+                        Telop Speaker Notes Missed:{' '}
+                        {dict.telopSpeakerNotesMissed}
+                        {'\n'}
+                        Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
+                        {'\n'}
+                        Telop Notes Received From Human Player:{' '}
+                        {dict.telopNotesReceivedFromHumanPlayer}
+                        {'\n'}
+                        Telop Notes Received From Ground:{' '}
+                        {dict.telopNotesReceivedFromGround}
+                        {'\n'}
+                        End Game: {dict.endGame}
+                        {'\n'}
+                        Trap: {dict.trap}
+                        {'\n'}
+                        Penalties: {dict.penalties}
+                        {'\n'}
+                        Telop Issues: {dict.telopIssues}
+                        {'\n'}
+                        Did Team Play Defense: {dict.didTeamPlayDefense}
+                        {'\n'}, What Type of Robot: {dict.robotType}
+                        {'\n'}
                     </Text>
                 ) : (
                     <Text style={styles.welcomeText}>

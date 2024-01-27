@@ -8,7 +8,6 @@ import {
 import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Dropdown from '../components/inputs/Dropdown';
-import Input from '../components/Input';
 
 const HomePage = props => {
     const [usernameVal, setUsername] = useState('');

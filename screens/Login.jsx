@@ -10,7 +10,6 @@ import {
     // Animated,
 } from 'react-native';
 import {returnUserCredentials} from '../authentication/auth';
-import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View';
 
 const Login = ({setLogin, setUser, logged_in}) => {
     const [username, setUsername] = useState('');
