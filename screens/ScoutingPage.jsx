@@ -26,8 +26,8 @@ import { UserContext } from '..';
 
 const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const [matchCreated, setMatchCreated] = useState(false);
-    const [formattedDate, setFormattedDate] = useState('TEST_COMP');
-    const [eventName, setEventName] = useState('');
+    const [formattedDate, setFormattedDate] = useState('');
+    const [eventName, setEventName] = useState('TEST_COMP');
 
     useEffect(() => {
         // Update the formatted date every second
