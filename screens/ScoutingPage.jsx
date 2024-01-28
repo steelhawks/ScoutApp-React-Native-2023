@@ -26,7 +26,8 @@ import { UserContext } from '..';
 
 const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     const [matchCreated, setMatchCreated] = useState(false);
-    const [formattedDate, setFormattedDate] = useState('');
+    const [formattedDate, setFormattedDate] = useState('TEST_COMP');
+    const [eventName, setEventName] = useState('');
 
     useEffect(() => {
         // Update the formatted date every second
@@ -49,6 +50,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     }, []); // Empty dependency array to run the effect only once on mount
 
     const [dict, setDict] = useState({
+        eventName: eventName,
         scouterName: user.name,
         teamNumber: 0,
         matchNumber: 0,

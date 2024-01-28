@@ -96,6 +96,8 @@ const DataPage = () => {
 
                 {jsonSelected ? (
                     <Text style={styles.infoText}>
+                        Event Name: {dict.eventName}
+                        {'\n'}
                         Scouter Name: {dict.scouterName}
                         {'\n'}
                         Team Number: {dict.teamNumber}
@@ -149,7 +151,8 @@ const DataPage = () => {
                         Telop Issues: {dict.telopIssues}
                         {'\n'}
                         Did Team Play Defense: {dict.didTeamPlayDefense}
-                        {'\n'}, What Type of Robot: {dict.robotType}
+                        {'\n'}
+                        What Type of Robot: {dict.robotType}
                         {'\n'}
                     </Text>
                 ) : (
