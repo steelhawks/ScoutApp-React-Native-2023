@@ -28,31 +28,6 @@ const App = () => {
     //     }
     //   }, []);
 
-    // Let the app only work when device is in potrait
-    useEffect(() => {
-        Orientation.lockToPortrait();
-
-        // Unlock orientation on unmount
-        return () => {
-            Orientation.unlockAllOrientations();
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!DeviceInfo.isTablet()) {
-            Alert.alert('Please use a tablet device to use this app.', '', [
-                {text: 'OK', onPress: () => BackHandler.exitApp()},
-            ]);
-        }
-
-        return () => {
-            if (!DeviceInfo.isTablet()) {
-                // unlock orientation on component unmount
-                Orientation.unlockAllOrientations();
-            }
-        };
-    });
-
     const ScoutingPageNavigate = props => {
         return (
             <ScoutingPage
