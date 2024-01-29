@@ -4,7 +4,7 @@ import Heading from './Heading';
 
 const Section = props => {
     return (
-        <View>
+        <View style={props.style}>
             <Heading title={props.title} sectionHeading={true} />
             {props.queries}
         </View>

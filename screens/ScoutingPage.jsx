@@ -36,6 +36,21 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
 
+    const styles = StyleSheet.create({
+        MainView: {
+            backgroundColor: 'black',
+            height: '100%',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignSelf: 'center'
+        },
+        queries: {
+            height: '100%',
+            flex: 1,
+            justifyContent: 'center',
+        }
+    });
+
     useEffect(() => {
         // Update the formatted date every second
         const interval = setInterval(() => {
@@ -82,6 +97,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
         penalties: 'EMPTY', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
         telopIssues: 'EMPTY', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
+        coopertition: null, // YES, NO, Default: null
         robotType: 'EMPTY' // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
     });
 
@@ -141,6 +157,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
             title="Did the robot leave?"
             item={<RadioGroup buttons={['Yes', 'No']} id="robotLeft"/>}
         />,
+
         <Query title="Speaker Notes Scored" item={<Counter id="autonSpeakerNotesScored"/>} />,
         <Query title="Amp Notes Scored" item={<Counter id="autonAmpNotesScored"/>} />,
         <Query title="Missed" item={<Counter id="autonMissed"/>} />,
@@ -173,6 +190,10 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
             item={<RadioGroup buttons={['Parked', 'Onstage', 'Spotlight']} id="endGame"/>}
         />,
         <Query title="Trap" item={<Counter id="trap"/>} />,
+        <Query 
+            title="Coopertition"
+            item={<RadioGroup buttons={['Yes', 'No',]} id="coopertition"/>}
+        />,
         <Query
             title="Penalties"
             item={
@@ -209,12 +230,12 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
     ];
 
     const form_sections = [
-        <Section title={'Pre Match'} queries={prematch_queries} />,
-        <Section title={'Auton'} queries={auton_queries} />,
-        <Section title={'Teleop Scoring'} queries={tele_scoring_queries} />,
-        <Section title={'Teleop Missed'} queries={tele_missed_queries} />,
-        <Section title={'Teleop Received'} queries={tele_received_queries} />,
-        <Section title={'Endgame'} queries={endgame_queries} />,
+        <Section title={'Pre Match'} queries={prematch_queries} style={[styles.queries, {backgroundColor: 'black'}]}/>,
+        <Section title={'Auton'} queries={auton_queries} style={[styles.queries, {backgroundColor: 'red'}]}/>,
+        <Section title={'Teleop Scoring'} queries={tele_scoring_queries} style={[styles.queries, {backgroundColor: 'blue'}]}/>,
+        <Section title={'Teleop Missed'} queries={tele_missed_queries} style={[styles.queries, {backgroundColor: 'blue'}]}/>, 
+        <Section title={'Teleop Received'} queries={tele_received_queries} style={[styles.queries, {backgroundColor: 'blue'}]}/>,
+        <Section title={'Endgame'} queries={endgame_queries} style={[styles.queries, {backgroundColor: 'black'}]}/>,
     ];
 
     return (
@@ -223,17 +244,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
                 <>
                 <View>
                     <ScrollView>
-                        <Text
-                            style={{
-                                fontSize: 50,
-                                fontWeight: 'bold',
-                                alignSelf: 'left',
-                                // marginBottom: 50,
-                                marginLeft: 20,
-                                color: 'white',
-                            }}>
-                            Pre Match
-                        </Text>
 
                         <TouchableOpacity
                             onPress={() => setMatchCreated(false)}>
@@ -301,12 +311,3 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
 };
 
 export default ScoutingPage;
-
-const styles = StyleSheet.create({
-    MainView: {
-        backgroundColor: 'black',
-        height: '100%',
-        flex: 1,
-        justifyContent: 'center',
-    },
-});

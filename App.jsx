@@ -28,9 +28,9 @@ const App = () => {
     //     }
     //   }, []);
 
-    // Let the app only work when device is in landscape
+    // Let the app only work when device is in potrait
     useEffect(() => {
-        Orientation.lockToLandscape();
+        Orientation.lockToPortrait();
 
         // Unlock orientation on unmount
         return () => {
