@@ -8,36 +8,52 @@ import {
     StyleSheet,
 } from 'react-native';
 import CounterInput from 'react-native-counter-input';
+import AppLoader from '../AppLoader';
 
 const NewMatch = props => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleStartScouting = async () => {
+        setIsLoading(true);
+
+        setTimeout(async () => { // FOR SOME WEIRD REASON YOU MUST HAVE THIS FOR THE LOADING SCREEN TO EVEN SHOW?????
+            props.setMatchCreated(true);
+            setIsLoading(false);
+        }, 1);
+    };
+
     return (
-        <View style={styles.background}>
-            <ScrollView>
-                <Text style={styles.title}>
-                    Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}
-                </Text>
+        <>
+            <View style={styles.background}>
+                <ScrollView>
+                    <Text style={styles.title}>
+                        Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}
+                    </Text>
 
-                {renderInput('Enter Team Number:', 'Team Number', value =>
-                    props.updateDict('teamNumber', value),
-                )}
+                    {renderInput('Enter Team Number:', 'Team Number', value =>
+                        props.updateDict('teamNumber', value),
+                    )}
 
-                {renderInput('Enter Match Number:', 'Match Number', value =>
-                    props.updateDict('matchNumber', value),
-                )}
+                    {renderInput('Enter Match Number:', 'Match Number', value =>
+                        props.updateDict('matchNumber', value),
+                    )}
 
-                {renderInput(
-                    'Enter Driver Station (1-6):',
-                    'Driver Station',
-                    value => props.updateDict('driveStation', value),
-                )}
+                    {renderInput(
+                        'Enter Driver Station (1-6):',
+                        'Driver Station',
+                        value => props.updateDict('driveStation', value),
+                    )}
 
-                <TouchableOpacity onPress={() => props.setMatchCreated(true)}>
-                    <View style={styles.createMatchButton}>
-                        <Text style={styles.buttonText}>Create Match</Text>
-                    </View>
-                </TouchableOpacity>
-            </ScrollView>
-        </View>
+                    <TouchableOpacity
+                        onPress={handleStartScouting}>
+                        <View style={styles.createMatchButton}>
+                            <Text style={styles.buttonText}>Create Match</Text>
+                        </View>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
+            <AppLoader isLoading={isLoading} />
+        </>
     );
 };
 

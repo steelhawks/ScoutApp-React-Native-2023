@@ -118,9 +118,6 @@ const App = () => {
                         drawerLabelStyle: {color: 'white'},
                         activeTintColor: 'white',
                     }}>
-                    {/* Remove login screen after successful authentication */}
-                    {/* DEPRECATED LOGIN SCREEN */}
-                    {/* <Drawer.Screen name="Home" component={HomePageNavigate} /> */}
                     <Drawer.Screen
                         screenOptions={{
                             activeBackgroundColor: 'white',

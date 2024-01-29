@@ -23,11 +23,17 @@ import Query from '../components/scouting_components/Query';
 import RadioGroup from '../components/inputs/RadioGroup';
 import CounterInput from 'react-native-counter-input';
 import { UserContext } from '..';
+import AppLoader from '../AppLoader';
+import { useFirstInstallTime } from 'react-native-device-info';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
-const ScoutingPage = ({props, logged_in, setLogin, user}) => {
+const Drawer = createDrawerNavigator();
+
+const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
     const [matchCreated, setMatchCreated] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
     const [eventName, setEventName] = useState('TEST_COMP');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         // Update the formatted date every second
@@ -79,11 +85,17 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     });
 
     const updateDict = (key, value) => {
+        setIsLoading(true);
         setDict({...dict, [key]: value});
     };
 
     const endMatch = () => {
-        saveToJson(dict);
+        setIsLoading(true);
+        
+        setTimeout(async () => {
+            saveToJson(dict);
+            setIsLoading(false);
+        }, 1);
     };
 
     const saveToJson = async data => {
@@ -98,7 +110,10 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
             console.log('File saved!');
             Alert.alert('Match ' + dict.matchNumber + ' Saved!', '', [
                 {text: 'New Match', onPress: () => setMatchCreated(false)},
-                {text: 'View Match', onPress: () => setMatchCreated(false)},
+                {text: 'View Match', onPress: () => {
+                    setMatchCreated(false);
+                    navigation.navigate('Data');
+                }},
                 {text: 'OK'},
             ]);
         } catch (error) {
@@ -201,6 +216,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
     return (
         <SafeAreaView style={styles.MainView}>
             {matchCreated ? (
+                <>
                 <View>
                     <ScrollView>
                         <Text
@@ -235,7 +251,6 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                                         fontWeight: 'bold',
                                     }}>
                                     Back
-                                    Back
                                 </Text>
                             </View>
                         </TouchableOpacity>
@@ -267,6 +282,8 @@ const ScoutingPage = ({props, logged_in, setLogin, user}) => {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
+                <AppLoader isLoading={isLoading} />
+                </>
             ) : (
                 <NewMatch
                     setMatchCreated={setMatchCreated}

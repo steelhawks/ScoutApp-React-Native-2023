@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import fs from 'react-native-fs';
-import { Alert } from 'react-native';
+import { ActionSheetIOS, Alert } from 'react-native';
 import loginCredentialsFile from './login.json';
 
 export const returnUserCredentials = async () => {
@@ -16,12 +16,20 @@ export const returnUserCredentials = async () => {
 
 const auth = () => {
     const [userData, setUserData] = useState(null);
+    const [loginPending, setLoginPending] = useState(false);
 
     useEffect(() => {
         // Access the JSON content directly
         const parsedData = loginCredentialsFile;
         setUserData(parsedData);
     }, []);
+
+    return {
+        userData,
+        setUserData,
+        loginPending,
+        setLoginPending,
+    };
 }
 
 export default auth;

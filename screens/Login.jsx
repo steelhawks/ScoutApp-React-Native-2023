@@ -10,42 +10,56 @@ import {
     // Animated,
 } from 'react-native';
 import {returnUserCredentials} from '../authentication/auth';
+import AppLoader from '../AppLoader';
 
 const Login = ({setLogin, setUser, logged_in}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
-        try {
-            const userCredentials = await returnUserCredentials();
-            const user = userCredentials.find(
-                userData =>
-                    userData.username === username &&
-                    userData.password === password,
-            );
-            setUser(user);
+        setIsLoading(true);
 
-            // keep commented during development
-            // if (username === '' || password === '') {
-            //     Alert.alert('Login Failed', 'Please enter username and password.');
-            //     return;
-            // }
-
-            if (user) {
-                setLogin(true);
-                // Alert.alert('Welcome ' + user.name + '!', 'OSIS: ' + user.osis);
-            } else {
-                Alert.alert(
-                    'Login Failed',
-                    'Please enter a valid username and password.',
+        // testing for loading screen
+        setTimeout(async () => {
+            try {
+                const userCredentials = await returnUserCredentials();
+                const user = userCredentials.find(
+                    userData =>
+                        userData.username === username &&
+                        userData.password === password,
                 );
+                setUser(user);
+    
+                // keep commented during development
+                // if (username === '' || password === '') {
+                //     setIsLoading(false);
+                //     Alert.alert('Login Failed', 'Please enter username and password.');
+                //     return;
+                // }
+    
+                if (user) {
+                    setIsLoading(false);
+                    setLogin(true);
+                    // Alert.alert('Welcome ' + user.name + '!', 'OSIS: ' + user.osis);
+                } else {
+                    setIsLoading(false);
+                    Alert.alert(
+                        'Login Failed',
+                        'Please enter a valid username and password.',
+                    );
+                }
+            } catch (error) {
+                setIsLoading(false);
+                console.error('Error getting user credentials:', error);
             }
-        } catch (error) {
-            console.error('Error getting user credentials:', error);
-        }
+
+            setIsLoading(false);
+        }, 1);
     };
 
     return (
+        <>
         <View style={styles.background}>
             {logged_in ? (
                 <View>
@@ -98,7 +112,7 @@ const Login = ({setLogin, setUser, logged_in}) => {
                         secureTextEntry
                     />
 
-                    <TouchableOpacity onPress={handleLogin}>
+                    <TouchableOpacity onPress={() => { setIsLoading(true); handleLogin(); }}>
                         <View
                             style={{
                                 backgroundColor: 'lightblue',
@@ -131,6 +145,8 @@ const Login = ({setLogin, setUser, logged_in}) => {
                 </React.Fragment>
             )}
         </View>
+        <AppLoader isLoading={isLoading} />
+        </>
     );
 };
 

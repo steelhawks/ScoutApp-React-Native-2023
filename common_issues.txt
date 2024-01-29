@@ -1,0 +1,6 @@
+ISSUE:
+Mismatch between JavaScript code version and Reanimated Babel plugin version
+
+FIX:
+rm -rf node_modules && npm cache clean --force && npm install && watchman watch-del-all && rm -rf $TMPDIR/haste-map-* && rm -rf $TMPDIR/metro-cache
+npx react-native start --reset-cache
