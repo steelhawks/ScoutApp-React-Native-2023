@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     ScrollView,
     Text,
@@ -6,17 +6,17 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    Dimensions,
 } from 'react-native';
-import CounterInput from 'react-native-counter-input';
 import AnimationLoader from '../AnimationLoader';
 
-const NewMatch = props => {
+const NewMatch = (props) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleStartScouting = async () => {
         setIsLoading(true);
 
-        setTimeout(async () => { // FOR SOME WEIRD REASON YOU MUST HAVE THIS FOR THE LOADING SCREEN TO EVEN SHOW?????
+        setTimeout(async () => {
             props.setMatchCreated(true);
             setIsLoading(false);
         }, 1);
@@ -24,28 +24,31 @@ const NewMatch = props => {
 
     return (
         <>
-            <View style={styles.background}>
-                <ScrollView>
+            <View style={styles.container}>
+                <ScrollView contentContainerStyle={styles.scrollView}>
                     <Text style={styles.title}>
                         Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}
                     </Text>
 
-                    {renderInput('Enter Team Number:', 'Team Number', value =>
-                        props.updateDict('teamNumber', value),
+                    {renderInput(
+                        'Enter Team Number:',
+                        'Team Number',
+                        (value) => props.updateDict('teamNumber', value)
                     )}
 
-                    {renderInput('Enter Match Number:', 'Match Number', value =>
-                        props.updateDict('matchNumber', value),
+                    {renderInput(
+                        'Enter Match Number:',
+                        'Match Number',
+                        (value) => props.updateDict('matchNumber', value)
                     )}
 
                     {renderInput(
                         'Enter Driver Station (1-6):',
                         'Driver Station',
-                        value => props.updateDict('driveStation', value),
+                        (value) => props.updateDict('driveStation', value)
                     )}
 
-                    <TouchableOpacity
-                        onPress={handleStartScouting}>
+                    <TouchableOpacity onPress={handleStartScouting}>
                         <View style={styles.createMatchButton}>
                             <Text style={styles.buttonText}>Create Match</Text>
                         </View>
@@ -65,32 +68,33 @@ const renderInput = (label, placeholder, onChange) => (
             placeholderTextColor={'white'}
             placeholder={placeholder}
             onChangeText={onChange}
-            alignSelf={'center'}
         />
     </>
 );
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-    background: {
+    container: {
         flex: 1,
         backgroundColor: '#282c34',
-        // opacity: 0.3,
-        alignItems: 'center',
         padding: 20,
     },
+    scrollView: {
+        flexGrow: 1,
+        alignItems: 'center',
+    },    
     title: {
-        fontSize: 30,
+        fontSize: width < 600 ? 20 : 30,
         fontWeight: 'bold',
-        alignSelf: 'center',
         marginBottom: 20,
         color: 'white',
-        alignSelf: 'center',
+        textAlign: 'center',
     },
     inputLabel: {
-        fontSize: 20,
+        fontSize: width < 600 ? 16 : 20,
         fontWeight: 'bold',
         marginBottom: 10,
-        marginLeft: 20,
         color: 'white',
     },
     input: {
@@ -99,8 +103,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         marginBottom: 20,
-        marginLeft: 20,
-        width: '80%',
+        width: '100%',
         color: 'white',
     },
     createMatchButton: {
@@ -108,8 +111,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         marginBottom: 20,
-        marginLeft: '40%',
-        width: '20%',
+        width: width < 600 ? '40%' : '20%',
     },
     buttonText: {
         color: 'black',
