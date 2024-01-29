@@ -7,6 +7,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     Platform,
+    Image,
 } from 'react-native';
 import { returnUserCredentials } from '../authentication/auth';
 import AnimationLoader from '../AnimationLoader';
@@ -60,8 +61,17 @@ const Login = ({ setLogin, setUser, logged_in }) => {
                         </View>
                     ) : (
                         <React.Fragment>
+                            <View style={styles.container}>
+                                <View style={styles.imageContainer}>
+                                    <Image
+                                        source={require('../assets/steelhawks.png')}
+                                        style={styles.image}
+                                    />
+                                </View>
+                            </View>
+
                             <Text style={styles.title}>
-                                Welcome to Scout App 2024
+                                Hello
                             </Text>
 
                             <TextInput
@@ -101,10 +111,19 @@ const Login = ({ setLogin, setUser, logged_in }) => {
 };
 
 const styles = StyleSheet.create({
+    imageContainer: {
+        alignItems: 'center',
+    },
+    image: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'black',
+        paddingBottom: 75,
     },
     background: {
         flex: 1,

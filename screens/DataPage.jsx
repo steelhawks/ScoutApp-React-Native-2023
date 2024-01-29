@@ -1,7 +1,9 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import fs from 'react-native-fs';
 import {ScrollView} from 'react-native-gesture-handler';
+import AnimationLoader from '../AnimationLoader';
+import { launchImageLibrary } from 'react-native-image-picker'
 
 // TODO
 // Create a searching feature >> by name, date, match, team, etc
@@ -15,6 +17,8 @@ const DataPage = () => {
     const docDir = fs.ExternalDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] = useState(false);
 
     const [dict, setDict] = useState({
         scouterName: '',
@@ -80,88 +84,149 @@ const DataPage = () => {
         }
     };
 
-    return (
-        <View style={styles.container}>
-            <ScrollView>
-                <Text style={styles.welcomeText}>Previous Matches</Text>
-                <View style={styles.scrollContainer}>
-                    {jsonFiles.map(file => (
-                        <TouchableOpacity
-                            key={file}
-                            onPress={() => handleJsonSelection(file)}>
-                            <Text style={styles.infoText}>{file}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
+    const syncToServer = async () => {
+        setIsLoading(true);
+    
+        try {
+            const serverEndpoint = 'http://100.99.66.242:8080/upload';
+    
+            // Move all JSON files to a specific directory before syncing
+            const sourceDir = fs.ExternalDirectoryPath;
+            const destinationDir = `${fs.ExternalDirectoryPath}/backup`; // Change this to your desired destination directory
+    
+            // Ensure the destination directory exists
+            await fs.mkdir(destinationDir);
+    
+            // Fetch and set the list of JSON files in the source directory
+            const files = await fs.readdir(sourceDir);
+    
+            // Filter only JSON files
+            const jsonFiles = files.filter(file => file.endsWith('.json'));
+    
+            // Move each JSON file to the destination directory
+            await Promise.all(jsonFiles.map(async file => {
+                const sourcePath = `${sourceDir}/${file}`;
+                const destinationPath = `${destinationDir}/${file}`;
+    
+                await fs.moveFile(sourcePath, destinationPath);
+            }));
+    
+            // Sync the moved files to the server
+            const response = await fetch(serverEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dict),
+            });
+    
+            if (response.ok) {
+                console.log('Data successfully synced to server.');
+                setSuccessfullySyncedWithServer(true);
+            }
+        } catch (error) {
+            Alert.alert('Error syncing to server. Is the server online?', '', [
+                { text: 'Close' },
+            ]);
+            console.error('Error syncing to server:', error);
+        } finally {
+            setIsLoading(false);
+            setSuccessfullySyncedWithServer(false);
+        }
+    };
 
-                {jsonSelected ? (
-                    <Text style={styles.infoText}>
-                        Event Name: {dict.eventName}
-                        {'\n'}
-                        Scouter Name: {dict.scouterName}
-                        {'\n'}
-                        Team Number: {dict.teamNumber}
-                        {'\n'}
-                        Match Number: {dict.matchNumber}
-                        {'\n'}
-                        Drive Station: {dict.driveStation}
-                        {'\n'}
-                        Alliance: {dict.alliance}
-                        {'\n'}
-                        Preloaded: {dict.preloaded}
-                        {'\n'}
-                        Robot Left: {dict.robotLeft}
-                        {'\n'}
-                        Auton Speaker Notes Scored:{' '}
-                        {dict.autonSpeakerNotesScored}
-                        {'\n'}
-                        Auton Amp Notes Scored: {dict.autonAmpNotesScored}
-                        {'\n'}
-                        Auton Missed: {dict.autonMissed}
-                        {'\n'}
-                        Auton Notes Received: {dict.autonNotesReceived}
-                        {'\n'}
-                        Auton Issues: {dict.autonIssues}
-                        {'\n'}
-                        Telop Speaker Notes Scored:{' '}
-                        {dict.telopSpeakerNotesScored}
-                        {'\n'}
-                        Telop Amp Notes Scored: {dict.telopAmpNotesScored}
-                        {'\n'}
-                        Telop Amplified Speaker Notes:{' '}
-                        {dict.telopAmplifiedSpeakerNotes}
-                        {'\n'}
-                        Telop Speaker Notes Missed:{' '}
-                        {dict.telopSpeakerNotesMissed}
-                        {'\n'}
-                        Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
-                        {'\n'}
-                        Telop Notes Received From Human Player:{' '}
-                        {dict.telopNotesReceivedFromHumanPlayer}
-                        {'\n'}
-                        Telop Notes Received From Ground:{' '}
-                        {dict.telopNotesReceivedFromGround}
-                        {'\n'}
-                        End Game: {dict.endGame}
-                        {'\n'}
-                        Trap: {dict.trap}
-                        {'\n'}
-                        Penalties: {dict.penalties}
-                        {'\n'}
-                        Telop Issues: {dict.telopIssues}
-                        {'\n'}
-                        Did Team Play Defense: {dict.didTeamPlayDefense}
-                        {'\n'}
-                        What Type of Robot: {dict.robotType}
-                        {'\n'}
-                    </Text>
-                ) : (
-                    <Text style={styles.welcomeText}>
-                        Select a JSON file to view the data
-                    </Text>
-                )}
-            </ScrollView>
-        </View>
+    return (
+        <>
+            <View style={styles.container}>
+                <ScrollView>
+                    <Text style={styles.welcomeText}>Previous Matches</Text>
+                    <TouchableOpacity
+                        onPress={syncToServer}>
+                        <View style={styles.button}>
+                            <Text style={styles.buttonText}>Sync to Server</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.scrollContainer}>
+                        {jsonFiles.map(file => (
+                            <TouchableOpacity
+                                key={file}
+                                onPress={() => handleJsonSelection(file)}>
+                                <Text style={styles.infoText}>{file}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+
+                    {jsonSelected ? (
+                        <Text style={styles.infoText}>
+                            Event Name: {dict.eventName}
+                            {'\n'}
+                            Scouter Name: {dict.scouterName}
+                            {'\n'}
+                            Team Number: {dict.teamNumber}
+                            {'\n'}
+                            Match Number: {dict.matchNumber}
+                            {'\n'}
+                            Drive Station: {dict.driveStation}
+                            {'\n'}
+                            Alliance: {dict.alliance}
+                            {'\n'}
+                            Preloaded: {dict.preloaded}
+                            {'\n'}
+                            Robot Left: {dict.robotLeft}
+                            {'\n'}
+                            Auton Speaker Notes Scored:{' '}
+                            {dict.autonSpeakerNotesScored}
+                            {'\n'}
+                            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
+                            {'\n'}
+                            Auton Missed: {dict.autonMissed}
+                            {'\n'}
+                            Auton Notes Received: {dict.autonNotesReceived}
+                            {'\n'}
+                            Auton Issues: {dict.autonIssues}
+                            {'\n'}
+                            Telop Speaker Notes Scored:{' '}
+                            {dict.telopSpeakerNotesScored}
+                            {'\n'}
+                            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
+                            {'\n'}
+                            Telop Amplified Speaker Notes:{' '}
+                            {dict.telopAmplifiedSpeakerNotes}
+                            {'\n'}
+                            Telop Speaker Notes Missed:{' '}
+                            {dict.telopSpeakerNotesMissed}
+                            {'\n'}
+                            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
+                            {'\n'}
+                            Telop Notes Received From Human Player:{' '}
+                            {dict.telopNotesReceivedFromHumanPlayer}
+                            {'\n'}
+                            Telop Notes Received From Ground:{' '}
+                            {dict.telopNotesReceivedFromGround}
+                            {'\n'}
+                            End Game: {dict.endGame}
+                            {'\n'}
+                            Trap: {dict.trap}
+                            {'\n'}
+                            Penalties: {dict.penalties}
+                            {'\n'}
+                            Telop Issues: {dict.telopIssues}
+                            {'\n'}
+                            Did Team Play Defense: {dict.didTeamPlayDefense}
+                            {'\n'}
+                            What Type of Robot: {dict.robotType}
+                            {'\n'}
+                        </Text>
+                    ) : (
+                        <Text style={styles.welcomeText}>
+                            Select a JSON file to view the data
+                        </Text>
+                    )}
+                </ScrollView>
+            </View>
+            <AnimationLoader isLoading={isLoading} />
+            { successfullySyncedWithServer ? <AnimationLoader animationKey='SUCCESS_01' loop={false} /> : null }
+        </>
     );
 };
 
@@ -199,6 +264,18 @@ const styles = StyleSheet.create({
         color: 'white',
         marginTop: 20,
         textAlign: 'center',
+    },
+    button: {
+        backgroundColor: 'lightblue',
+        padding: 15,
+        borderRadius: 5,
+        marginHorizontal: '10%',
+    },
+    buttonText: {
+        color: 'black',
+        fontSize: 20,
+        alignSelf: 'center',
+        fontWeight: 'bold',
     },
 });
 

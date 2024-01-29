@@ -17,6 +17,7 @@ import Query from '../components/scouting_components/Query';
 import RadioGroup from '../components/inputs/RadioGroup';
 import CounterInput from 'react-native-counter-input';
 import Counter from '../components/inputs/Counter';
+import fs from 'react-native-fs';
 
 const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
     const [matchCreated, setMatchCreated] = useState(false);
