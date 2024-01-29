@@ -98,7 +98,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
             saveToJson(dict);
             setIsLoading(false);
             setIsDone(true);
-        }, 1);
+        }, 500);
     };
 
     const saveToJson = async data => {
