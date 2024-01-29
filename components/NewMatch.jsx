@@ -8,7 +8,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import CounterInput from 'react-native-counter-input';
-import AppLoader from '../AppLoader';
+import AnimationLoader from '../AnimationLoader';
 
 const NewMatch = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ const NewMatch = props => {
                     </TouchableOpacity>
                 </ScrollView>
             </View>
-            <AppLoader isLoading={isLoading} />
+            <AnimationLoader isLoading={isLoading} />
         </>
     );
 };

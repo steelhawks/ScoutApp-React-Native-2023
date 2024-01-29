@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
+import AnimationLoader from '../AnimationLoader';
 
 const ManageAccount = ({setLogin, setUser, user}) => {
+    const [isLoading, setIsLoading] = useState(false);
     const logOut = () => {
         setLogin(false);
         setUser(null);
+        setIsLoading(false);
     };
 
     return (
+        <>
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <TouchableOpacity onPress={() => logOut()}>
+                <TouchableOpacity onPress={() => { setIsLoading(true); logOut(); }}>
                     <View style={styles.logoutButton}>
                         <Text style={styles.buttonText}>Log Out</Text>
                     </View>
@@ -29,6 +34,8 @@ const ManageAccount = ({setLogin, setUser, user}) => {
                 </Text>
             </ScrollView>
         </View>
+        <AnimationLoader />
+        </>
     );
 };
 

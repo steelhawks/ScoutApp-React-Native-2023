@@ -10,7 +10,7 @@ import {
     // Animated,
 } from 'react-native';
 import {returnUserCredentials} from '../authentication/auth';
-import AppLoader from '../AppLoader';
+import AnimationLoader from '../AnimationLoader';
 
 const Login = ({setLogin, setUser, logged_in}) => {
     const [username, setUsername] = useState('');
@@ -145,7 +145,7 @@ const Login = ({setLogin, setUser, logged_in}) => {
                 </React.Fragment>
             )}
         </View>
-        <AppLoader isLoading={isLoading} />
+        <AnimationLoader isLoading={isLoading} />
         </>
     );
 };

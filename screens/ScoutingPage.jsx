@@ -23,7 +23,7 @@ import Query from '../components/scouting_components/Query';
 import RadioGroup from '../components/inputs/RadioGroup';
 import CounterInput from 'react-native-counter-input';
 import { UserContext } from '..';
-import AppLoader from '../AppLoader';
+import AnimationLoader from '../AnimationLoader';
 import { useFirstInstallTime } from 'react-native-device-info';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
@@ -34,6 +34,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
     const [formattedDate, setFormattedDate] = useState('');
     const [eventName, setEventName] = useState('TEST_COMP');
     const [isLoading, setIsLoading] = useState(false);
+    const [isDone, setIsDone] = useState(false);
 
     useEffect(() => {
         // Update the formatted date every second
@@ -91,10 +92,12 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
 
     const endMatch = () => {
         setIsLoading(true);
+        setIsDone(true);
         
         setTimeout(async () => {
             saveToJson(dict);
             setIsLoading(false);
+            setIsDone(true);
         }, 1);
     };
 
@@ -108,6 +111,7 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
             await fs.writeFile(filePath, jsonData, 'utf8');
 
             console.log('File saved!');
+            
             Alert.alert('Match ' + dict.matchNumber + ' Saved!', '', [
                 {text: 'New Match', onPress: () => setMatchCreated(false)},
                 {text: 'View Match', onPress: () => {
@@ -282,7 +286,8 @@ const ScoutingPage = ({props, logged_in, setLogin, user, navigation}) => {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-                <AppLoader isLoading={isLoading} />
+                {/* <AnimationLoader isLoading={isLoading} /> */}
+                <AnimationLoader isLoading={isDone} loop={false} animationKey={"SUCCESS_01"} onAnimationComplete={() => setIsDone(false)} />
                 </>
             ) : (
                 <NewMatch

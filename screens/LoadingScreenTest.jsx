@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import AppLoader from '../AppLoader';
+import AnimationLoader from '../AnimationLoader';
 
 const ExtraInfoPage = () => {
     return (
@@ -8,7 +8,7 @@ const ExtraInfoPage = () => {
             <View>
                 <Text>ExtraInfoPage</Text>
             </View>
-            <AppLoader />
+            <AnimationLoader isLoading={isLoading} />
         </>
     );
 };
