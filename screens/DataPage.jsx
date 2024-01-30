@@ -89,7 +89,7 @@ const DataPage = () => {
         setIsLoading(true);
 
         try {
-            const serverEndpoint = 'http://100.99.66.242:8080/upload';
+            const serverEndpoint = 'http://192.168.1.183:8080/upload';
 
             // Move all JSON files to a specific directory before syncing
             const sourceDir = fs.ExternalDirectoryPath;
@@ -114,7 +114,6 @@ const DataPage = () => {
                 }),
             );
 
-            // Sync the moved files to the server
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
                 headers: {
@@ -123,12 +122,14 @@ const DataPage = () => {
                 body: JSON.stringify(dict),
             });
 
+            console.log('Server Response:', response);
+
             if (response.ok) {
                 console.log('Data successfully synced to server.');
                 setSuccessfullySyncedWithServer(true);
             }
         } catch (error) {
-            Alert.alert('Error syncing to server. Is the server online?', '', [
+            Alert.alert('Error syncing to server: ' + error, '', [
                 {text: 'Close'},
             ]);
             console.error('Error syncing to server:', error);

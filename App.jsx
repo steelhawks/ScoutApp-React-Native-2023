@@ -27,6 +27,10 @@ const App = () => {
     //     }
     //   }, []);
 
+    const ConnectToNetwork = async () => {
+        
+    } 
+
     const ScoutingPageNavigate = props => {
         return (
             <ScoutingPage
