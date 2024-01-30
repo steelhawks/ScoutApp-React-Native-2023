@@ -134,6 +134,7 @@ const DataPage = () => {
             setSuccessfullySyncedWithServer(false);
         }
     };
+    
 
     return (
         <>

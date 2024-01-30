@@ -6,9 +6,9 @@ import {
     Alert,
     ScrollView,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Form from '../components/scouting_components/Form';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import NumberInput from '../components/inputs/NumberInput';
 import NewMatch from '../components/NewMatch';
 import AnimationLoader from '../AnimationLoader';
@@ -18,8 +18,9 @@ import RadioGroup from '../components/inputs/RadioGroup';
 import CounterInput from 'react-native-counter-input';
 import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
+import {UserContext} from '..';
 
-const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
+const ScoutingPage = ({logged_in, setLogin, user, navigation}) => {
     const [matchCreated, setMatchCreated] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
     const [eventName, setEventName] = useState('TEST_COMP');
@@ -47,12 +48,37 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
     }, []); // Empty dependency array to run the effect only once on mount
 
     const [dict, setDict] = useState({
-        // ... (unchanged)
+        eventName: eventName,
+        scouterName: user.name,
+        teamNumber: 0,
+        matchNumber: 0,
+        driveStation: 0,
+        alliance: 'EMPTY', // red or blue
+        preloaded: null, // true or false
+        robotLeft: null, // true or false
+        autonSpeakerNotesScored: 0,
+        autonAmpNotesScored: 0,
+        autonMissed: 0,
+        autonNotesReceived: 0,
+        autonIssues: 'EMPTY', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        telopSpeakerNotesScored: 0,
+        telopAmpNotesScored: 0,
+        telopAmplifiedSpeakerNotes: 0,
+        telopSpeakerNotesMissed: 0,
+        telopAmpNotesMissed: 0,
+        telopNotesReceivedFromHumanPlayer: 0,
+        telopNotesReceivedFromGround: 0,
+        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        trap: 0,
+        penalties: 'EMPTY', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        telopIssues: 'EMPTY', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
+        didTeamPlayDefense: null, // YES, NO, Default: null
+        robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
     });
 
     const updateDict = (key, value) => {
         setIsLoading(true);
-        setDict({ ...dict, [key]: value });
+        setDict({...dict, [key]: value});
     };
 
     const endMatch = () => {
@@ -69,20 +95,26 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
     const saveToJson = async data => {
         try {
             const docDir = fs.ExternalDirectoryPath;
-            const filePath = `${docDir}/scoutdata-${user.name.replace(/\s/g, '')}-${dict.matchNumber}.json`;
+            const filePath = `${docDir}/scoutdata-${user.name.replace(
+                /\s/g,
+                '',
+            )}-${dict.matchNumber}.json`;
 
             const jsonData = JSON.stringify(data, null, 4);
 
             await fs.writeFile(filePath, jsonData, 'utf8');
 
             console.log('File saved!');
-            
+
             Alert.alert('Match ' + dict.matchNumber + ' Saved!', '', [
                 {text: 'New Match', onPress: () => setMatchCreated(false)},
-                {text: 'View Match', onPress: () => {
-                    setMatchCreated(false);
-                    navigation.navigate('Data');
-                }},
+                {
+                    text: 'View Match',
+                    onPress: () => {
+                        setMatchCreated(false);
+                        navigation.navigate('Data');
+                    },
+                },
                 {text: 'OK'},
             ]);
         } catch (error) {
@@ -93,51 +125,86 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
     const prematch_queries = [
         <Query
             title="Alliance Color"
-            item={<RadioGroup buttons={['Red', 'Blue']} id="alliance"/>}
+            item={<RadioGroup buttons={['Red', 'Blue']} id="alliance" />}
         />,
         <Query
             title="Preloaded?"
-            item={<RadioGroup buttons={['Yes', 'No']} id="preloaded"/>}
+            item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
         />,
     ];
 
     const auton_queries = [
         <Query
             title="Did the robot leave?"
-            item={<RadioGroup buttons={['Yes', 'No']} id="robotLeft"/>}
+            item={<RadioGroup buttons={['Yes', 'No']} id="robotLeft" />}
         />,
-        <Query title="Speaker Notes Scored" item={<Counter id="autonSpeakerNotesScored"/>} />,
-        <Query title="Amp Notes Scored" item={<Counter id="autonAmpNotesScored"/>} />,
-        <Query title="Missed" item={<Counter id="autonMissed"/>} />,
-        <Query title="Notes Received" item={<Counter id="autonNotesReceived"/>} />,
+        <Query
+            title="Speaker Notes Scored"
+            item={<Counter id="autonSpeakerNotesScored" />}
+        />,
+        <Query
+            title="Amp Notes Scored"
+            item={<Counter id="autonAmpNotesScored" />}
+        />,
+        <Query title="Missed" item={<Counter id="autonMissed" />} />,
+        <Query
+            title="Notes Received"
+            item={<Counter id="autonNotesReceived" />}
+        />,
         <Query
             title="Auton Issues"
-            item={<RadioGroup buttons={['Yes', 'No']} id="autonIssues"/>}
+            item={<RadioGroup buttons={['Yes', 'No']} id="autonIssues" />}
         />,
     ];
 
     const tele_scoring_queries = [
-        <Query title="Speaker Notes Scored" item={<Counter id="telopSpeakerNotesScored"/>} />,
-        <Query title="Amp Notes Scored" item={<Counter id="telopAmpNotesScored"/>} />,
-        <Query title="Amplified Speaker Notes Scored" item={<Counter id="telopAmplifiedSpeakerNotes"/>} />,
+        <Query
+            title="Speaker Notes Scored"
+            item={<Counter id="telopSpeakerNotesScored" />}
+        />,
+        <Query
+            title="Amp Notes Scored"
+            item={<Counter id="telopAmpNotesScored" />}
+        />,
+        <Query
+            title="Amplified Speaker Notes Scored"
+            item={<Counter id="telopAmplifiedSpeakerNotes" />}
+        />,
     ];
 
     const tele_missed_queries = [
-        <Query title="Speaker Notes Missed" item={<Counter id="telopSpeakerNotesMissed"/>} />,
-        <Query title="Amp Notes Missed" item={<Counter id="telopAmpNotesMissed"/>} />,
+        <Query
+            title="Speaker Notes Missed"
+            item={<Counter id="telopSpeakerNotesMissed" />}
+        />,
+        <Query
+            title="Amp Notes Missed"
+            item={<Counter id="telopAmpNotesMissed" />}
+        />,
     ];
 
     const tele_received_queries = [
-        <Query title="Note Received from Human Player" item={<Counter id="telopNotesReceivedFromHumanPlayer"/>} />,
-        <Query title="Note Received from Ground" item={<Counter id="telopNotesReceivedFromGround"/>} />,
+        <Query
+            title="Note Received from Human Player"
+            item={<Counter id="telopNotesReceivedFromHumanPlayer" />}
+        />,
+        <Query
+            title="Note Received from Ground"
+            item={<Counter id="telopNotesReceivedFromGround" />}
+        />,
     ];
 
     const endgame_queries = [
         <Query
             title="Position"
-            item={<RadioGroup buttons={['Parked', 'Onstage', 'Spotlight']} id="endGame"/>}
+            item={
+                <RadioGroup
+                    buttons={['Parked', 'Onstage', 'Spotlight']}
+                    id="endGame"
+                />
+            }
         />,
-        <Query title="Trap" item={<Counter id="trap"/>} />,
+        <Query title="Trap" item={<Counter id="trap" />} />,
         <Query
             title="Penalties"
             item={
@@ -161,7 +228,12 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
                 />
             }
         />,
-        <Query title="Defense" item={<RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />} />,
+        <Query
+            title="Defense"
+            item={
+                <RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />
+            }
+        />,
         <Query
             title="Robot Type"
             item={
@@ -187,13 +259,18 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
             {matchCreated ? (
                 <View style={styles.container}>
                     <ScrollView>
-                        <TouchableOpacity onPress={() => setMatchCreated(false)}>
+                        <TouchableOpacity
+                            onPress={() => setMatchCreated(false)}>
                             <View style={styles.backButton}>
                                 <Text style={styles.buttonText}>Back</Text>
                             </View>
                         </TouchableOpacity>
-
-                        <Form sections={form_sections} updateDict={updateDict} />
+                        <UserContext.Provider value={updateDict}>
+                            <Form
+                                sections={form_sections}
+                                updateDict={updateDict}
+                            />
+                        </UserContext.Provider>
 
                         <TouchableOpacity onPress={() => endMatch()}>
                             <View style={styles.endMatchButton}>
@@ -209,7 +286,12 @@ const ScoutingPage = ({ logged_in, setLogin, user, navigation }) => {
                     updateDict={updateDict}
                 />
             )}
-            <AnimationLoader isLoading={isDone} loop={false} animationKey={'SUCCESS_01'} onAnimationComplete={() => setIsDone(false)} />
+            <AnimationLoader
+                isLoading={isDone}
+                loop={false}
+                animationKey={'SUCCESS_01'}
+                onAnimationComplete={() => setIsDone(false)}
+            />
         </SafeAreaView>
     );
 };
@@ -250,4 +332,3 @@ const styles = StyleSheet.create({
 });
 
 export default ScoutingPage;
-
