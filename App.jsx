@@ -3,7 +3,6 @@ import Login from './screens/Login';
 import HomePage from './screens/HomePage';
 import ScoutingPage from './screens/ScoutingPage';
 import DataPage from './screens/DataPage';
-import ExtraInfoPage from './screens/ExtraInfoPage';
 import ManageAccount from './screens/ManageAccount';
 import Tutorial from './screens/Tutorial';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -103,10 +102,6 @@ const App = () => {
                         component={ScoutingPageNavigate}
                     />
                     <Drawer.Screen name="Data" component={DataPage} />
-                    <Drawer.Screen
-                        name="Extra Info"
-                        component={ExtraInfoPage}
-                    />
                     <Drawer.Screen
                         name={"Help"}
                         component={HelpPageNavigate}

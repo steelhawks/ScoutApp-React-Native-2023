@@ -18,7 +18,6 @@ export {default as RadioGroup} from "./components/inputs/RadioGroup";
 
 //screens
 export {default as DataPage} from "./screens/DataPage";
-export {default as ExtraInfoPage} from "./screens/ExtraInfoPage";
 export {default as HomePage} from "./screens/HomePage";
 export {default as ScoutingPage} from "./screens/ScoutingPage";
 

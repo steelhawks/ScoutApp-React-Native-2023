@@ -1,18 +1,18 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import AnimationLoader from '../AnimationLoader';
+// import {StyleSheet, Text, View} from 'react-native';
+// import React from 'react';
+// import AnimationLoader from '../AnimationLoader';
 
-const ExtraInfoPage = () => {
-    return (
-        <>
-            <View>
-                <Text>ExtraInfoPage</Text>
-            </View>
-            <AnimationLoader isLoading={isLoading} />
-        </>
-    );
-};
+// const ExtraInfoPage = () => {
+//     return (
+//         <>
+//             <View>
+//                 <Text>ExtraInfoPage</Text>
+//             </View>
+//             <AnimationLoader isLoading={isLoading} />
+//         </>
+//     );
+// };
 
-export default ExtraInfoPage;
+// export default ExtraInfoPage;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
