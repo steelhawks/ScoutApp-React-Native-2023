@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import fs from 'react-native-fs';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
-import { launchImageLibrary } from 'react-native-image-picker'
+import {launchImageLibrary} from 'react-native-image-picker';
 
 // TODO
 // Create a searching feature >> by name, date, match, team, etc
@@ -18,7 +18,8 @@ const DataPage = () => {
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] = useState(false);
+    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] =
+        useState(false);
 
     const [dict, setDict] = useState({
         scouterName: '',
@@ -86,31 +87,33 @@ const DataPage = () => {
 
     const syncToServer = async () => {
         setIsLoading(true);
-    
+
         try {
             const serverEndpoint = 'http://100.99.66.242:8080/upload';
-    
+
             // Move all JSON files to a specific directory before syncing
             const sourceDir = fs.ExternalDirectoryPath;
             const destinationDir = `${fs.ExternalDirectoryPath}/backup`; // Change this to your desired destination directory
-    
+
             // Ensure the destination directory exists
             await fs.mkdir(destinationDir);
-    
+
             // Fetch and set the list of JSON files in the source directory
             const files = await fs.readdir(sourceDir);
-    
+
             // Filter only JSON files
             const jsonFiles = files.filter(file => file.endsWith('.json'));
-    
+
             // Move each JSON file to the destination directory
-            await Promise.all(jsonFiles.map(async file => {
-                const sourcePath = `${sourceDir}/${file}`;
-                const destinationPath = `${destinationDir}/${file}`;
-    
-                await fs.moveFile(sourcePath, destinationPath);
-            }));
-    
+            await Promise.all(
+                jsonFiles.map(async file => {
+                    const sourcePath = `${sourceDir}/${file}`;
+                    const destinationPath = `${destinationDir}/${file}`;
+
+                    await fs.moveFile(sourcePath, destinationPath);
+                }),
+            );
+
             // Sync the moved files to the server
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
@@ -119,14 +122,14 @@ const DataPage = () => {
                 },
                 body: JSON.stringify(dict),
             });
-    
+
             if (response.ok) {
                 console.log('Data successfully synced to server.');
                 setSuccessfullySyncedWithServer(true);
             }
         } catch (error) {
             Alert.alert('Error syncing to server. Is the server online?', '', [
-                { text: 'Close' },
+                {text: 'Close'},
             ]);
             console.error('Error syncing to server:', error);
         } finally {
@@ -134,17 +137,17 @@ const DataPage = () => {
             setSuccessfullySyncedWithServer(false);
         }
     };
-    
 
     return (
         <>
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.welcomeText}>Previous Matches</Text>
-                    <TouchableOpacity
-                        onPress={syncToServer}>
+                    <TouchableOpacity onPress={syncToServer}>
                         <View style={styles.button}>
-                            <Text style={styles.buttonText}>Sync to Server</Text>
+                            <Text style={styles.buttonText}>
+                                Sync to Server
+                            </Text>
                         </View>
                     </TouchableOpacity>
                     <View style={styles.scrollContainer}>
@@ -226,7 +229,9 @@ const DataPage = () => {
                 </ScrollView>
             </View>
             <AnimationLoader isLoading={isLoading} />
-            { successfullySyncedWithServer ? <AnimationLoader animationKey='SUCCESS_01' loop={false} /> : null }
+            {successfullySyncedWithServer ? (
+                <AnimationLoader animationKey="SUCCESS_01" loop={false} />
+            ) : null}
         </>
     );
 };
