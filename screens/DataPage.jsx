@@ -14,7 +14,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 // Make the names of the files not the json but the match number team number, and scouter name
 
 const DataPage = () => {
-    const docDir = fs.ExternalDirectoryPath;
+    const docDir = fs.DocumentDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +68,7 @@ const DataPage = () => {
 
     const handleJsonSelection = async selectedJson => {
         try {
-            const path = fs.ExternalDirectoryPath + '/' + selectedJson;
+            const path = fs.DocumentDirectoryPath + '/' + selectedJson;
             console.log(path);
             const content = await fs.readFile(path, 'utf8');
 
@@ -85,45 +85,33 @@ const DataPage = () => {
         }
     };
 
-    const syncToServer = async () => {
+    const handleSyncStart = async () => {
+        for (const index in jsonFiles) {
+            const json = jsonFiles[index];
+            const path = fs.DocumentDirectoryPath + '/' + json;
+            const content = await fs.readFile(path, 'utf8');
+            const jsonData = JSON.parse(content);
+    
+            await syncToServer(jsonData);
+        }
+    };
+    
+    const syncToServer = async (data) => {
         setIsLoading(true);
-
+    
         try {
             const serverEndpoint = 'http://192.168.1.183:8080/upload';
-
-            // Move all JSON files to a specific directory before syncing
-            const sourceDir = fs.ExternalDirectoryPath;
-            const destinationDir = `${fs.ExternalDirectoryPath}/backup`; // Change this to your desired destination directory
-
-            // Ensure the destination directory exists
-            await fs.mkdir(destinationDir);
-
-            // Fetch and set the list of JSON files in the source directory
-            const files = await fs.readdir(sourceDir);
-
-            // Filter only JSON files
-            const jsonFiles = files.filter(file => file.endsWith('.json'));
-
-            // Move each JSON file to the destination directory
-            await Promise.all(
-                jsonFiles.map(async file => {
-                    const sourcePath = `${sourceDir}/${file}`;
-                    const destinationPath = `${destinationDir}/${file}`;
-
-                    await fs.moveFile(sourcePath, destinationPath);
-                }),
-            );
-
+            
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dict),
+                body: JSON.stringify(data),
             });
-
+    
             console.log('Server Response:', response);
-
+    
             if (response.ok) {
                 console.log('Data successfully synced to server.');
                 setSuccessfullySyncedWithServer(true);
@@ -137,14 +125,14 @@ const DataPage = () => {
             setIsLoading(false);
             setSuccessfullySyncedWithServer(false);
         }
-    };
+    };    
 
     return (
         <>
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.welcomeText}>Previous Matches</Text>
-                    <TouchableOpacity onPress={syncToServer}>
+                    <TouchableOpacity onPress={handleSyncStart}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>
                                 Sync to Server
