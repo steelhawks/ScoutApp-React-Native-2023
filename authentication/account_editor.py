@@ -1,4 +1,3 @@
-# Created by Farhan Jamil
 # A utility to add accounts to JSON file securely
 # This does not compile to a standalone executable on a mobile device
 # This is a developer tool

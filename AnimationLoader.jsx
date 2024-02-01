@@ -11,7 +11,7 @@ const animationSources = {
     // Add more animation sources as needed
 };
 
-const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_02', onAnimationComplete }) => {
+const AnimationLoader = ({ isLoading = true, loop = true, animationKey = 'LOAD_02', onAnimationComplete }) => {
     const animationSource = animationSources[animationKey];
 
     const setOn = (duration, callback) => {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, .3)',
+        backgroundColor: 'rgba(0, 0, 0, .0)',
         zIndex: 1,
     },
 });

@@ -85,14 +85,21 @@ const DataPage = () => {
         }
     };
 
-    const handleSyncStart = async () => {
+    const handleSync = async () => {
+        const response = null;
+
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
     
-            await syncToServer(jsonData);
+            if (!(await syncToServer(jsonData))) { break; }
+        }
+
+        if (response) {
+            setIsLoading(false);
+            setSuccessfullySyncedWithServer(true);
         }
     };
     
@@ -100,7 +107,7 @@ const DataPage = () => {
         setIsLoading(true);
     
         try {
-            const serverEndpoint = 'http://192.168.1.183:8080/upload';
+            const serverEndpoint = 'http://192.468.1.183:8080/upload';
             
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
@@ -114,16 +121,19 @@ const DataPage = () => {
     
             if (response.ok) {
                 console.log('Data successfully synced to server.');
-                setSuccessfullySyncedWithServer(true);
+                // if post request is successful continue loop
+                return true;
             }
         } catch (error) {
             Alert.alert('Error syncing to server: ' + error, '', [
                 {text: 'Close'},
             ]);
             console.error('Error syncing to server:', error);
-        } finally {
+            // if post request fails end the loop
             setIsLoading(false);
-            setSuccessfullySyncedWithServer(false);
+            return false;
+        } finally {
+            // setIsLoading(false);
         }
     };    
 
@@ -132,7 +142,7 @@ const DataPage = () => {
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.welcomeText}>Previous Matches</Text>
-                    <TouchableOpacity onPress={handleSyncStart}>
+                    <TouchableOpacity onPress={handleSync}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>
                                 Sync to Server
@@ -219,7 +229,7 @@ const DataPage = () => {
             </View>
             <AnimationLoader isLoading={isLoading} />
             {successfullySyncedWithServer ? (
-                <AnimationLoader animationKey="SUCCESS_01" loop={false} />
+                <AnimationLoader animationKey="SUCCESS_01" loop={false} onAnimationComplete={() => setSuccessfullySyncedWithServer(false)} />
             ) : null}
         </>
     );
