@@ -18,8 +18,7 @@ const DataPage = () => {
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] =
-        useState(false);
+    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] = useState(false);
 
     const [dict, setDict] = useState({
         scouterName: '',
@@ -93,8 +92,10 @@ const DataPage = () => {
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
-    
-            if (!(await syncToServer(jsonData))) { break; }
+
+            if (!(await syncToServer(jsonData))) {
+                break;
+            }
         }
 
         if (response) {
@@ -102,13 +103,13 @@ const DataPage = () => {
             setSuccessfullySyncedWithServer(true);
         }
     };
-    
-    const syncToServer = async (data) => {
+
+    const syncToServer = async data => {
         setIsLoading(true);
-    
+
         try {
-            const serverEndpoint = 'http://192.468.1.183:8080/upload';
-            
+            const serverEndpoint = 'http://100.99.71.195:8080/upload';
+
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
                 headers: {
@@ -116,9 +117,9 @@ const DataPage = () => {
                 },
                 body: JSON.stringify(data),
             });
-    
+
             console.log('Server Response:', response);
-    
+
             if (response.ok) {
                 console.log('Data successfully synced to server.');
                 // if post request is successful continue loop
@@ -133,9 +134,9 @@ const DataPage = () => {
             setIsLoading(false);
             return false;
         } finally {
-            // setIsLoading(false);
+            setIsLoading(false);
         }
-    };    
+    };
 
     return (
         <>
@@ -221,7 +222,15 @@ const DataPage = () => {
                             {'\n'}
                         </Text>
                     ) : (
-                        <Text style={styles.welcomeText}>
+                        <Text
+                            style={{
+                                paddingTop: 200,
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                alignSelf: 'center',
+                                marginBottom: 30,
+                                color: 'white',
+                            }}>
                             Select a JSON file to view the data
                         </Text>
                     )}
@@ -229,7 +238,14 @@ const DataPage = () => {
             </View>
             <AnimationLoader isLoading={isLoading} />
             {successfullySyncedWithServer ? (
-                <AnimationLoader animationKey="SUCCESS_01" loop={false} onAnimationComplete={() => setSuccessfullySyncedWithServer(false)} />
+                <AnimationLoader
+                    isLoading={successfullySyncedWithServer}
+                    animationKey="SUCCESS_01"
+                    loop={false}
+                    onAnimationComplete={() =>
+                        setSuccessfullySyncedWithServer(false)
+                    }
+                />
             ) : null}
         </>
     );
@@ -258,6 +274,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     welcomeText: {
+        paddingTop: 75,
         fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',

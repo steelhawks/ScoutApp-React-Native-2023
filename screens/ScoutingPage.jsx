@@ -216,17 +216,7 @@ const ScoutingPage = ({logged_in, setLogin, user, navigation}) => {
         />,
         <Query
             title="Teleop Issues"
-            item={
-                <RadioGroup
-                    buttons={[
-                        'Not Moving',
-                        'Lost Connection',
-                        'FMS Issues',
-                        'Disabled',
-                    ]}
-                    id="telopIssues"
-                />
-            }
+            item={<RadioGroup buttons={['Yes', 'No']} id="telopIssues" />}
         />,
         <Query
             title="Defense"

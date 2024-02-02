@@ -11,7 +11,7 @@ const animationSources = {
     // Add more animation sources as needed
 };
 
-const AnimationLoader = ({ isLoading = true, loop = true, animationKey = 'LOAD_02', onAnimationComplete }) => {
+const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_02', onAnimationComplete }) => {
     const animationSource = animationSources[animationKey];
 
     const setOn = (duration, callback) => {
