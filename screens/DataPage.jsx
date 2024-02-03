@@ -108,7 +108,7 @@ const DataPage = () => {
         setIsLoading(true);
 
         try {
-            const serverEndpoint = 'http://100.99.71.195:8080/upload';
+            const serverEndpoint = 'http://192.168.1.183:8080/upload';
 
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
