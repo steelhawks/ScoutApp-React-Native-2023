@@ -12,6 +12,7 @@ import {
 import { returnUserCredentials } from '../authentication/auth';
 import AnimationLoader from '../AnimationLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from '../components/inputs/Button';
 
 const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName}) => {
     const [username, setUsername] = useState('');
@@ -127,17 +128,10 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
                                 value={Ip}
                             />
 
-                            <TouchableOpacity
-                                onPress={() => {
+                            <Button label="Login" onPress={() => {
                                     setIsLoading(true);
                                     handleLogin();
-                                }}>
-                                <View style={styles.button}>
-                                    <Text style={styles.buttonText}>
-                                        LOGIN
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                                }} />
                         </React.Fragment>
                     )}
                 </View>

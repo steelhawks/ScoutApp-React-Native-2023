@@ -3,14 +3,11 @@ import {useState} from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 
 const CustomTextInput = props => {
-
-
     const styles = StyleSheet.create({
         inputLabel: {
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: 'bold',
             marginBottom: 10,
-            marginLeft: 20,
             color: 'white',
         },
         input: {
@@ -19,10 +16,9 @@ const CustomTextInput = props => {
             borderColor: 'gray',
             borderWidth: 1,
             marginBottom: 20,
-            marginLeft: 20,
-            width: '80%',
+            width: '100%',
             color: 'white',
-        },
+        }
     });
 
     return (

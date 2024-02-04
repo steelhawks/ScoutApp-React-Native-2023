@@ -10,10 +10,8 @@ export {default as NewMatch} from "./components/NewMatch";
 
 //inputcomponents
 export {default as Checkbox} from "./components/inputs/Checkbox";
-export {default as CheckboxGroup} from "./components/inputs/CheckboxGroup";
 export {default as CustomTextInput} from "./components/inputs/CustomTextInput";
 export {default as Dropdown} from "./components/inputs/Dropdown";
-export {default as NumberInput} from "./components/inputs/NumberInput";
 export {default as RadioGroup} from "./components/inputs/RadioGroup";
 
 //screens

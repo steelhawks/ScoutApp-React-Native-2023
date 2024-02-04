@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     ScrollView,
     Text,
@@ -9,8 +9,10 @@ import {
     Dimensions,
 } from 'react-native';
 import AnimationLoader from '../AnimationLoader';
+import CustomTextInput from './inputs/CustomTextInput';
+import Button from './inputs/Button';
 
-const NewMatch = (props) => {
+const NewMatch = props => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleStartScouting = async () => {
@@ -27,32 +29,39 @@ const NewMatch = (props) => {
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <Text style={styles.title}>
-                        Hello {props.user.name}! {'\n'}OSIS: {props.user.osis} {'\n'}Event: {props.eventName}
+                        Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}{' '}
+                        {'\n'}Event: {props.eventName}
                     </Text>
 
-                    {renderInput(
-                        'Enter Team Number:',
-                        'Team Number',
-                        (value) => props.updateDict('teamNumber', value)
-                    )}
+                    <CustomTextInput
+                        label={'Enter Team Number:'}
+                        placeholder={'Team Number'}
+                        onChangeText={value =>
+                            props.updateDict('teamNumber', value)
+                        }
+                    />
+                    <CustomTextInput
+                        label={'Enter Match Number:'}
+                        placeholder={'Match Number'}
+                        onChangeText={value =>
+                            props.updateDict('matchNumber', value)
+                        }
+                    />
+                    <CustomTextInput
+                        label={'Enter Driver Station (1-6):'}
+                        placeholder={'Driver Station'}
+                        onChangeText={value =>
+                            props.updateDict('driveStation', value)
+                        }
+                    />
 
-                    {renderInput(
-                        'Enter Match Number:',
-                        'Match Number',
-                        (value) => props.updateDict('matchNumber', value)
-                    )}
+                    {console.log(props.dict['teamNumber'])}
 
-                    {renderInput(
-                        'Enter Driver Station (1-6):',
-                        'Driver Station',
-                        (value) => props.updateDict('driveStation', value)
-                    )}
-
-                    <TouchableOpacity onPress={handleStartScouting}>
-                        <View style={styles.createMatchButton}>
-                            <Text style={styles.buttonText}>Create Match</Text>
-                        </View>
-                    </TouchableOpacity>
+                    {(props.dict['teamNumber'] !== 0 &&
+                        props.dict['matchNumber'] !== 0 &&
+                        props.dict['driveStation'] !== 0) && (
+                            <Button label={'Create Match'} onPress={handleStartScouting} />
+                        )}
                 </ScrollView>
             </View>
             <AnimationLoader isLoading={isLoading} />
@@ -60,19 +69,7 @@ const NewMatch = (props) => {
     );
 };
 
-const renderInput = (label, placeholder, onChange) => (
-    <>
-        <Text style={styles.inputLabel}>{label}</Text>
-        <TextInput
-            style={styles.input}
-            placeholderTextColor={'white'}
-            placeholder={placeholder}
-            onChangeText={onChange}
-        />
-    </>
-);
-
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -83,28 +80,13 @@ const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
         alignItems: 'center',
-    },    
+    },
     title: {
         fontSize: width < 600 ? 20 : 30,
         fontWeight: 'bold',
         marginBottom: 20,
         color: 'white',
         textAlign: 'center',
-    },
-    inputLabel: {
-        fontSize: width < 600 ? 16 : 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: 'white',
-    },
-    input: {
-        padding: 10,
-        borderRadius: 5,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 20,
-        width: '100%',
-        color: 'white',
     },
     createMatchButton: {
         backgroundColor: 'lightblue',

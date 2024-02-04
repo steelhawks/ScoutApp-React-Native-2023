@@ -9,7 +9,6 @@ import {
 import React, {useState, useEffect} from 'react';
 import Form from '../components/scouting_components/Form';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import NumberInput from '../components/inputs/NumberInput';
 import NewMatch from '../components/NewMatch';
 import AnimationLoader from '../AnimationLoader';
 import Section from '../components/scouting_components/Section';
@@ -19,8 +18,15 @@ import CounterInput from 'react-native-counter-input';
 import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
 import {UserContext} from '..';
+import Button from '../components/inputs/Button';
 
-const ScoutingPage = ({logged_in, setLogin, user, navigation, competitionName }) => {
+const ScoutingPage = ({
+    logged_in,
+    setLogin,
+    user,
+    navigation,
+    competitionName,
+}) => {
     const [matchCreated, setMatchCreated] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
     const [eventName, setEventName] = useState(competitionName);
@@ -249,30 +255,24 @@ const ScoutingPage = ({logged_in, setLogin, user, navigation, competitionName })
             {matchCreated ? (
                 <View style={styles.container}>
                     <ScrollView>
-                        <TouchableOpacity
-                            onPress={() => setMatchCreated(false)}>
-                            <View style={styles.backButton}>
-                                <Text style={styles.buttonText}>Back</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <Button
+                            onPress={() => setMatchCreated(false)}
+                            label="Back"
+                        />
                         <UserContext.Provider value={updateDict}>
                             <Form
                                 sections={form_sections}
                                 updateDict={updateDict}
                             />
                         </UserContext.Provider>
-
-                        <TouchableOpacity onPress={() => endMatch()}>
-                            <View style={styles.endMatchButton}>
-                                <Text style={styles.buttonText}>End Match</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <Button onPress={() => endMatch()} label="End Match" />
                     </ScrollView>
                 </View>
             ) : (
                 <NewMatch
                     setMatchCreated={setMatchCreated}
                     user={user}
+                    dict={dict}
                     updateDict={updateDict}
                     eventName={eventName}
                 />
@@ -295,30 +295,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-    },
-    backButton: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
-        marginBottom: 20,
-        marginLeft: 10,
-        width: '30%', // Adjust the width as needed
-        alignSelf: 'flex-start',
-    },
-    endMatchButton: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
-        marginBottom: 20,
-        marginLeft: 10,
-        width: '30%', // Adjust the width as needed
-        alignSelf: 'flex-start',
-    },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
-        alignSelf: 'center',
-        fontWeight: 'bold',
     },
 });
 

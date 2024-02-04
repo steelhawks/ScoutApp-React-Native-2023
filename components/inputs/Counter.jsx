@@ -4,10 +4,6 @@ import {useContext} from 'react';
 import { UserContext } from '../..';
 
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
     StyleSheet,
 } from 'react-native';
 
