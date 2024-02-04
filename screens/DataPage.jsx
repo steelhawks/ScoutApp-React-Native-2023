@@ -13,7 +13,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 // maybe add a way to edit the files post match
 // Make the names of the files not the json but the match number team number, and scouter name
 
-const DataPage = () => {
+const DataPage = ({ serverIp }) => {
     const docDir = fs.DocumentDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
@@ -108,7 +108,7 @@ const DataPage = () => {
         setIsLoading(true);
 
         try {
-            const serverEndpoint = 'http://192.168.1.183:8080/upload';
+            const serverEndpoint = `http://${serverIp}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
                 method: 'POST',

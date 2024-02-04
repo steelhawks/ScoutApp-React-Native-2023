@@ -20,10 +20,10 @@ import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
 import {UserContext} from '..';
 
-const ScoutingPage = ({logged_in, setLogin, user, navigation}) => {
+const ScoutingPage = ({logged_in, setLogin, user, navigation, competitionName }) => {
     const [matchCreated, setMatchCreated] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
-    const [eventName, setEventName] = useState('TEST_COMP');
+    const [eventName, setEventName] = useState(competitionName);
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
 
@@ -274,6 +274,7 @@ const ScoutingPage = ({logged_in, setLogin, user, navigation}) => {
                     setMatchCreated={setMatchCreated}
                     user={user}
                     updateDict={updateDict}
+                    eventName={eventName}
                 />
             )}
             <AnimationLoader

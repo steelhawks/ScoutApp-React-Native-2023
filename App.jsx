@@ -17,6 +17,9 @@ const Drawer = createDrawerNavigator();
 const App = () => {
     const [logged_in, setLogin] = useState(false);
     const [user, setUser] = useState(null);
+    const [serverIp, setServerIp] = useState(null);
+    const [competitionName, setCompetitionName] = useState(null);
+    const [appVersion] = useState('v1.0b')
 
     // this is to receive user data and use it in any file in this project
     // useEffect(() => {
@@ -27,10 +30,6 @@ const App = () => {
     //     }
     //   }, []);
 
-    const ConnectToNetwork = async () => {
-        
-    } 
-
     const ScoutingPageNavigate = props => {
         return (
             <ScoutingPage
@@ -38,6 +37,7 @@ const App = () => {
                 logged_in={logged_in}
                 setLogin={setLogin}
                 user={user}
+                competitionName={competitionName}
             />
         );
     };
@@ -50,6 +50,7 @@ const App = () => {
                 setUser={setUser}
                 logged_in={logged_in}
                 user={user}
+                appVersion={appVersion}
             />
         );
     };
@@ -58,6 +59,8 @@ const App = () => {
         return (
             <Login
                 {...props}
+                setCompetitionName={setCompetitionName}
+                setServerIp={setServerIp}
                 setLogin={setLogin}
                 setUser={setUser}
                 logged_in={logged_in}
@@ -66,10 +69,17 @@ const App = () => {
     };
 
     const HelpPageNavigate = props => {
+        return <Tutorial />;
+    };
+
+    const DataPageNavigate = props => {
         return (
-            <Tutorial/>
-        )
-    }
+            <DataPage
+                {...props}
+                serverIp={serverIp}
+            />
+        );
+    };
 
     return (
         <NavigationContainer
@@ -105,11 +115,8 @@ const App = () => {
                         name="Scouting"
                         component={ScoutingPageNavigate}
                     />
-                    <Drawer.Screen name="Data" component={DataPage} />
-                    <Drawer.Screen
-                        name={"Help"}
-                        component={HelpPageNavigate}
-                    />
+                    <Drawer.Screen name="Data" component={DataPageNavigate} />
+                    <Drawer.Screen name={'Help'} component={HelpPageNavigate} />
                     <Drawer.Screen
                         name={user.name}
                         component={AccountManagementNavigate}

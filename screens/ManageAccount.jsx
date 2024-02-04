@@ -4,7 +4,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import AnimationLoader from '../AnimationLoader';
 
-const ManageAccount = ({setLogin, setUser, user}) => {
+const ManageAccount = ({setLogin, setUser, user, appVersion}) => {
     const [isLoading, setIsLoading] = useState(false);
     const logOut = () => {
         setLogin(false);
@@ -30,7 +30,7 @@ const ManageAccount = ({setLogin, setUser, user}) => {
 
                 <Text style={styles.infoText}>
                     Any issues with login or requested changes, please email{' '}
-                    farhanj2@nycstudents.net
+                    farhanj2@nycstudents.net {'\n'}Version: {appVersion}
                 </Text>
             </ScrollView>
         </View>

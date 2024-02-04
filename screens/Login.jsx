@@ -13,17 +13,47 @@ import { returnUserCredentials } from '../authentication/auth';
 import AnimationLoader from '../AnimationLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Login = ({ setLogin, setUser, logged_in }) => {
+const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [Ip, setIp] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
-        setIsLoading(true);
-
-        // testing for loading screen
+        // keep this for loading screen to work
         setTimeout(async () => {
+            setIsLoading(true);
+            setServerIp(Ip);
             try {
+                // request from server and to make sure that it exists
+                if (Ip === null) {
+                    Alert.alert(
+                        'Login Failed',
+                        'Please enter a valid server IP address.'
+                    );
+                    setIsLoading(false);
+                    return;
+                }
+
+                // check if the server is reachable and sync variables with the server
+                try {
+                    const response = await fetch(`http://${Ip}:8080/login`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const competitionName = data.competition_name;
+                        setCompetitionName(competitionName);
+                        console.log('Competition Name from Server:', competitionName);
+                    } else {
+                        console.error('Server not reachable. Status: ' + response.status);
+                        Alert.alert('Server not reachable. Status: ' + response.status);
+                    }
+                } catch (error) {
+                    console.error('Error connecting to server:', error);
+                    Alert.alert('Error connecting to server name: ' + error);
+                    return;
+                }
+                
+
                 const userCredentials = await returnUserCredentials();
                 const user = userCredentials.find(
                     (userData) =>
@@ -88,6 +118,13 @@ const Login = ({ setLogin, setUser, logged_in }) => {
                                 onChangeText={(text) => setPassword(text)}
                                 value={password}
                                 secureTextEntry
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholderTextColor={'white'}
+                                placeholder="Server IP"
+                                onChangeText={(text) => setIp(text)}
+                                value={Ip}
                             />
 
                             <TouchableOpacity

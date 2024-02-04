@@ -27,7 +27,7 @@ const NewMatch = (props) => {
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <Text style={styles.title}>
-                        Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}
+                        Hello {props.user.name}! {'\n'}OSIS: {props.user.osis} {'\n'}Event: {props.eventName}
                     </Text>
 
                     {renderInput(
