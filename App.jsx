@@ -14,10 +14,12 @@ import DeviceInfo, {getApplicationName} from 'react-native-device-info';
 
 const Drawer = createDrawerNavigator();
 
+
+
 const App = () => {
     const [logged_in, setLogin] = useState(false);
     const [user, setUser] = useState(null);
-    const [serverIp, setServerIp] = useState(null);
+    const [serverIp, setServerIp] = useState();
     const [competitionName, setCompetitionName] = useState(null);
     const [appVersion] = useState('v1.0b')
 

@@ -1,3 +1,7 @@
+// LEGACY USED FOR LOCAL LOGIN FROM A JSON
+// VERY INSECURE!!!
+
+
 import React, { useEffect, useState } from 'react';
 import fs from 'react-native-fs';
 import { ActionSheetIOS, Alert } from 'react-native';

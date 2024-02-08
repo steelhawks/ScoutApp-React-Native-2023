@@ -15,13 +15,22 @@ import Button from './inputs/Button';
 const NewMatch = props => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleStartScouting = async () => {
-        setIsLoading(true);
+    const checkFilledOut = () => {
+        return (
+            props.dict['teamNumber'] !== 0 &&
+            props.dict['matchNumber'] !== 0 &&
+            props.dict['driveStation'] !== 0
+        );
+    };
 
-        setTimeout(async () => {
-            props.setMatchCreated(true);
-            setIsLoading(false);
-        }, 1);
+    const handleStartScouting = async () => {
+        if (checkFilledOut()) {
+            setIsLoading(true);
+            setTimeout(async () => {
+                props.setMatchCreated(true);
+                setIsLoading(false);
+            }, 1);
+        }
     };
 
     return (
@@ -55,13 +64,10 @@ const NewMatch = props => {
                         }
                     />
 
-                    {console.log(props.dict['teamNumber'])}
-
-                    {(props.dict['teamNumber'] !== 0 &&
-                        props.dict['matchNumber'] !== 0 &&
-                        props.dict['driveStation'] !== 0) && (
-                            <Button label={'Create Match'} onPress={handleStartScouting} />
-                        )}
+                    <Button
+                        label={'Create Match'}
+                        onPress={handleStartScouting}
+                    />
                 </ScrollView>
             </View>
             <AnimationLoader isLoading={isLoading} />

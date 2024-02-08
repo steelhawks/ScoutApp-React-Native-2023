@@ -9,7 +9,7 @@ import {
     Platform,
     Image,
 } from 'react-native';
-import { returnUserCredentials } from '../authentication/auth';
+import { fetchUserCredentialsFromServer } from '../authentication/api';
 import AnimationLoader from '../AnimationLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
@@ -21,66 +21,40 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
-        // keep this for loading screen to work
-        setTimeout(async () => {
-            setIsLoading(true);
-            setServerIp(Ip);
-            try {
-                // request from server and to make sure that it exists
-                if (Ip === null) {
-                    Alert.alert(
-                        'Login Failed',
-                        'Please enter a valid server IP address.'
-                    );
-                    setIsLoading(false);
-                    return;
-                }
+        setIsLoading(true);
 
-                // check if the server is reachable and sync variables with the server
-                try {
-                    const response = await fetch(`http://${Ip}:8080/login`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        const competitionName = data.competition_name;
-                        setCompetitionName(competitionName);
-                        console.log('Competition Name from Server:', competitionName);
-                    } else {
-                        console.error('Server not reachable. Status: ' + response.status);
-                        Alert.alert('Server not reachable. Status: ' + response.status);
-                    }
-                } catch (error) {
-                    console.error('Error connecting to server:', error);
-                    Alert.alert('Error connecting to server name: ' + error);
-                    return;
-                }
-                
-
-                const userCredentials = await returnUserCredentials();
-                const user = userCredentials.find(
-                    (userData) =>
-                        userData.username === username &&
-                        userData.password === password
-                );
+        if (Ip === null) {
+            Alert.alert('Please enter a server IP address');
+            setIsLoading(false);
+            return;
+        }
+        
+        try {
+            const userCredentials = await fetchUserCredentialsFromServer(Ip, username, password);
+            console.log(userCredentials);
+            if (userCredentials.length > 0) {
+                const user = userCredentials[0];
                 setUser(user);
-
-                if (user) {
-                    setIsLoading(false);
+                if (user.username === username && user.password === password) {
+                    const competitionName = user.competition_name;
+                    setCompetitionName(competitionName);
+                    console.log('Competition name from server', competitionName);
                     setLogin(true);
                 } else {
-                    setIsLoading(false);
-                    Alert.alert(
-                        'Login Failed',
-                        'Please enter a valid username and password.'
-                    );
+                    console.error('Incorrect username or password');
+                    Alert.alert('Incorrect username or password');
                 }
-            } catch (error) {
-                setIsLoading(false);
-                console.error('Error getting user credentials:', error);
+            } else {
+                console.error('User not found');
+                Alert.alert('User not found');
             }
-
+        } catch (error) {
+            console.error('Error connecting to the server', error);
+            Alert.alert('Error connecting to the server', error);
+        } finally {
             setIsLoading(false);
-        }, 1);
-    };
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
