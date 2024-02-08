@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     View,
     TextInput,
@@ -9,12 +9,18 @@ import {
     Platform,
     Image,
 } from 'react-native';
-import { fetchUserCredentialsFromServer } from '../authentication/api';
+import {fetchUserCredentialsFromServer} from '../authentication/api';
 import AnimationLoader from '../AnimationLoader';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
 
-const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName}) => {
+const Login = ({
+    setLogin,
+    setUser,
+    logged_in,
+    setServerIp,
+    setCompetitionName,
+}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [Ip, setIp] = useState(null);
@@ -28,25 +34,27 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
             setIsLoading(false);
             return;
         }
-        
+
         try {
-            const userCredentials = await fetchUserCredentialsFromServer(Ip, username, password);
+            const userCredentials = await fetchUserCredentialsFromServer(
+                Ip,
+                username,
+                password,
+            );
             console.log(userCredentials);
+            // this checks if login is correct as an empty array will be sent back if the password is incorrect
             if (userCredentials.length > 0) {
                 const user = userCredentials[0];
                 setUser(user);
-                if (user.username === username && user.password === password) {
-                    const competitionName = user.competition_name;
-                    setCompetitionName(competitionName);
-                    console.log('Competition name from server', competitionName);
-                    setLogin(true);
-                } else {
-                    console.error('Incorrect username or password');
-                    Alert.alert('Incorrect username or password');
-                }
+
+                const competitionName = user.competition_name;
+                setCompetitionName(competitionName);
+                console.log('Competition name from server', competitionName);
+                setLogin(true);
+                setServerIp(Ip);
             } else {
-                console.error('User not found');
-                Alert.alert('User not found');
+                console.error('Incorrect username or password');
+                Alert.alert('Incorrect username or password');
             }
         } catch (error) {
             console.error('Error connecting to the server', error);
@@ -54,7 +62,7 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -75,22 +83,20 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
                                 </View>
                             </View>
 
-                            <Text style={styles.title}>
-                                Hello
-                            </Text>
+                            <Text style={styles.title}>Hello</Text>
 
                             <TextInput
                                 style={styles.input}
                                 placeholderTextColor={'white'}
                                 placeholder="Username"
-                                onChangeText={(text) => setUsername(text)}
+                                onChangeText={text => setUsername(text)}
                                 value={username}
                             />
                             <TextInput
                                 style={styles.input}
                                 placeholderTextColor={'white'}
                                 placeholder="Password"
-                                onChangeText={(text) => setPassword(text)}
+                                onChangeText={text => setPassword(text)}
                                 value={password}
                                 secureTextEntry
                             />
@@ -98,14 +104,17 @@ const Login = ({ setLogin, setUser, logged_in, setServerIp, setCompetitionName})
                                 style={styles.input}
                                 placeholderTextColor={'white'}
                                 placeholder="Server IP"
-                                onChangeText={(text) => setIp(text)}
+                                onChangeText={text => setIp(text)}
                                 value={Ip}
                             />
 
-                            <Button label="Login" onPress={() => {
+                            <Button
+                                label="Login"
+                                onPress={() => {
                                     setIsLoading(true);
                                     handleLogin();
-                                }} />
+                                }}
+                            />
                         </React.Fragment>
                     )}
                 </View>

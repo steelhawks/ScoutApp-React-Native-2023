@@ -4,6 +4,7 @@ import fs from 'react-native-fs';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import {launchImageLibrary} from 'react-native-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
 
 // TODO
 // Create a searching feature >> by name, date, match, team, etc
@@ -14,6 +15,21 @@ import {launchImageLibrary} from 'react-native-image-picker';
 // Make the names of the files not the json but the match number team number, and scouter name
 
 const DataPage = ({ serverIp }) => {
+    useFocusEffect(
+        React.useCallback(() => {
+            // fetch and set the list of JSON files in the directory
+            fs.readdir(docDir)
+                .then(files => {
+                    const jsonFiles = files.filter(file => file.endsWith('.json'));
+                    setJsonFiles(jsonFiles);
+                })
+                .catch(error => {
+                    console.error('Error reading directory:', error);
+                });
+        }, [docDir])
+    );
+
+
     const docDir = fs.DocumentDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
@@ -108,6 +124,7 @@ const DataPage = ({ serverIp }) => {
         setIsLoading(true);
 
         try {
+            console.log('Server IP', serverIp);
             const serverEndpoint = `http://${serverIp}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
