@@ -21,7 +21,7 @@ const App = () => {
     const [user, setUser] = useState(null);
     const [serverIp, setServerIp] = useState();
     const [competitionName, setCompetitionName] = useState(null);
-    const [appVersion] = useState('v1.0b')
+    const [appVersion] = useState('v0.1a')
 
     // this is to receive user data and use it in any file in this project
     // useEffect(() => {
@@ -66,6 +66,7 @@ const App = () => {
                 setLogin={setLogin}
                 setUser={setUser}
                 logged_in={logged_in}
+                appVersion={appVersion}
             />
         );
     };

@@ -20,6 +20,7 @@ const Login = ({
     logged_in,
     setServerIp,
     setCompetitionName,
+    appVersion,
 }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -40,9 +41,20 @@ const Login = ({
                 Ip,
                 username,
                 password,
+                appVersion, // sends a request to see if the app is up to date
             );
-            console.log(userCredentials);
+
             // this checks if login is correct as an empty array will be sent back if the password is incorrect
+            console.log('From server', userCredentials);
+            if (!userCredentials) {
+                console.log('Test')
+                Alert.alert(
+                    'App version mismatch',
+                    'Please update the app',
+                );
+                setIsLoading(false);
+                return;
+            }
             if (userCredentials.length > 0) {
                 const user = userCredentials[0];
                 setUser(user);
@@ -57,8 +69,8 @@ const Login = ({
                 Alert.alert('Incorrect username or password');
             }
         } catch (error) {
-            console.error('Error connecting to the server', error);
             Alert.alert('Error connecting to the server', error);
+            console.error('Error connecting to the server', error);
         } finally {
             setIsLoading(false);
         }
