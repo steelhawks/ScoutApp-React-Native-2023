@@ -23,7 +23,7 @@ const Login = ({
     appVersion,
 }) => {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [osis, setOsis] = useState('');
     const [Ip, setIp] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,7 @@ const Login = ({
             const userCredentials = await fetchUserCredentialsFromServer(
                 Ip,
                 username,
-                password,
+                osis,
                 appVersion, // sends a request to see if the app is up to date
             );
 
@@ -107,9 +107,9 @@ const Login = ({
                             <TextInput
                                 style={styles.input}
                                 placeholderTextColor={'white'}
-                                placeholder="Password"
-                                onChangeText={text => setPassword(text)}
-                                value={password}
+                                placeholder="OSIS"
+                                onChangeText={text => setOsis(text)}
+                                value={osis}
                                 secureTextEntry
                             />
                             <TextInput

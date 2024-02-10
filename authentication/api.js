@@ -1,11 +1,11 @@
-export const fetchUserCredentialsFromServer = async (serverIp, username, password, appVersion) => {
+export const fetchUserCredentialsFromServer = async (serverIp, username, osis, appVersion) => {
     try {
         const response = await fetch(`http://${serverIp}:8080/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password, appVersion }),
+            body: JSON.stringify({ username, osis, appVersion }),
         });
 
         if (response.ok) {
