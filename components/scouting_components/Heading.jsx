@@ -18,16 +18,14 @@ const styles = StyleSheet.create({
     SectionHeading: {
         fontSize: 50,
         fontWeight: 'bold',
-        alignSelf: 'left',
-        marginLeft: 20,
+        alignSelf: 'center',
         color: 'white',
     },
     QueryHeading: {
         fontSize: 25,
         fontWeight: 'bold',
-        alignSelf: 'left',
+        alignSelf: 'center',
         marginBottom: 25,
-        marginLeft: 20,
         color: 'white',
     },
 });

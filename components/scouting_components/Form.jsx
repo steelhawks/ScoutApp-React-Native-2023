@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {View} from 'react-native';
 import React from 'react';
 
 const Form = props => {
@@ -10,5 +10,3 @@ const Form = props => {
 };
 
 export default Form;
-
-const styles = StyleSheet.create({});

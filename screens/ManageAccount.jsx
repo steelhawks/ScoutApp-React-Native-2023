@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import AnimationLoader from '../AnimationLoader';
+import Button from '../components/inputs/Button';
 
 const ManageAccount = ({setLogin, setUser, user, appVersion}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +17,7 @@ const ManageAccount = ({setLogin, setUser, user, appVersion}) => {
         <>
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <TouchableOpacity onPress={() => { setIsLoading(true); logOut(); }}>
-                    <View style={styles.logoutButton}>
-                        <Text style={styles.buttonText}>Log Out</Text>
-                    </View>
-                </TouchableOpacity>
-
+                <Button label="Log Out" onPress={() => { setIsLoading(true); logOut(); }}/>
                 <Text style={styles.welcomeText}>
                     Welcome {user.name} {'\n'}
                     Username: {user.username} {'\n'}

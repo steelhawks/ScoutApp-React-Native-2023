@@ -66,7 +66,7 @@ const ScoutingPage = ({
         autonAmpNotesScored: 0,
         autonMissed: 0,
         autonNotesReceived: 0,
-        autonIssues: 'EMPTY', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
         telopSpeakerNotesScored: 0,
         telopAmpNotesScored: 0,
         telopAmplifiedSpeakerNotes: 0,
@@ -74,12 +74,12 @@ const ScoutingPage = ({
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
         telopNotesReceivedFromGround: 0,
-        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        endGame: [], // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
-        penalties: 'EMPTY', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
-        telopIssues: 'EMPTY', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
+        penalties: [], // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        robotType: [], // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
     });
 
     const updateDict = (key, value) => {
@@ -152,7 +152,6 @@ const ScoutingPage = ({
             title="Amp Notes Scored"
             item={<Counter id="autonAmpNotesScored" />}
         />,
-        <Query title="Missed" item={<Counter id="autonMissed" />} />,
         <Query
             title="Notes Received"
             item={<Counter id="autonNotesReceived" />}
@@ -242,12 +241,12 @@ const ScoutingPage = ({
     ];
 
     const form_sections = [
-        <Section title={'Pre Match'} queries={prematch_queries} />,
-        <Section title={'Auton'} queries={auton_queries} />,
-        <Section title={'Teleop Scoring'} queries={tele_scoring_queries} />,
-        <Section title={'Teleop Missed'} queries={tele_missed_queries} />,
-        <Section title={'Teleop Received'} queries={tele_received_queries} />,
-        <Section title={'Endgame'} queries={endgame_queries} />,
+        <Section title={'Pre-Match'} queries={prematch_queries} style={styles.sectionStyle}/>,
+        <Section title={'Auton'} queries={auton_queries} style={[styles.sectionStyle, {backgroundColor: 'rgba(136, 3, 21, 1)'}]}/>,
+        <Section title={'Teleop Scoring'} queries={tele_scoring_queries} style={styles.sectionStyle}/>,
+        <Section title={'Teleop Missed'} queries={tele_missed_queries} style={styles.sectionStyle}/>,
+        <Section title={'Teleop Received'} queries={tele_received_queries} style={styles.sectionStyle}/>,
+        <Section title={'Endgame'} queries={endgame_queries} style={styles.sectionStyle}/>,
     ];
 
     return (
@@ -296,6 +295,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    sectionStyle: {
+       alignItems: 'center',
+        width: "100%"
+    },
+    
 });
 
 export default ScoutingPage;

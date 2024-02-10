@@ -4,8 +4,8 @@ import Heading from './Heading';
 
 const Query = props => {
     return (
-        <View>
-            <Heading title={props.title} sectionHeading={false} />
+        <View style={{alignItems: 'center', padding: 10}}>
+            <Heading title={props.title} sectionHeading={false} style={{allignItems: 'center'}} />
             {props.item}
         </View>
     );

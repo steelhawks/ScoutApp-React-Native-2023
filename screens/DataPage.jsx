@@ -5,6 +5,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
+import Button from '../components/inputs/Button';
 
 // TODO
 // Create a searching feature >> by name, date, match, team, etc
@@ -48,7 +49,7 @@ const DataPage = ({ serverIp }) => {
         autonAmpNotesScored: 0,
         autonMissed: 0,
         autonNotesReceived: 0,
-        autonIssues: 'EMPTY', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
         telopSpeakerNotesScored: 0,
         telopAmpNotesScored: 0,
         telopAmplifiedSpeakerNotes: 0,
@@ -56,12 +57,12 @@ const DataPage = ({ serverIp }) => {
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
         telopNotesReceivedFromGround: 0,
-        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        endGame: [], // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
-        penalties: 'EMPTY', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
-        telopIssues: 'EMPTY', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
+        penalties: [], // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: 'Empty', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        robotType: [], // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
     });
 
     // use this to change values after the match
@@ -160,13 +161,7 @@ const DataPage = ({ serverIp }) => {
             <View style={styles.container}>
                 <ScrollView>
                     <Text style={styles.welcomeText}>Previous Matches</Text>
-                    <TouchableOpacity onPress={handleSync}>
-                        <View style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Sync to Server
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
+                    <Button label="Sync to Server" onPress={handleSync}/>
                     <View style={styles.scrollContainer}>
                         {jsonFiles.map(file => (
                             <TouchableOpacity
@@ -284,11 +279,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         width: '40%',
         alignItems: 'center',
-    },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
     },
     welcomeText: {
         paddingTop: 75,

@@ -4,9 +4,9 @@ import {
     Text,
     View,
     TextInput,
-    TouchableOpacity,
     StyleSheet,
     Dimensions,
+    Alert
 } from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import CustomTextInput from './inputs/CustomTextInput';
@@ -24,12 +24,14 @@ const NewMatch = props => {
     };
 
     const handleStartScouting = async () => {
-        if (checkFilledOut()) {
+        if (true) {
             setIsLoading(true);
             setTimeout(async () => {
                 props.setMatchCreated(true);
                 setIsLoading(false);
             }, 1);
+        } else {
+            Alert.alert('Please fill out all fields');
         }
     };
 
@@ -56,6 +58,8 @@ const NewMatch = props => {
                             props.updateDict('matchNumber', value)
                         }
                     />
+
+                
                     <CustomTextInput
                         label={'Enter Driver Station (1-6):'}
                         placeholder={'Driver Station'}

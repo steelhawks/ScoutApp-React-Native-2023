@@ -1,17 +1,17 @@
 import React from 'react';
 import {useContext} from 'react';
-import BouncyCheckboxGroup, {
-    ICheckboxButton,
-} from 'react-native-bouncy-checkbox-group';
+import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
 import { UserContext } from '../..';
 
 const RadioGroup = props => {
     const styles = {
-        size: 25,
+        size: 30,
         fillColor: 'green',
         unfillColor: '#FFFFFF',
         iconStyle: {borderColor: 'red'},
         innerIconStyle: {borderWidth: 2},
+        flex: 1,
+        padding: 10,
         textStyle: {
             fontFamily: 'JosefinSans-Regular',
         },
