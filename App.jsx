@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import Login from './screens/Login';
-import HomePage from './screens/HomePage';
 import ScoutingPage from './screens/ScoutingPage';
 import DataPage from './screens/DataPage';
 import ManageAccount from './screens/ManageAccount';
@@ -8,38 +7,46 @@ import Tutorial from './screens/Tutorial';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {StyleSheet, Alert} from 'react-native';
-import Orientation from 'react-native-orientation-locker';
-import DeviceInfo, {getApplicationName} from 'react-native-device-info';
-// import loginCredentialsFile from './login.json';
+import { NewMatch } from '.';
 
 const Drawer = createDrawerNavigator();
 
-
-
 const App = () => {
-    const [logged_in, setLogin] = useState(false);
     const [user, setUser] = useState(null);
     const [serverIp, setServerIp] = useState();
-    const [competitionName, setCompetitionName] = useState(null);
-    const [appVersion] = useState('v0.3a')
+    const [eventName, setEventName] = useState(null);
+    const [matchCreated, setMatchCreated] = useState(false);
+    const [appVersion] = useState('v0.4a')
 
-    // this is to receive user data and use it in any file in this project
-    // useEffect(() => {
-    //     const storedUserData = loginCredentialsFile;
-    //     if (storedUserData) {
-    //       setUser(storedUserData);
-    //       setLogin(true);
-    //     }
-    //   }, []);
+    // NewMatch VARS
+    const [matchNumber, setMatchNumber] = useState(0);
+    const [teamNumber, setTeamNumber] = useState(0);
+    const [driveStation, setDriveStation] = useState(0);
+
+    const NewMatchNavigate = props => {
+        return (
+            <NewMatch
+                {...props}
+                user={user}
+                eventName={eventName}
+                setMatchCreated={setMatchCreated}
+                setTeamNumber={setTeamNumber}
+                setMatchNumber={setMatchNumber}
+                setDriveStation={setDriveStation}
+            />
+        )
+    }
 
     const ScoutingPageNavigate = props => {
         return (
             <ScoutingPage
                 {...props}
-                logged_in={logged_in}
-                setLogin={setLogin}
                 user={user}
-                competitionName={competitionName}
+                eventName={eventName}
+                setMatchCreated={setMatchCreated}
+                teamNumber={teamNumber}
+                matchNumber={matchNumber}
+                driveStation={driveStation}
             />
         );
     };
@@ -48,11 +55,11 @@ const App = () => {
         return (
             <ManageAccount
                 {...props}
-                setLogin={setLogin}
                 setUser={setUser}
-                logged_in={logged_in}
                 user={user}
                 appVersion={appVersion}
+                eventName={eventName}
+                serverIp={serverIp}
             />
         );
     };
@@ -61,11 +68,10 @@ const App = () => {
         return (
             <Login
                 {...props}
-                setCompetitionName={setCompetitionName}
+                user={user}
+                setEventName={setEventName}
                 setServerIp={setServerIp}
-                setLogin={setLogin}
                 setUser={setUser}
-                logged_in={logged_in}
                 appVersion={appVersion}
             />
         );
@@ -101,7 +107,7 @@ const App = () => {
                     select: 'blue',
                 },
             }}>
-            {logged_in ? (
+            {user != null ? (
                 <Drawer.Navigator
                     initialRouteName="Login"
                     screenOptions={{
@@ -109,29 +115,28 @@ const App = () => {
                         drawerLabelStyle: {color: 'white'},
                         activeTintColor: 'white',
                     }}>
-                    <Drawer.Screen
+                    {matchCreated ? (
+                        <Drawer.Screen name="Scouting" component={ScoutingPageNavigate} />
+                    ) : (
+                        <Drawer.Screen
                         screenOptions={{
                             activeBackgroundColor: 'white',
                             drawerLabelStyle: {color: 'white'},
                             activeTintColor: 'white',
                         }}
-                        name="Scouting"
-                        component={ScoutingPageNavigate}
+                        name="New Match"
+                        component={NewMatchNavigate}
                     />
+                    )}
                     <Drawer.Screen name="Data" component={DataPageNavigate} />
-                    <Drawer.Screen name={'Help'} component={HelpPageNavigate} />
+                    <Drawer.Screen name="Help" component={HelpPageNavigate} />
                     <Drawer.Screen
                         name={user.name}
                         component={AccountManagementNavigate}
                     />
                 </Drawer.Navigator>
             ) : (
-                <Drawer.Navigator
-                    initialRouteName="Home"
-                    screenOptions={{
-                        drawerLabelStyle: {color: 'white'},
-                        activeTintColor: 'blue',
-                    }}>
+                <Drawer.Navigator>
                     <Drawer.Screen name="Login" component={LoginPageNavigate} />
                 </Drawer.Navigator>
             )}

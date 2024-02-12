@@ -1,74 +1,74 @@
 import React, { useState } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
+import { RFValue } from 'react-native-responsive-fontsize';
 
-const ManageAccount = ({setLogin, setUser, user, appVersion}) => {
+const ManageAccount = ({ setUser, user, appVersion, eventName, serverIp }) => {
     const [isLoading, setIsLoading] = useState(false);
+
     const logOut = () => {
-        setLogin(false);
         setUser(null);
         setIsLoading(false);
     };
 
     return (
-        <>
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <Button label="Log Out" onPress={() => { setIsLoading(true); logOut(); }}/>
+            <Text style={styles.title}>Manage Account</Text>
+            <View style={styles.centerContent}>
+                <Button label="Log Out" onPress={() => { setIsLoading(true); logOut(); }} />
                 <Text style={styles.welcomeText}>
-                    Welcome {user.name} {'\n'}
+                    Hello {user.name} {'\n'}
                     Username: {user.username} {'\n'}
                     OSIS: {user.osis} {'\n'}
+                    Event: {eventName} {'\n'}
+                    Server: {serverIp} {'\n'}
+                    Uptime: {} {'\n'}
                 </Text>
+            </View>
 
-                <Text style={styles.infoText}>
-                    Any issues with login or requested changes, please email{' '}
-                    farhanj2@nycstudents.net {'\n'}Version: {appVersion}
-                </Text>
-            </ScrollView>
+            <Text style={styles.infoText}>
+                Any issues with login or requested changes, please email{' '}
+                farhanj2@nycstudents.net {'\n'}Scout 24 {appVersion}
+            </Text>
+            <AnimationLoader />
         </View>
-        <AnimationLoader />
-        </>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '#282c34', // Change this to your desired background color
     },
-    scrollContainer: {
+    centerContent: {
+        paddingTop: RFValue(125), // Use responsive font size for padding
         alignItems: 'center',
-        paddingVertical: 40,
+        justifyContent: 'center',
     },
-    logoutButton: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
-        marginVertical: 20,
-        width: '40%',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
+    title: {
+        position: 'absolute',
+        paddingBottom: RFValue(400), // Use responsive font size for padding
+        fontSize: RFValue(36), // Use responsive font size for text
         fontWeight: 'bold',
+        marginBottom: RFValue(20), // Use responsive font size for margin
+        color: 'white',
+        textAlign: 'center',
     },
     welcomeText: {
-        fontSize: 24,
+        fontSize: RFValue(24), // Use responsive font size for text
         fontWeight: 'bold',
-        alignSelf: 'center',
-        marginBottom: 30,
+        textAlign: 'center',
+        marginBottom: RFValue(30), // Use responsive font size for margin
         color: 'white',
     },
     infoText: {
         color: 'white',
         textAlign: 'center',
         position: 'absolute',
-        bottom: 0,
+        bottom: RFValue(20), // Use responsive font size for bottom position
     },
 });
 

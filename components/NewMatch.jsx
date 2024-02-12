@@ -1,32 +1,54 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     ScrollView,
     Text,
     View,
-    TextInput,
     StyleSheet,
     Dimensions,
-    Alert
+    Alert,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import AnimationLoader from '../AnimationLoader';
 import CustomTextInput from './inputs/CustomTextInput';
 import Button from './inputs/Button';
+import DriveStationUI from './inputs/DriveStationUI';
 
 const NewMatch = props => {
     const [isLoading, setIsLoading] = useState(false);
 
+    const [teamNumberLocal, setTeamNumberLocal] = useState(0);
+    const [matchNumberLocal, setMatchNumberLocal] = useState(0);
+    const [driveStationLocal, setDriveStationLocal] = useState(0);
+
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            // Prevent default behavior when the back button is pressed
+            e.preventDefault();
+
+            // Save the state or any other necessary actions
+            // You can use AsyncStorage or other state management solutions for long-term storage
+
+            // Continue with the navigation
+            navigation.dispatch(e.data.action);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     const checkFilledOut = () => {
-        return (
-            props.dict['teamNumber'] !== 0 &&
-            props.dict['matchNumber'] !== 0 &&
-            props.dict['driveStation'] !== 0
-        );
+        return teamNumberLocal !== '' && matchNumberLocal !== '' && driveStationLocal !== 0;
     };
 
     const handleStartScouting = async () => {
-        if (true) {
+        if (checkFilledOut()) {
             setIsLoading(true);
             setTimeout(async () => {
+                props.setTeamNumber(teamNumberLocal);
+                props.setMatchNumber(matchNumberLocal);
+                props.setDriveStation(driveStationLocal);
+
                 props.setMatchCreated(true);
                 setIsLoading(false);
             }, 1);
@@ -38,6 +60,7 @@ const NewMatch = props => {
     return (
         <>
             <View style={styles.container}>
+                <Text style={styles.title}>New Match</Text>
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <Text style={styles.title}>
                         Hello {props.user.name}! {'\n'}OSIS: {props.user.osis}{' '}
@@ -47,25 +70,18 @@ const NewMatch = props => {
                     <CustomTextInput
                         label={'Enter Team Number:'}
                         placeholder={'Team Number'}
-                        onChangeText={value =>
-                            props.updateDict('teamNumber', value)
-                        }
+                        onChangeText={value => setTeamNumberLocal(value)}
+                        value={teamNumberLocal}
                     />
                     <CustomTextInput
                         label={'Enter Match Number:'}
                         placeholder={'Match Number'}
-                        onChangeText={value =>
-                            props.updateDict('matchNumber', value)
-                        }
+                        onChangeText={value => setMatchNumberLocal(value)}
+                        value={matchNumberLocal}
                     />
-
-                
-                    <CustomTextInput
-                        label={'Enter Driver Station (1-6):'}
-                        placeholder={'Driver Station'}
-                        onChangeText={value =>
-                            props.updateDict('driveStation', value)
-                        }
+                    <Text style={styles.title}>Select Drive Station</Text>
+                    <DriveStationUI
+                        updateDict={(key, value) => setDriveStationLocal(value)}
                     />
 
                     <Button
@@ -90,6 +106,15 @@ const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
         alignItems: 'center',
+    },
+    titleScreen: {
+        position: 'absolute',
+        paddingBottom: 500,
+        fontSize: 36,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: 'white',
+        textAlign: 'center',
     },
     title: {
         fontSize: width < 600 ? 20 : 30,

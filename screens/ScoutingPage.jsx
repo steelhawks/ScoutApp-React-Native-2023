@@ -1,7 +1,5 @@
 import {
     StyleSheet,
-    TouchableOpacity,
-    Text,
     View,
     Alert,
     ScrollView,
@@ -9,27 +7,26 @@ import {
 import React, {useState, useEffect} from 'react';
 import Form from '../components/scouting_components/Form';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import NewMatch from '../components/NewMatch';
 import AnimationLoader from '../AnimationLoader';
 import Section from '../components/scouting_components/Section';
 import Query from '../components/scouting_components/Query';
 import RadioGroup from '../components/inputs/RadioGroup';
-import CounterInput from 'react-native-counter-input';
 import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
 import {UserContext} from '..';
 import Button from '../components/inputs/Button';
+import { useBackHandler } from '@react-native-community/hooks';
 
 const ScoutingPage = ({
-    logged_in,
-    setLogin,
     user,
     navigation,
-    competitionName,
+    eventName,
+    setMatchCreated,
+    teamNumber,
+    matchNumber,
+    driveStation,
 }) => {
-    const [matchCreated, setMatchCreated] = useState(false);
     const [formattedDate, setFormattedDate] = useState('');
-    const [eventName, setEventName] = useState(competitionName);
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
 
@@ -56,9 +53,9 @@ const ScoutingPage = ({
     const [dict, setDict] = useState({
         eventName: eventName,
         scouterName: user.name,
-        teamNumber: 0,
-        matchNumber: 0,
-        driveStation: 0,
+        teamNumber: teamNumber,
+        matchNumber: matchNumber,
+        driveStation: driveStation, // 1-3 for red, 4-6 for blue
         alliance: 'EMPTY', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
@@ -110,8 +107,6 @@ const ScoutingPage = ({
 
             await fs.writeFile(filePath, jsonData, 'utf8');
 
-            console.log('File saved!');
-
             Alert.alert('Match ' + dict.matchNumber + ' Saved!', '', [
                 {text: 'New Match', onPress: () => setMatchCreated(false)},
                 {
@@ -121,7 +116,7 @@ const ScoutingPage = ({
                         navigation.navigate('Data');
                     },
                 },
-                {text: 'OK'},
+                {text: 'OK', onPress: () => setMatchCreated(false)},
             ]);
         } catch (error) {
             console.error('Error saving data to file:', error.message);
@@ -241,41 +236,60 @@ const ScoutingPage = ({
     ];
 
     const form_sections = [
-        <Section title={'Pre-Match'} queries={prematch_queries} style={styles.sectionStyle}/>,
-        <Section title={'Auton'} queries={auton_queries} style={[styles.sectionStyle, {backgroundColor: 'rgba(136, 3, 21, 1)'}]}/>,
-        <Section title={'Teleop Scoring'} queries={tele_scoring_queries} style={styles.sectionStyle}/>,
-        <Section title={'Teleop Missed'} queries={tele_missed_queries} style={styles.sectionStyle}/>,
-        <Section title={'Teleop Received'} queries={tele_received_queries} style={styles.sectionStyle}/>,
-        <Section title={'Endgame'} queries={endgame_queries} style={styles.sectionStyle}/>,
+        <Section
+            title={'Pre-Match'}
+            queries={prematch_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Auton'}
+            queries={auton_queries}
+            style={[
+                styles.sectionStyle,
+                {backgroundColor: 'rgba(136, 3, 21, 1)'},
+            ]}
+        />,
+        <Section
+            title={'Teleop Scoring'}
+            queries={tele_scoring_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Teleop Missed'}
+            queries={tele_missed_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Teleop Received'}
+            queries={tele_received_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Endgame'}
+            queries={endgame_queries}
+            style={styles.sectionStyle}
+        />,
     ];
+
+    useBackHandler(() => {
+        setMatchCreated(false);
+        return true;
+    });
 
     return (
         <SafeAreaView style={styles.mainView}>
-            {matchCreated ? (
-                <View style={styles.container}>
-                    <ScrollView>
-                        <Button
-                            onPress={() => setMatchCreated(false)}
-                            label="Back"
+            <View style={styles.container}>
+                <ScrollView>
+                    <Button onPress={() => setMatchCreated(false)} label="Cancel" />
+                    <UserContext.Provider value={updateDict}>
+                        <Form
+                            sections={form_sections}
+                            updateDict={updateDict}
                         />
-                        <UserContext.Provider value={updateDict}>
-                            <Form
-                                sections={form_sections}
-                                updateDict={updateDict}
-                            />
-                        </UserContext.Provider>
-                        <Button onPress={() => endMatch()} label="End Match" />
-                    </ScrollView>
-                </View>
-            ) : (
-                <NewMatch
-                    setMatchCreated={setMatchCreated}
-                    user={user}
-                    dict={dict}
-                    updateDict={updateDict}
-                    eventName={eventName}
-                />
-            )}
+                    </UserContext.Provider>
+                    <Button onPress={() => endMatch()} label="End Match" />
+                </ScrollView>
+            </View>
             <AnimationLoader
                 isLoading={isDone}
                 loop={false}
@@ -296,10 +310,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     sectionStyle: {
-       alignItems: 'center',
-        width: "100%"
+        alignItems: 'center',
+        width: '100%',
     },
-    
 });
 
 export default ScoutingPage;

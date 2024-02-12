@@ -5,8 +5,6 @@ import {
     Text,
     Alert,
     StyleSheet,
-    TouchableOpacity,
-    Platform,
     Image,
 } from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/api';
@@ -15,11 +13,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
 
 const Login = ({
-    setLogin,
+    user,
     setUser,
-    logged_in,
     setServerIp,
-    setCompetitionName,
+    setEventName,
     appVersion,
 }) => {
     const [username, setUsername] = useState('');
@@ -45,9 +42,7 @@ const Login = ({
             );
 
             // this checks if login is correct as an empty array will be sent back if the password is incorrect
-            console.log('From server', userCredentials);
             if (!userCredentials) {
-                console.log('Test')
                 Alert.alert(
                     'App version mismatch',
                     'Please update the app',
@@ -59,10 +54,8 @@ const Login = ({
                 const user = userCredentials[0];
                 setUser(user);
 
-                const competitionName = user.competition_name;
-                setCompetitionName(competitionName);
-                console.log('Competition name from server', competitionName);
-                setLogin(true);
+                const eventName = user.competition_name;
+                setEventName(eventName);
                 setServerIp(Ip);
             } else {
                 console.error('Incorrect username or password');
@@ -80,7 +73,7 @@ const Login = ({
         <SafeAreaView style={styles.container}>
             <>
                 <View style={styles.background}>
-                    {logged_in ? (
+                    {user != null ? (
                         <View>
                             <Text>Hello!</Text>
                         </View>
@@ -103,6 +96,7 @@ const Login = ({
                                 placeholder="Username"
                                 onChangeText={text => setUsername(text)}
                                 value={username}
+                                autoCapitalize='none'
                             />
                             <TextInput
                                 style={styles.input}

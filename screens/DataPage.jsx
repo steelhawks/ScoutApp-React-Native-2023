@@ -1,41 +1,36 @@
-import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import fs from 'react-native-fs';
-import {ScrollView} from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
-import {launchImageLibrary} from 'react-native-image-picker';
-import { useFocusEffect } from '@react-navigation/native';
 import Button from '../components/inputs/Button';
+import { useFocusEffect } from '@react-navigation/native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import fs from 'react-native-fs';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
-// TODO
-// Create a searching feature >> by name, date, match, team, etc
-// Maybe add password protection
-// Selection
-// A nice UI to parse from the JSON so its not just a ugly JSON file
-// maybe add a way to edit the files post match
-// Make the names of the files not the json but the match number team number, and scouter name
-
-const DataPage = ({ serverIp }) => {
+const DataPage = ({ serverIp, navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
             fs.readdir(docDir)
                 .then(files => {
-                    const jsonFiles = files.filter(file => file.endsWith('.json'));
+                    const jsonFiles = files.filter(file =>
+                        file.endsWith('.json'),
+                    );
                     setJsonFiles(jsonFiles);
                 })
                 .catch(error => {
                     console.error('Error reading directory:', error);
                 });
-        }, [docDir])
+        }, [docDir]),
     );
-
 
     const docDir = fs.DocumentDirectoryPath;
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] = useState(false);
+    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] =
+        useState(false);
 
     const [dict, setDict] = useState({
         scouterName: '',
@@ -80,15 +75,14 @@ const DataPage = ({ serverIp }) => {
             .catch(error => {
                 console.error('Error reading directory:', error);
             });
-    }, []); // Empty dependency array ensures this effect runs once on component mount
+    }, []); // empty dependency array ensures this effect runs once on component mount
 
     const handleJsonSelection = async selectedJson => {
         try {
             const path = fs.DocumentDirectoryPath + '/' + selectedJson;
-            console.log(path);
             const content = await fs.readFile(path, 'utf8');
 
-            // Parse the JSON content and update the dictionary
+            // parses the JSON content and updates the dictionary
             const jsonData = JSON.parse(content);
             setDict(jsonData);
 
@@ -103,7 +97,19 @@ const DataPage = ({ serverIp }) => {
 
     const handleSync = async () => {
         const response = null;
-
+        
+        if (jsonFiles.length === 0) {
+            Alert.alert('No files to upload', '', [
+                {
+                    text: 'Create a Match',
+                    onPress: () => {
+                        navigation.navigate('New Match');
+                    },
+                },
+                {text: 'OK'},
+            ]);
+            return;
+        }
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
             const path = fs.DocumentDirectoryPath + '/' + json;
@@ -115,6 +121,16 @@ const DataPage = ({ serverIp }) => {
             }
         }
 
+        Alert.alert('Syncing Successful', '', [
+            {
+                text: 'Create Another Match',
+                onPress: () => {
+                    navigation.navigate('New Match');
+                },
+            },
+            {text: 'OK'},
+        ]);
+
         if (response) {
             setIsLoading(false);
             setSuccessfullySyncedWithServer(true);
@@ -125,7 +141,6 @@ const DataPage = ({ serverIp }) => {
         setIsLoading(true);
 
         try {
-            console.log('Server IP', serverIp);
             const serverEndpoint = `http://${serverIp}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
@@ -156,98 +171,116 @@ const DataPage = ({ serverIp }) => {
         }
     };
 
+    const handleSwipeDelete = async (file) => {
+        try {
+            selectedJson = null;
+            const filePath = fs.DocumentDirectoryPath + '/' + file;
+            await fs.unlink(filePath);
+
+            // Update the file list after deletion
+            const updatedFiles = jsonFiles.filter((f) => f !== file);
+            setJsonFiles(updatedFiles);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+    };
+
     return (
-        <>
-            <View style={styles.container}>
-                <ScrollView>
-                    <Text style={styles.welcomeText}>Previous Matches</Text>
-                    <Button label="Sync to Server" onPress={handleSync}/>
+        <GestureHandlerRootView style={styles.container}>
+            <ScrollView>
+                <Text style={styles.title}>Previous Matches</Text>
+                <View style={styles.centerContent}>
+                    <Button label="Sync to Server" onPress={handleSync} />
                     <View style={styles.scrollContainer}>
                         {jsonFiles.map(file => (
-                            <TouchableOpacity
+                            <Swipeable
                                 key={file}
-                                onPress={() => handleJsonSelection(file)}>
-                                <Text style={styles.infoText}>{file}</Text>
-                            </TouchableOpacity>
+                                renderRightActions={() => (
+                                    <TouchableOpacity
+                                        style={styles.swipeDeleteButton}
+                                        onPress={() => handleSwipeDelete(file)}>
+                                        <Text style={styles.swipeDeleteText}>Delete</Text>
+                                    </TouchableOpacity>
+                                )}>
+                                <TouchableOpacity
+                                    onPress={() => handleJsonSelection(file)}>
+                                    <Text style={styles.filesText}>{file}</Text>
+                                </TouchableOpacity>
+                            </Swipeable>
                         ))}
                     </View>
 
                     {jsonSelected ? (
-                        <Text style={styles.infoText}>
-                            Event Name: {dict.eventName}
-                            {'\n'}
-                            Scouter Name: {dict.scouterName}
-                            {'\n'}
-                            Team Number: {dict.teamNumber}
-                            {'\n'}
-                            Match Number: {dict.matchNumber}
-                            {'\n'}
-                            Drive Station: {dict.driveStation}
-                            {'\n'}
-                            Alliance: {dict.alliance}
-                            {'\n'}
-                            Preloaded: {dict.preloaded}
-                            {'\n'}
-                            Robot Left: {dict.robotLeft}
-                            {'\n'}
-                            Auton Speaker Notes Scored:{' '}
-                            {dict.autonSpeakerNotesScored}
-                            {'\n'}
-                            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
-                            {'\n'}
-                            Auton Missed: {dict.autonMissed}
-                            {'\n'}
-                            Auton Notes Received: {dict.autonNotesReceived}
-                            {'\n'}
-                            Auton Issues: {dict.autonIssues}
-                            {'\n'}
-                            Telop Speaker Notes Scored:{' '}
-                            {dict.telopSpeakerNotesScored}
-                            {'\n'}
-                            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
-                            {'\n'}
-                            Telop Amplified Speaker Notes:{' '}
-                            {dict.telopAmplifiedSpeakerNotes}
-                            {'\n'}
-                            Telop Speaker Notes Missed:{' '}
-                            {dict.telopSpeakerNotesMissed}
-                            {'\n'}
-                            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
-                            {'\n'}
-                            Telop Notes Received From Human Player:{' '}
-                            {dict.telopNotesReceivedFromHumanPlayer}
-                            {'\n'}
-                            Telop Notes Received From Ground:{' '}
-                            {dict.telopNotesReceivedFromGround}
-                            {'\n'}
-                            End Game: {dict.endGame}
-                            {'\n'}
-                            Trap: {dict.trap}
-                            {'\n'}
-                            Penalties: {dict.penalties}
-                            {'\n'}
-                            Telop Issues: {dict.telopIssues}
-                            {'\n'}
-                            Did Team Play Defense: {dict.didTeamPlayDefense}
-                            {'\n'}
-                            What Type of Robot: {dict.robotType}
-                            {'\n'}
+                        <Text style={styles.filesText}>
+                                Event Name: {dict.eventName}
+                                {'\n'}
+                                Scouter Name: {dict.scouterName}
+                                {'\n'}
+                                Team Number: {dict.teamNumber}
+                                {'\n'}
+                                Match Number: {dict.matchNumber}
+                                {'\n'}
+                                Drive Station: {dict.driveStation}
+                                {'\n'}
+                                Alliance: {dict.alliance}
+                                {'\n'}
+                                Preloaded: {dict.preloaded}
+                                {'\n'}
+                                Robot Left: {dict.robotLeft}
+                                {'\n'}
+                                Auton Speaker Notes Scored:{' '}
+                                {dict.autonSpeakerNotesScored}
+                                {'\n'}
+                                Auton Amp Notes Scored:{' '}
+                                {dict.autonAmpNotesScored}
+                                {'\n'}
+                                Auton Missed: {dict.autonMissed}
+                                {'\n'}
+                                Auton Notes Received: {dict.autonNotesReceived}
+                                {'\n'}
+                                Auton Issues: {dict.autonIssues}
+                                {'\n'}
+                                Telop Speaker Notes Scored:{' '}
+                                {dict.telopSpeakerNotesScored}
+                                {'\n'}
+                                Telop Amp Notes Scored:{' '}
+                                {dict.telopAmpNotesScored}
+                                {'\n'}
+                                Telop Amplified Speaker Notes:{' '}
+                                {dict.telopAmplifiedSpeakerNotes}
+                                {'\n'}
+                                Telop Speaker Notes Missed:{' '}
+                                {dict.telopSpeakerNotesMissed}
+                                {'\n'}
+                                Telop Amp Notes Missed:{' '}
+                                {dict.telopAmpNotesMissed}
+                                {'\n'}
+                                Telop Notes Received From Human Player:{' '}
+                                {dict.telopNotesReceivedFromHumanPlayer}
+                                {'\n'}
+                                Telop Notes Received From Ground:{' '}
+                                {dict.telopNotesReceivedFromGround}
+                                {'\n'}
+                                End Game: {dict.endGame}
+                                {'\n'}
+                                Trap: {dict.trap}
+                                {'\n'}
+                                Penalties: {dict.penalties}
+                                {'\n'}
+                                Telop Issues: {dict.telopIssues}
+                                {'\n'}
+                                Did Team Play Defense: {dict.didTeamPlayDefense}
+                                {'\n'}
+                                What Type of Robot: {dict.robotType}
+                                {'\n'}
                         </Text>
                     ) : (
-                        <Text
-                            style={{
-                                paddingTop: 200,
-                                fontSize: 20,
-                                fontWeight: 'bold',
-                                alignSelf: 'center',
-                                marginBottom: 30,
-                                color: 'white',
-                            }}>
+                        <Text style={styles.infoText}>
                             Select a JSON file to view the data
                         </Text>
                     )}
-                </ScrollView>
-            </View>
+                </View>
+            </ScrollView>
             <AnimationLoader isLoading={isLoading} />
             {successfullySyncedWithServer ? (
                 <AnimationLoader
@@ -259,51 +292,59 @@ const DataPage = ({ serverIp }) => {
                     }
                 />
             ) : null}
-        </>
+        </GestureHandlerRootView>
     );
 };
 
 const styles = StyleSheet.create({
+    title: {
+        alignSelf: 'center',
+        position: 'absolute',
+        paddingTop: RFValue(100),
+        fontSize: RFValue(36),
+        fontWeight: 'bold',
+        marginBottom: RFValue(50),
+        color: 'white',
+        textAlign: 'center',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#282c34', // Change this to your desired background color
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#282c34',
+    },
+    centerContent: {
+        paddingTop: RFValue(300),
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     scrollContainer: {
         alignItems: 'center',
         paddingVertical: 40,
     },
-    logoutButton: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
-        marginVertical: 20,
-        width: '40%',
-        alignItems: 'center',
-    },
-    welcomeText: {
-        paddingTop: 75,
-        fontSize: 24,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        marginBottom: 30,
-        color: 'white',
-    },
-    infoText: {
+    filesText: {
         alignSelf: 'center',
         color: 'white',
         marginTop: 20,
         textAlign: 'center',
     },
-    button: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
-        marginHorizontal: '10%',
+    infoText: {
+        color: 'white',
+        textAlign: 'center',
+        position: 'absolute',
+        bottom: RFValue(0),
     },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
-        alignSelf: 'center',
+    swipeDeleteButton: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        padding: 20,
+        marginTop: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    swipeDeleteText: {
+        color: 'white',
         fontWeight: 'bold',
     },
 });
