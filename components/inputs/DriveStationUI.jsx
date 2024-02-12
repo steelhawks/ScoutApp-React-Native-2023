@@ -37,7 +37,7 @@ const DriveStationUI = props => {
                         style={{
                             backgroundColor:
                                 selectedButton === buttonNumber
-                                    ? 'lightblue'
+                                    ? 'rgba(67, 80, 175, 1)'
                                     : 'transparent',
                         }}
                     />

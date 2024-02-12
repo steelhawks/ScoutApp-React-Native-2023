@@ -16,7 +16,7 @@ const App = () => {
     const [serverIp, setServerIp] = useState();
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v0.4a')
+    const [appVersion] = useState('v0.5a')
 
     // NewMatch VARS
     const [matchNumber, setMatchNumber] = useState(0);

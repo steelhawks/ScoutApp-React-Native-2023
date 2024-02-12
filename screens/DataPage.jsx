@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
-import { useFocusEffect } from '@react-navigation/native';
-import { RFValue } from 'react-native-responsive-fontsize';
+import {useFocusEffect} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
 import fs from 'react-native-fs';
-import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 
-const DataPage = ({ serverIp, navigation }) => {
+const DataPage = ({serverIp, navigation}) => {
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
@@ -97,7 +97,7 @@ const DataPage = ({ serverIp, navigation }) => {
 
     const handleSync = async () => {
         const response = null;
-        
+
         if (jsonFiles.length === 0) {
             Alert.alert('No files to upload', '', [
                 {
@@ -171,14 +171,31 @@ const DataPage = ({ serverIp, navigation }) => {
         }
     };
 
-    const handleSwipeDelete = async (file) => {
+    const handleSwipeDelete = async file => {
         try {
+            const [confirmed, setConfirmed]  = useState(false);
+            Alert.alert(
+                'Are you sure you want to delete?',
+                'This cannot be recovered',
+                [
+                    {text: 'Cancel', onPress: () => (setConfirmed(false))},
+                    {
+                        text: 'Delete',
+                        onPress: () => setConfirmed(true),
+                        style: 'destructive',
+                    },
+                ],
+            );
+
+            if (!confirmed) {
+                return;
+            }
             selectedJson = null;
             const filePath = fs.DocumentDirectoryPath + '/' + file;
             await fs.unlink(filePath);
 
             // Update the file list after deletion
-            const updatedFiles = jsonFiles.filter((f) => f !== file);
+            const updatedFiles = jsonFiles.filter(f => f !== file);
             setJsonFiles(updatedFiles);
         } catch (error) {
             console.error('Error deleting file:', error);
@@ -199,7 +216,9 @@ const DataPage = ({ serverIp, navigation }) => {
                                     <TouchableOpacity
                                         style={styles.swipeDeleteButton}
                                         onPress={() => handleSwipeDelete(file)}>
-                                        <Text style={styles.swipeDeleteText}>Delete</Text>
+                                        <Text style={styles.swipeDeleteText}>
+                                            Delete
+                                        </Text>
                                     </TouchableOpacity>
                                 )}>
                                 <TouchableOpacity
@@ -211,68 +230,65 @@ const DataPage = ({ serverIp, navigation }) => {
                     </View>
 
                     {jsonSelected ? (
-                        <Text style={styles.filesText}>
-                                Event Name: {dict.eventName}
-                                {'\n'}
-                                Scouter Name: {dict.scouterName}
-                                {'\n'}
-                                Team Number: {dict.teamNumber}
-                                {'\n'}
-                                Match Number: {dict.matchNumber}
-                                {'\n'}
-                                Drive Station: {dict.driveStation}
-                                {'\n'}
-                                Alliance: {dict.alliance}
-                                {'\n'}
-                                Preloaded: {dict.preloaded}
-                                {'\n'}
-                                Robot Left: {dict.robotLeft}
-                                {'\n'}
-                                Auton Speaker Notes Scored:{' '}
-                                {dict.autonSpeakerNotesScored}
-                                {'\n'}
-                                Auton Amp Notes Scored:{' '}
-                                {dict.autonAmpNotesScored}
-                                {'\n'}
-                                Auton Missed: {dict.autonMissed}
-                                {'\n'}
-                                Auton Notes Received: {dict.autonNotesReceived}
-                                {'\n'}
-                                Auton Issues: {dict.autonIssues}
-                                {'\n'}
-                                Telop Speaker Notes Scored:{' '}
-                                {dict.telopSpeakerNotesScored}
-                                {'\n'}
-                                Telop Amp Notes Scored:{' '}
-                                {dict.telopAmpNotesScored}
-                                {'\n'}
-                                Telop Amplified Speaker Notes:{' '}
-                                {dict.telopAmplifiedSpeakerNotes}
-                                {'\n'}
-                                Telop Speaker Notes Missed:{' '}
-                                {dict.telopSpeakerNotesMissed}
-                                {'\n'}
-                                Telop Amp Notes Missed:{' '}
-                                {dict.telopAmpNotesMissed}
-                                {'\n'}
-                                Telop Notes Received From Human Player:{' '}
-                                {dict.telopNotesReceivedFromHumanPlayer}
-                                {'\n'}
-                                Telop Notes Received From Ground:{' '}
-                                {dict.telopNotesReceivedFromGround}
-                                {'\n'}
-                                End Game: {dict.endGame}
-                                {'\n'}
-                                Trap: {dict.trap}
-                                {'\n'}
-                                Penalties: {dict.penalties}
-                                {'\n'}
-                                Telop Issues: {dict.telopIssues}
-                                {'\n'}
-                                Did Team Play Defense: {dict.didTeamPlayDefense}
-                                {'\n'}
-                                What Type of Robot: {dict.robotType}
-                                {'\n'}
+                        <Text style={styles.valueText}>
+                            Event Name: {dict.eventName}
+                            {'\n'}
+                            Scouter Name: {dict.scouterName}
+                            {'\n'}
+                            Team Number: {dict.teamNumber}
+                            {'\n'}
+                            Match Number: {dict.matchNumber}
+                            {'\n'}
+                            Drive Station: {dict.driveStation}
+                            {'\n'}
+                            Alliance: {dict.alliance}
+                            {'\n'}
+                            Preloaded: {dict.preloaded}
+                            {'\n'}
+                            Robot Left: {dict.robotLeft}
+                            {'\n'}
+                            Auton Speaker Notes Scored:{' '}
+                            {dict.autonSpeakerNotesScored}
+                            {'\n'}
+                            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
+                            {'\n'}
+                            Auton Missed: {dict.autonMissed}
+                            {'\n'}
+                            Auton Notes Received: {dict.autonNotesReceived}
+                            {'\n'}
+                            Auton Issues: {dict.autonIssues}
+                            {'\n'}
+                            Telop Speaker Notes Scored:{' '}
+                            {dict.telopSpeakerNotesScored}
+                            {'\n'}
+                            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
+                            {'\n'}
+                            Telop Amplified Speaker Notes:{' '}
+                            {dict.telopAmplifiedSpeakerNotes}
+                            {'\n'}
+                            Telop Speaker Notes Missed:{' '}
+                            {dict.telopSpeakerNotesMissed}
+                            {'\n'}
+                            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
+                            {'\n'}
+                            Telop Notes Received From Human Player:{' '}
+                            {dict.telopNotesReceivedFromHumanPlayer}
+                            {'\n'}
+                            Telop Notes Received From Ground:{' '}
+                            {dict.telopNotesReceivedFromGround}
+                            {'\n'}
+                            End Game: {dict.endGame}
+                            {'\n'}
+                            Trap: {dict.trap}
+                            {'\n'}
+                            Penalties: {dict.penalties}
+                            {'\n'}
+                            Telop Issues: {dict.telopIssues}
+                            {'\n'}
+                            Did Team Play Defense: {dict.didTeamPlayDefense}
+                            {'\n'}
+                            What Type of Robot: {dict.robotType}
+                            {'\n'}
                         </Text>
                     ) : (
                         <Text style={styles.infoText}>
@@ -298,54 +314,98 @@ const DataPage = ({ serverIp, navigation }) => {
 
 const styles = StyleSheet.create({
     title: {
-        alignSelf: 'center',
-        position: 'absolute',
-        paddingTop: RFValue(100),
-        fontSize: RFValue(36),
+        paddingTop: RFValue(50),
+        fontSize: RFValue(30),
         fontWeight: 'bold',
-        marginBottom: RFValue(50),
-        color: 'white',
+        color: 'white', // White text color for dark mode
+        marginBottom: RFValue(20),
         textAlign: 'center',
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#282c34',
+        backgroundColor: '#121212', // Dark background color for dark mode
+        padding: RFValue(16),
+        borderRadius: RFValue(16),
     },
     centerContent: {
-        paddingTop: RFValue(300),
+        borderRadius: RFValue(16),
+        paddingTop: RFValue(20),
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    scrollContainer: {
-        alignItems: 'center',
-        paddingVertical: 40,
+        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        padding: RFValue(16),
+        width: '90%', // Take up 90% of the screen width
+        alignSelf: 'center',
     },
     filesText: {
         alignSelf: 'center',
-        color: 'white',
-        marginTop: 20,
+        color: 'white', // White text color for dark mode
+        marginTop: RFValue(20),
         textAlign: 'center',
+        padding: RFValue(16),
+        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        borderRadius: RFValue(8),
+        marginBottom: RFValue(10),
+        width: '100%',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 5,
+        borderRadius: 16,
+    },
+    valueText: {
+        color: 'white',
+        textAlign: 'center',
+        width: '100%',
+        backgroundColor: '#121212',
+        padding: RFValue(10),
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        borderRadius: RFValue(16),
     },
     infoText: {
         color: 'white',
         textAlign: 'center',
         position: 'absolute',
-        bottom: RFValue(0),
+        bottom: RFValue(-64),
+        width: '100%',
+        padding: RFValue(8),
+        backgroundColor: '#121212',
     },
     swipeDeleteButton: {
-        backgroundColor: 'red',
+        backgroundColor: '#e74c3c',
         justifyContent: 'center',
-        alignItems: 'flex-end',
-        padding: 20,
-        marginTop: 10,
-        marginBottom: 10,
-        borderRadius: 5,
+        alignItems: 'center',
+        padding: RFValue(16),
+        marginTop: RFValue(10),
+        borderRadius: RFValue(8),
+        width: '40%',
+        alignSelf: 'center',
     },
     swipeDeleteText: {
         color: 'white',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 

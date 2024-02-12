@@ -1,24 +1,13 @@
 import React, {useState} from 'react';
-import {
-    View,
-    TextInput,
-    Text,
-    Alert,
-    StyleSheet,
-    Image,
-} from 'react-native';
+import {View, TextInput, Text, Alert, StyleSheet, Image} from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/api';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
+import {RFValue} from 'react-native-responsive-fontsize';
+import SafeAreaContainer from '../components/SafeAreaContainer';
 
-const Login = ({
-    user,
-    setUser,
-    setServerIp,
-    setEventName,
-    appVersion,
-}) => {
+const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
     const [Ip, setIp] = useState(null);
@@ -43,10 +32,7 @@ const Login = ({
 
             // this checks if login is correct as an empty array will be sent back if the password is incorrect
             if (!userCredentials) {
-                Alert.alert(
-                    'App version mismatch',
-                    'Please update the app',
-                );
+                Alert.alert('App version mismatch', 'Please update the app');
                 setIsLoading(false);
                 return;
             }
@@ -79,7 +65,7 @@ const Login = ({
                         </View>
                     ) : (
                         <React.Fragment>
-                            <View style={styles.container}>
+                            <View style={styles.secondContainer}>
                                 <View style={styles.imageContainer}>
                                     <Image
                                         source={require('../assets/steelhawks.png')}
@@ -96,7 +82,7 @@ const Login = ({
                                 placeholder="Username"
                                 onChangeText={text => setUsername(text)}
                                 value={username}
-                                autoCapitalize='none'
+                                autoCapitalize="none"
                             />
                             <TextInput
                                 style={styles.input}
@@ -144,36 +130,75 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'black',
         paddingBottom: 75,
+        paddingHorizontal: RFValue(16),
+        borderRadius: RFValue(16),
+        paddingTop: RFValue(25),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        borderRadius: RFValue(10),
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        paddingTop: RFValue(10),
+        paddingBottom: RFValue(-10),
+        width: '90%',
+        alignSelf: 'center',
+    },
+    secondContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: 'black',
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        margin: 10,
+        marginBottom: 50,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        paddingTop: 10,
+        paddingBottom: -10,
+        width: '90%',
+        alignSelf: 'center',
     },
     background: {
         flex: 1,
         justifyContent: 'center',
     },
     title: {
-        fontSize: 25,
+        fontSize: RFValue(25),
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: RFValue(20),
         color: 'white',
         textAlign: 'center',
     },
     input: {
-        padding: 10,
-        borderRadius: 5,
+        padding: RFValue(10),
+        borderRadius: RFValue(5),
         borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 10,
-        marginHorizontal: '10%',
+        marginBottom: RFValue(10),
         color: 'white',
     },
     button: {
         backgroundColor: 'lightblue',
-        padding: 15,
-        borderRadius: 5,
+        padding: RFValue(15),
+        borderRadius: RFValue(5),
         marginHorizontal: '10%',
     },
     buttonText: {
         color: 'black',
-        fontSize: 20,
+        fontSize: RFValue(20),
         alignSelf: 'center',
         fontWeight: 'bold',
     },

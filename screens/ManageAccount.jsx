@@ -24,6 +24,7 @@ const ManageAccount = ({ setUser, user, appVersion, eventName, serverIp }) => {
                     Event: {eventName} {'\n'}
                     Server: {serverIp} {'\n'}
                     Uptime: {} {'\n'}
+                    App Version: {appVersion}
                 </Text>
             </View>
 
@@ -41,34 +42,50 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#282c34', // Change this to your desired background color
+        backgroundColor: '#121212',
+        padding: RFValue(16),
+        borderRadius: RFValue(16),
     },
     centerContent: {
-        paddingTop: RFValue(125), // Use responsive font size for padding
+        paddingTop: RFValue(25),
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        borderRadius: RFValue(10),
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        paddingTop: RFValue(10),
+        paddingBottom: RFValue(-10),
+        width: '90%',
+        alignSelf: 'center',
     },
     title: {
         position: 'absolute',
-        paddingBottom: RFValue(400), // Use responsive font size for padding
-        fontSize: RFValue(36), // Use responsive font size for text
+        paddingBottom: RFValue(400),
+        fontSize: RFValue(36),
         fontWeight: 'bold',
-        marginBottom: RFValue(20), // Use responsive font size for margin
+        marginBottom: RFValue(20),
         color: 'white',
         textAlign: 'center',
     },
     welcomeText: {
-        fontSize: RFValue(24), // Use responsive font size for text
+        fontSize: RFValue(24),
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: RFValue(30), // Use responsive font size for margin
+        marginBottom: RFValue(30),
         color: 'white',
     },
     infoText: {
         color: 'white',
         textAlign: 'center',
         position: 'absolute',
-        bottom: RFValue(20), // Use responsive font size for bottom position
+        bottom: RFValue(30),
     },
 });
 
