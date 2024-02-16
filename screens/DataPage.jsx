@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     valueText: {
         color: 'white',
         textAlign: 'center',
-    },
+},
     infoText: {
         color: 'white',
         textAlign: 'center',
