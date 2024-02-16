@@ -9,11 +9,32 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* ReactNative_ScoutApp2023Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ReactNative_ScoutApp2023Tests.m */; };
 		0C80B921A6F3F58F76C31292 /* libPods-ReactNative_ScoutApp2023.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ReactNative_ScoutApp2023.a */; };
+		0D3C1D26FDF7EF9734BDC8C8 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7246BDF607797D0AE96DA6BA /* ExpoModulesProvider.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		6E385883D2968F9B0221B96B /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E616885BECB08961CD67AECA /* ExpoModulesProvider.swift */; };
 		7699B88040F8A987B510C191 /* libPods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		BB5B92112B7B377100D1BEA7 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */; };
+		BB5B92122B7B377100D1BEA7 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */; };
+		BB5B92132B7B377100D1BEA7 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92002B7B377100D1BEA7 /* Feather.ttf */; };
+		BB5B92142B7B377100D1BEA7 /* FontAwesome6_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92012B7B377100D1BEA7 /* FontAwesome6_Regular.ttf */; };
+		BB5B92152B7B377100D1BEA7 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92022B7B377100D1BEA7 /* Entypo.ttf */; };
+		BB5B92162B7B377100D1BEA7 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92032B7B377100D1BEA7 /* FontAwesome5_Brands.ttf */; };
+		BB5B92172B7B377100D1BEA7 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92042B7B377100D1BEA7 /* MaterialCommunityIcons.ttf */; };
+		BB5B92182B7B377100D1BEA7 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92052B7B377100D1BEA7 /* AntDesign.ttf */; };
+		BB5B92192B7B377100D1BEA7 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92062B7B377100D1BEA7 /* Foundation.ttf */; };
+		BB5B921A2B7B377100D1BEA7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92072B7B377100D1BEA7 /* Ionicons.ttf */; };
+		BB5B921B2B7B377100D1BEA7 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92082B7B377100D1BEA7 /* FontAwesome5_Solid.ttf */; };
+		BB5B921C2B7B377100D1BEA7 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92092B7B377100D1BEA7 /* FontAwesome5_Regular.ttf */; };
+		BB5B921D2B7B377100D1BEA7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920A2B7B377100D1BEA7 /* FontAwesome.ttf */; };
+		BB5B921E2B7B377100D1BEA7 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920B2B7B377100D1BEA7 /* Zocial.ttf */; };
+		BB5B921F2B7B377100D1BEA7 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920C2B7B377100D1BEA7 /* EvilIcons.ttf */; };
+		BB5B92202B7B377100D1BEA7 /* FontAwesome6_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920D2B7B377100D1BEA7 /* FontAwesome6_Solid.ttf */; };
+		BB5B92212B7B377100D1BEA7 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920E2B7B377100D1BEA7 /* SimpleLineIcons.ttf */; };
+		BB5B92222B7B377100D1BEA7 /* FontAwesome6_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B920F2B7B377100D1BEA7 /* FontAwesome6_Brands.ttf */; };
+		BB5B92232B7B377100D1BEA7 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92102B7B377100D1BEA7 /* MaterialIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,8 +62,29 @@
 		5709B34CF0A7D63546082F79 /* Pods-ReactNative_ScoutApp2023.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNative_ScoutApp2023.release.xcconfig"; path = "Target Support Files/Pods-ReactNative_ScoutApp2023/Pods-ReactNative_ScoutApp2023.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.debug.xcconfig"; path = "Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ReactNative_ScoutApp2023.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNative_ScoutApp2023.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7246BDF607797D0AE96DA6BA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReactNative_ScoutApp2023/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; path = "Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; sourceTree = "<group>"; };
+		BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		BB5B92002B7B377100D1BEA7 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		BB5B92012B7B377100D1BEA7 /* FontAwesome6_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Regular.ttf; sourceTree = "<group>"; };
+		BB5B92022B7B377100D1BEA7 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		BB5B92032B7B377100D1BEA7 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		BB5B92042B7B377100D1BEA7 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		BB5B92052B7B377100D1BEA7 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		BB5B92062B7B377100D1BEA7 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		BB5B92072B7B377100D1BEA7 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		BB5B92082B7B377100D1BEA7 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		BB5B92092B7B377100D1BEA7 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		BB5B920A2B7B377100D1BEA7 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		BB5B920B2B7B377100D1BEA7 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		BB5B920C2B7B377100D1BEA7 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		BB5B920D2B7B377100D1BEA7 /* FontAwesome6_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Solid.ttf; sourceTree = "<group>"; };
+		BB5B920E2B7B377100D1BEA7 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		BB5B920F2B7B377100D1BEA7 /* FontAwesome6_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Brands.ttf; sourceTree = "<group>"; };
+		BB5B92102B7B377100D1BEA7 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		E616885BECB08961CD67AECA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ReactNative_ScoutApp2023/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -96,6 +138,23 @@
 			name = ReactNative_ScoutApp2023;
 			sourceTree = "<group>";
 		};
+		15354B165EC56CE2F0B6CED4 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				264D8248E00EFF5B12B60E3C /* ReactNative_ScoutApp2023 */,
+				554F670AD808ED429873957E /* ReactNative_ScoutApp2023Tests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		264D8248E00EFF5B12B60E3C /* ReactNative_ScoutApp2023 */ = {
+			isa = PBXGroup;
+			children = (
+				E616885BECB08961CD67AECA /* ExpoModulesProvider.swift */,
+			);
+			name = ReactNative_ScoutApp2023;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +163,14 @@
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		554F670AD808ED429873957E /* ReactNative_ScoutApp2023Tests */ = {
+			isa = PBXGroup;
+			children = (
+				7246BDF607797D0AE96DA6BA /* ExpoModulesProvider.swift */,
+			);
+			name = ReactNative_ScoutApp2023Tests;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -116,12 +183,14 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				BB5B91FD2B7B377100D1BEA7 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* ReactNative_ScoutApp2023 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ReactNative_ScoutApp2023Tests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				15354B165EC56CE2F0B6CED4 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -135,6 +204,33 @@
 				00E356EE1AD99517003FC87E /* ReactNative_ScoutApp2023Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BB5B91FD2B7B377100D1BEA7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */,
+				BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */,
+				BB5B92002B7B377100D1BEA7 /* Feather.ttf */,
+				BB5B92012B7B377100D1BEA7 /* FontAwesome6_Regular.ttf */,
+				BB5B92022B7B377100D1BEA7 /* Entypo.ttf */,
+				BB5B92032B7B377100D1BEA7 /* FontAwesome5_Brands.ttf */,
+				BB5B92042B7B377100D1BEA7 /* MaterialCommunityIcons.ttf */,
+				BB5B92052B7B377100D1BEA7 /* AntDesign.ttf */,
+				BB5B92062B7B377100D1BEA7 /* Foundation.ttf */,
+				BB5B92072B7B377100D1BEA7 /* Ionicons.ttf */,
+				BB5B92082B7B377100D1BEA7 /* FontAwesome5_Solid.ttf */,
+				BB5B92092B7B377100D1BEA7 /* FontAwesome5_Regular.ttf */,
+				BB5B920A2B7B377100D1BEA7 /* FontAwesome.ttf */,
+				BB5B920B2B7B377100D1BEA7 /* Zocial.ttf */,
+				BB5B920C2B7B377100D1BEA7 /* EvilIcons.ttf */,
+				BB5B920D2B7B377100D1BEA7 /* FontAwesome6_Solid.ttf */,
+				BB5B920E2B7B377100D1BEA7 /* SimpleLineIcons.ttf */,
+				BB5B920F2B7B377100D1BEA7 /* FontAwesome6_Brands.ttf */,
+				BB5B92102B7B377100D1BEA7 /* MaterialIcons.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -156,6 +252,7 @@
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ReactNative_ScoutApp2023Tests" */;
 			buildPhases = (
 				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
+				E472BACF585B3A03CA07BDAB /* [Expo] Configure project */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -178,6 +275,7 @@
 			buildPhases = (
 				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
+				181C00DC391EEE6DFFB18FA7 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -242,8 +340,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB5B921C2B7B377100D1BEA7 /* FontAwesome5_Regular.ttf in Resources */,
+				BB5B92112B7B377100D1BEA7 /* Fontisto.ttf in Resources */,
+				BB5B92162B7B377100D1BEA7 /* FontAwesome5_Brands.ttf in Resources */,
+				BB5B921A2B7B377100D1BEA7 /* Ionicons.ttf in Resources */,
+				BB5B921B2B7B377100D1BEA7 /* FontAwesome5_Solid.ttf in Resources */,
+				BB5B92152B7B377100D1BEA7 /* Entypo.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				BB5B92182B7B377100D1BEA7 /* AntDesign.ttf in Resources */,
+				BB5B921E2B7B377100D1BEA7 /* Zocial.ttf in Resources */,
+				BB5B92192B7B377100D1BEA7 /* Foundation.ttf in Resources */,
+				BB5B92222B7B377100D1BEA7 /* FontAwesome6_Brands.ttf in Resources */,
+				BB5B92132B7B377100D1BEA7 /* Feather.ttf in Resources */,
+				BB5B92212B7B377100D1BEA7 /* SimpleLineIcons.ttf in Resources */,
+				BB5B921F2B7B377100D1BEA7 /* EvilIcons.ttf in Resources */,
+				BB5B92122B7B377100D1BEA7 /* Octicons.ttf in Resources */,
+				BB5B921D2B7B377100D1BEA7 /* FontAwesome.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				BB5B92172B7B377100D1BEA7 /* MaterialCommunityIcons.ttf in Resources */,
+				BB5B92202B7B377100D1BEA7 /* FontAwesome6_Solid.ttf in Resources */,
+				BB5B92142B7B377100D1BEA7 /* FontAwesome6_Regular.ttf in Resources */,
+				BB5B92232B7B377100D1BEA7 /* MaterialIcons.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +381,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios relative | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli')\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n";
 		};
 		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -282,6 +399,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReactNative_ScoutApp2023/Pods-ReactNative_ScoutApp2023-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		181C00DC391EEE6DFFB18FA7 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ReactNative_ScoutApp2023/expo-configure-project.sh\"\n";
 		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -361,6 +497,25 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReactNative_ScoutApp2023/Pods-ReactNative_ScoutApp2023-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E472BACF585B3A03CA07BDAB /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/expo-configure-project.sh\"\n";
+		};
 		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -394,7 +549,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
+			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\nexport RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > `$NODE_BINARY --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/.packager.env'\"`\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open `$NODE_BINARY --print \"require('path').dirname(require.resolve('expo/package.json')) + '/scripts/launchPackager.command'\"` || echo \"Can't start packager automatically\"\n  fi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -405,6 +560,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* ReactNative_ScoutApp2023Tests.m in Sources */,
+				0D3C1D26FDF7EF9734BDC8C8 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +570,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				6E385883D2968F9B0221B96B /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +597,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ReactNative_ScoutApp2023Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -451,6 +608,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReactNative_ScoutApp2023.app/ReactNative_ScoutApp2023";
@@ -466,7 +624,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 2GW9354ST4;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -477,6 +635,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ReactNative_ScoutApp2023.app/ReactNative_ScoutApp2023";
@@ -508,6 +667,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -546,6 +706,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -608,7 +769,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -674,7 +835,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

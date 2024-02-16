@@ -11,7 +11,7 @@ export {default as NewMatch} from "./components/NewMatch";
 //inputcomponents
 export {default as Checkbox} from "./components/inputs/Checkbox";
 export {default as CustomTextInput} from "./components/inputs/CustomTextInput";
-export {default as Dropdown} from "./components/inputs/TeamDropdown";
+// export {default as Dropdown} from "./components/inputs/TeamDropdown";
 export {default as RadioGroup} from "./components/inputs/RadioGroup";
 
 //screens

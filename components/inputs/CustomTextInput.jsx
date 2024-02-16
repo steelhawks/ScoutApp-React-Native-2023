@@ -9,6 +9,7 @@ const CustomTextInput = props => {
             fontWeight: 'bold',
             marginBottom: 10,
             color: 'white',
+            paddingBottom: 5,
         },
         input: {
             padding: 10,
@@ -16,7 +17,7 @@ const CustomTextInput = props => {
             borderColor: 'gray',
             borderWidth: 1,
             marginBottom: 20,
-            width: '100%',
+            width: '80%',
             color: 'white',
         }
     });

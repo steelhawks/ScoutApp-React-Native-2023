@@ -7,6 +7,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const DataPage = ({serverIp, navigation}) => {
     useFocusEffect(
@@ -26,6 +27,7 @@ const DataPage = ({serverIp, navigation}) => {
     );
 
     const docDir = fs.DocumentDirectoryPath;
+    const [confirmed, setConfirmed] = useState(false);
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -172,29 +174,28 @@ const DataPage = ({serverIp, navigation}) => {
     };
 
     const handleSwipeDelete = async file => {
-        try {
-            const [confirmed, setConfirmed]  = useState(false);
-            Alert.alert(
-                'Are you sure you want to delete?',
-                'This cannot be recovered',
-                [
-                    {text: 'Cancel', onPress: () => (setConfirmed(false))},
-                    {
-                        text: 'Delete',
-                        onPress: () => setConfirmed(true),
-                        style: 'destructive',
-                    },
-                ],
-            );
+        Alert.alert(
+            'Are you sure you want to delete?',
+            'This cannot be recovered',
+            [
+                {
+                    text: 'Cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => handleDelete(file),
+                    style: 'destructive',
+                },
+            ],
+        );
+    };
 
-            if (!confirmed) {
-                return;
-            }
+    const handleDelete = async file => {
+        try {
             selectedJson = null;
             const filePath = fs.DocumentDirectoryPath + '/' + file;
             await fs.unlink(filePath);
 
-            // Update the file list after deletion
             const updatedFiles = jsonFiles.filter(f => f !== file);
             setJsonFiles(updatedFiles);
         } catch (error) {
@@ -204,110 +205,127 @@ const DataPage = ({serverIp, navigation}) => {
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            <ScrollView>
-                <Text style={styles.title}>Previous Matches</Text>
-                <View style={styles.centerContent}>
-                    <Button label="Sync to Server" onPress={handleSync} />
-                    <View style={styles.scrollContainer}>
-                        {jsonFiles.map(file => (
-                            <Swipeable
-                                key={file}
-                                renderRightActions={() => (
+            <SafeAreaView
+                style={{
+                    flex: 1,
+                    paddingBottom: RFValue(100),
+                }}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={styles.title}>Previous Matches</Text>
+                    <View style={styles.centerContent}>
+                        <Button label="Sync to Server" onPress={handleSync} />
+                        <View>
+                            {jsonFiles.map(file => (
+                                <Swipeable
+                                    key={file}
+                                    renderRightActions={() => (
+                                        <TouchableOpacity
+                                            style={styles.swipeDeleteButton}
+                                            onPress={() =>
+                                                handleSwipeDelete(file)
+                                            }>
+                                            <Text
+                                                style={styles.swipeDeleteText}>
+                                                Delete
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}>
                                     <TouchableOpacity
-                                        style={styles.swipeDeleteButton}
-                                        onPress={() => handleSwipeDelete(file)}>
-                                        <Text style={styles.swipeDeleteText}>
-                                            Delete
+                                        style={styles.filesButton}
+                                        onPress={() =>
+                                            handleJsonSelection(file)
+                                        }>
+                                        <Text style={styles.filesText}>
+                                            {file}
                                         </Text>
                                     </TouchableOpacity>
-                                )}>
-                                <TouchableOpacity
-                                    onPress={() => handleJsonSelection(file)}>
-                                    <Text style={styles.filesText}>{file}</Text>
-                                </TouchableOpacity>
-                            </Swipeable>
-                        ))}
-                    </View>
+                                </Swipeable>
+                            ))}
+                        </View>
 
-                    {jsonSelected ? (
-                        <Text style={styles.valueText}>
-                            Event Name: {dict.eventName}
-                            {'\n'}
-                            Scouter Name: {dict.scouterName}
-                            {'\n'}
-                            Team Number: {dict.teamNumber}
-                            {'\n'}
-                            Match Number: {dict.matchNumber}
-                            {'\n'}
-                            Drive Station: {dict.driveStation}
-                            {'\n'}
-                            Alliance: {dict.alliance}
-                            {'\n'}
-                            Preloaded: {dict.preloaded}
-                            {'\n'}
-                            Robot Left: {dict.robotLeft}
-                            {'\n'}
-                            Auton Speaker Notes Scored:{' '}
-                            {dict.autonSpeakerNotesScored}
-                            {'\n'}
-                            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
-                            {'\n'}
-                            Auton Missed: {dict.autonMissed}
-                            {'\n'}
-                            Auton Notes Received: {dict.autonNotesReceived}
-                            {'\n'}
-                            Auton Issues: {dict.autonIssues}
-                            {'\n'}
-                            Telop Speaker Notes Scored:{' '}
-                            {dict.telopSpeakerNotesScored}
-                            {'\n'}
-                            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
-                            {'\n'}
-                            Telop Amplified Speaker Notes:{' '}
-                            {dict.telopAmplifiedSpeakerNotes}
-                            {'\n'}
-                            Telop Speaker Notes Missed:{' '}
-                            {dict.telopSpeakerNotesMissed}
-                            {'\n'}
-                            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
-                            {'\n'}
-                            Telop Notes Received From Human Player:{' '}
-                            {dict.telopNotesReceivedFromHumanPlayer}
-                            {'\n'}
-                            Telop Notes Received From Ground:{' '}
-                            {dict.telopNotesReceivedFromGround}
-                            {'\n'}
-                            End Game: {dict.endGame}
-                            {'\n'}
-                            Trap: {dict.trap}
-                            {'\n'}
-                            Penalties: {dict.penalties}
-                            {'\n'}
-                            Telop Issues: {dict.telopIssues}
-                            {'\n'}
-                            Did Team Play Defense: {dict.didTeamPlayDefense}
-                            {'\n'}
-                            What Type of Robot: {dict.robotType}
-                            {'\n'}
-                        </Text>
-                    ) : (
-                        <Text style={styles.infoText}>
-                            Select a JSON file to view the data
-                        </Text>
-                    )}
-                </View>
-            </ScrollView>
-            <AnimationLoader isLoading={isLoading} />
-            {successfullySyncedWithServer ? (
-                <AnimationLoader
-                    isLoading={successfullySyncedWithServer}
-                    animationKey="SUCCESS_01"
-                    loop={false}
-                    onAnimationComplete={() =>
-                        setSuccessfullySyncedWithServer(false)
-                    }
-                />
-            ) : null}
+                        {jsonSelected ? (
+                            <Text style={styles.valueText}>
+                                Event Name: {dict.eventName}
+                                {'\n'}
+                                Scouter Name: {dict.scouterName}
+                                {'\n'}
+                                Team Number: {dict.teamNumber}
+                                {'\n'}
+                                Match Number: {dict.matchNumber}
+                                {'\n'}
+                                Drive Station: {dict.driveStation}
+                                {'\n'}
+                                Alliance: {dict.alliance}
+                                {'\n'}
+                                Preloaded: {dict.preloaded}
+                                {'\n'}
+                                Robot Left: {dict.robotLeft}
+                                {'\n'}
+                                Auton Speaker Notes Scored:{' '}
+                                {dict.autonSpeakerNotesScored}
+                                {'\n'}
+                                Auton Amp Notes Scored:{' '}
+                                {dict.autonAmpNotesScored}
+                                {'\n'}
+                                Auton Missed: {dict.autonMissed}
+                                {'\n'}
+                                Auton Notes Received: {dict.autonNotesReceived}
+                                {'\n'}
+                                Auton Issues: {dict.autonIssues}
+                                {'\n'}
+                                Telop Speaker Notes Scored:{' '}
+                                {dict.telopSpeakerNotesScored}
+                                {'\n'}
+                                Telop Amp Notes Scored:{' '}
+                                {dict.telopAmpNotesScored}
+                                {'\n'}
+                                Telop Amplified Speaker Notes:{' '}
+                                {dict.telopAmplifiedSpeakerNotes}
+                                {'\n'}
+                                Telop Speaker Notes Missed:{' '}
+                                {dict.telopSpeakerNotesMissed}
+                                {'\n'}
+                                Telop Amp Notes Missed:{' '}
+                                {dict.telopAmpNotesMissed}
+                                {'\n'}
+                                Telop Notes Received From Human Player:{' '}
+                                {dict.telopNotesReceivedFromHumanPlayer}
+                                {'\n'}
+                                Telop Notes Received From Ground:{' '}
+                                {dict.telopNotesReceivedFromGround}
+                                {'\n'}
+                                End Game: {dict.endGame}
+                                {'\n'}
+                                Trap: {dict.trap}
+                                {'\n'}
+                                Penalties: {dict.penalties}
+                                {'\n'}
+                                Telop Issues: {dict.telopIssues}
+                                {'\n'}
+                                Did Team Play Defense: {dict.didTeamPlayDefense}
+                                {'\n'}
+                                What Type of Robot: {dict.robotType}
+                                {'\n'}
+                            </Text>
+                        ) : (
+                            <Text style={styles.infoText}>
+                                Select a JSON file to view the data
+                            </Text>
+                        )}
+                    </View>
+                </ScrollView>
+                <AnimationLoader isLoading={isLoading} />
+                {successfullySyncedWithServer ? (
+                    <AnimationLoader
+                        isLoading={successfullySyncedWithServer}
+                        animationKey="SUCCESS_01"
+                        loop={false}
+                        onAnimationComplete={() =>
+                            setSuccessfullySyncedWithServer(false)
+                        }
+                    />
+                ) : null}
+            </SafeAreaView>
         </GestureHandlerRootView>
     );
 };
@@ -325,16 +343,18 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#121212', // Dark background color for dark mode
+        backgroundColor: '#121212',
         padding: RFValue(16),
-        borderRadius: RFValue(16),
+        borderTopLeftRadius: RFValue(16),
+        borderTopRightRadius: RFValue(16),
+        // paddingBottom: RFValue(120),
     },
     centerContent: {
         borderRadius: RFValue(16),
         paddingTop: RFValue(20),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        backgroundColor: '#1e1e1e',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -344,16 +364,14 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
         padding: RFValue(16),
-        width: '90%', // Take up 90% of the screen width
+        width: '100%',
         alignSelf: 'center',
     },
-    filesText: {
+    filesButton: {
         alignSelf: 'center',
-        color: 'white', // White text color for dark mode
-        marginTop: RFValue(20),
+        marginTop: RFValue(10),
         textAlign: 'center',
         padding: RFValue(16),
-        backgroundColor: '#1e1e1e', // Slightly lighter background for content
         borderRadius: RFValue(8),
         marginBottom: RFValue(10),
         width: '100%',
@@ -365,11 +383,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 5,
-        borderRadius: 16,
+        borderRadius: RFValue(8),
+        backgroundColor: '#121212',
     },
-    valueText: {
-        color: 'white',
+    filesText: {
         textAlign: 'center',
+        color: 'white',
+    },
+    valueBox: {
         width: '100%',
         backgroundColor: '#121212',
         padding: RFValue(10),
@@ -381,7 +402,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 3,
-        borderRadius: RFValue(16),
+        borderRadius: 16,
+    },
+    valueText: {
+        color: 'white',
+        textAlign: 'center',
     },
     infoText: {
         color: 'white',
@@ -394,18 +419,20 @@ const styles = StyleSheet.create({
     },
     swipeDeleteButton: {
         backgroundColor: '#e74c3c',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: RFValue(16),
-        marginTop: RFValue(10),
+        padding: RFValue(14),
         borderRadius: RFValue(8),
         width: '40%',
         alignSelf: 'center',
+        marginTop: RFValue(10),
+        marginBottom: RFValue(10),
+        elevation: 5,
     },
     swipeDeleteText: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+        alignSelf: 'center',
+        fontFamily: 'Arial',
     },
 });
 

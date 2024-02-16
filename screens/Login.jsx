@@ -1,17 +1,29 @@
 import React, {useState} from 'react';
-import {View, TextInput, Text, Alert, StyleSheet, Image} from 'react-native';
+import {
+    View,
+    TextInput,
+    Text,
+    Alert,
+    StyleSheet,
+    Image,
+    Keyboard,
+} from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/api';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import SafeAreaContainer from '../components/SafeAreaContainer';
+import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+// import LocalAuthentication from 'rn-local-authentication';
 
 const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
     const [Ip, setIp] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [stayRemembered, setStayRemembered] = useState(false);
 
     const handleLogin = async () => {
         setIsLoading(true);
@@ -20,6 +32,10 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
             Alert.alert('Please enter a server IP address');
             setIsLoading(false);
             return;
+        }
+
+        if (stayRemembered) {
+
         }
 
         try {
@@ -65,48 +81,61 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
                         </View>
                     ) : (
                         <React.Fragment>
-                            <View style={styles.secondContainer}>
-                                <View style={styles.imageContainer}>
-                                    <Image
-                                        source={require('../assets/steelhawks.png')}
-                                        style={styles.image}
-                                    />
+                            <AvoidKeyboardContainer>
+                                <View style={styles.secondContainer}>
+                                    <View style={styles.imageContainer}>
+                                        <Image
+                                            source={require('../assets/steelhawks.png')}
+                                            style={styles.image}
+                                        />
+                                    </View>
                                 </View>
-                            </View>
 
-                            <Text style={styles.title}>Hello</Text>
+                                <Text style={styles.title}>Hello</Text>
 
-                            <TextInput
-                                style={styles.input}
-                                placeholderTextColor={'white'}
-                                placeholder="Username"
-                                onChangeText={text => setUsername(text)}
-                                value={username}
-                                autoCapitalize="none"
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholderTextColor={'white'}
-                                placeholder="OSIS"
-                                onChangeText={text => setOsis(text)}
-                                value={osis}
-                                secureTextEntry
-                            />
-                            <TextInput
-                                style={styles.input}
-                                placeholderTextColor={'white'}
-                                placeholder="Server IP"
-                                onChangeText={text => setIp(text)}
-                                value={Ip}
-                            />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholderTextColor={'white'}
+                                    placeholder="Username"
+                                    onChangeText={text => setUsername(text)}
+                                    value={username}
+                                    autoCapitalize="none"
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholderTextColor={'white'}
+                                    placeholder="OSIS"
+                                    onChangeText={text => setOsis(text)}
+                                    value={osis}
+                                    secureTextEntry
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholderTextColor={'white'}
+                                    placeholder="Server IP"
+                                    onChangeText={text => setIp(text)}
+                                    value={Ip}
+                                />
 
-                            <Button
-                                label="Login"
-                                onPress={() => {
-                                    setIsLoading(true);
-                                    handleLogin();
-                                }}
-                            />
+                                <Button
+                                    label="Login"
+                                    onPress={() => {
+                                        setIsLoading(true);
+                                        handleLogin();
+                                    }}
+                                />
+                                <BouncyCheckbox 
+                                    size={20}
+                                    paddingTop={10}
+                                    alignSelf={'center'}
+                                    text={'Remember me'}
+                                    textAlign={'center'}
+                                    fillColor='rgba(136, 3, 21, 1)'
+                                    onPress={(stayRemembered) => {
+                                        setStayRemembered(stayRemembered);
+                                    }}
+                                />
+                            </AvoidKeyboardContainer>
                         </React.Fragment>
                     )}
                 </View>
@@ -129,14 +158,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'black',
-        paddingBottom: 75,
         paddingHorizontal: RFValue(16),
         borderRadius: RFValue(16),
         paddingTop: RFValue(25),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#1e1e1e', // Slightly lighter background for content
-        borderRadius: RFValue(10),
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -146,7 +172,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
         paddingTop: RFValue(10),
-        paddingBottom: RFValue(-10),
+        paddingBottom: RFValue(15),
         width: '90%',
         alignSelf: 'center',
     },
@@ -158,13 +184,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         margin: 10,
         marginBottom: 50,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
         elevation: 3,
         paddingTop: 10,
         paddingBottom: -10,
@@ -198,6 +217,12 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'black',
+        fontSize: RFValue(20),
+        alignSelf: 'center',
+        fontWeight: 'bold',
+    },
+    checkBoxText: {
+        color: 'white',
         fontSize: RFValue(20),
         alignSelf: 'center',
         fontWeight: 'bold',

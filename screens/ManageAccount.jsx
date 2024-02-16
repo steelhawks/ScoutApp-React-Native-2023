@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
-import { RFValue } from 'react-native-responsive-fontsize';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const ManageAccount = ({ setUser, user, appVersion, eventName, serverIp }) => {
+const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const logOut = () => {
@@ -13,41 +14,60 @@ const ManageAccount = ({ setUser, user, appVersion, eventName, serverIp }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Manage Account</Text>
-            <View style={styles.centerContent}>
-                <Button label="Log Out" onPress={() => { setIsLoading(true); logOut(); }} />
-                <Text style={styles.welcomeText}>
-                    Hello {user.name} {'\n'}
-                    Username: {user.username} {'\n'}
-                    OSIS: {user.osis} {'\n'}
-                    Event: {eventName} {'\n'}
-                    Server: {serverIp} {'\n'}
-                    Uptime: {} {'\n'}
-                    App Version: {appVersion}
-                </Text>
-            </View>
+        <SafeAreaView style={styles.avoidTabBar}>
+        <ScrollView
+            contentContainerStyle={styles.scrollView}
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Manage Account</Text>
+                <View style={styles.centerContent}>
+                    <Button
+                        label="Log Out"
+                        onPress={() => {
+                            setIsLoading(true);
+                            logOut();
+                        }}
+                    />
+                    <Text style={styles.welcomeText}>
+                        Hello {user.name} {'\n'}
+                        Username: {user.username} {'\n'}
+                        OSIS: {user.osis} {'\n'}
+                        Event: {eventName} {'\n'}
+                        Server: {serverIp} {'\n'}
+                        Uptime: {} {'\n'}
+                        App Version: {appVersion}
+                    </Text>
+                </View>
 
-            <Text style={styles.infoText}>
-                Any issues with login or requested changes, please email{' '}
-                farhanj2@nycstudents.net {'\n'}Scout 24 {appVersion}
-            </Text>
-            <AnimationLoader />
-        </View>
+                <Text style={styles.infoText}>
+                    Any issues with login or requested changes, please email{' '}
+                    farhanj2@nycstudents.net {'\n'}Scout 24 {appVersion}
+                </Text>
+                <AnimationLoader />
+            </View>
+        </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    avoidTabBar: {
+        flex: 1,
+        backgroundColor: '#121212',
+        paddingBottom: RFValue(60),
+    },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#121212',
-        padding: RFValue(16),
-        borderRadius: RFValue(16),
+        paddingLeft: (50),
+        paddingRight: (50),
+        borderTopLeftRadius: RFValue(16),
+        borderTopRightRadius: RFValue(16),
+        top: 30,
     },
     centerContent: {
-        paddingTop: RFValue(25),
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#1e1e1e', // Slightly lighter background for content
@@ -57,25 +77,26 @@ const styles = StyleSheet.create({
             width: 0,
             height: 2,
         },
-        shadowOpacity: 0.2,
+    shadowOpacity: 0.2,
         shadowRadius: 3,
-        elevation: 3,
-        paddingTop: RFValue(10),
-        paddingBottom: RFValue(-10),
+        elevation: 3,// paddingTop: RFValue(12),
+        // paddingBottom: RFValue(12),
+        
+        padding: RFValue(16),
         width: '90%',
         alignSelf: 'center',
     },
     title: {
         position: 'absolute',
-        paddingBottom: RFValue(400),
-        fontSize: RFValue(36),
+        paddingBottom: RFValue(450),
+        fontSize: (36),
         fontWeight: 'bold',
         marginBottom: RFValue(20),
         color: 'white',
         textAlign: 'center',
     },
     welcomeText: {
-        fontSize: RFValue(24),
+        fontSize: (24),
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: RFValue(30),
@@ -85,7 +106,11 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         position: 'absolute',
-        bottom: RFValue(30),
+        bottom: RFValue(65),
+    },
+    scrollView: {
+        flexGrow: 1,
+        alignItems: 'center',
     },
 });
 

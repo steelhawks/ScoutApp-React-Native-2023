@@ -16,6 +16,7 @@ import fs from 'react-native-fs';
 import {UserContext} from '..';
 import Button from '../components/inputs/Button';
 import { useBackHandler } from '@react-native-community/hooks';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const ScoutingPage = ({
     user,
@@ -305,6 +306,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         flex: 1,
         justifyContent: 'center',
+        paddingBottom: RFValue(100),
+        color: 'transparent',
+        borderTopLeftRadius: RFValue(10),
+        borderTopRightRadius: RFValue(10),
     },
     container: {
         flex: 1,

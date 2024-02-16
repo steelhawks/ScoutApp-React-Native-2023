@@ -7,16 +7,22 @@ import Tutorial from './screens/Tutorial';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import {StyleSheet, Alert} from 'react-native';
-import { NewMatch } from '.';
+import {NewMatch} from '.';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Feather';
+import {BlurView} from '@react-native-community/blur';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator(); // old
+const Tab = createBottomTabNavigator(); // new
 
 const App = () => {
     const [user, setUser] = useState(null);
     const [serverIp, setServerIp] = useState();
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v0.5a')
+    const [appVersion] = useState('v0.6a');
 
     // NewMatch VARS
     const [matchNumber, setMatchNumber] = useState(0);
@@ -34,8 +40,8 @@ const App = () => {
                 setMatchNumber={setMatchNumber}
                 setDriveStation={setDriveStation}
             />
-        )
-    }
+        );
+    };
 
     const ScoutingPageNavigate = props => {
         return (
@@ -82,19 +88,14 @@ const App = () => {
     };
 
     const DataPageNavigate = props => {
-        return (
-            <DataPage
-                {...props}
-                serverIp={serverIp}
-            />
-        );
+        return <DataPage {...props} serverIp={serverIp} />;
     };
 
     return (
+        <SafeAreaView style={{flex: 1}}>
         <NavigationContainer
             initialRouteName="Login"
             backBehavior="firstRoute"
-            // theme={{colors: {background: 'lightblue'}}}>
             theme={{
                 dark: true,
                 colors: {
@@ -108,39 +109,131 @@ const App = () => {
                 },
             }}>
             {user != null ? (
-                <Drawer.Navigator
+                <Tab.Navigator
                     initialRouteName="Login"
                     screenOptions={{
+                        tabBarHideOnKeyboard: true,
+                        headerShown: false,
                         activeBackgroundColor: 'white',
-                        drawerLabelStyle: {color: 'white'},
+                        tabBarActiveBackgroundColor: 'white',
                         activeTintColor: 'white',
+                        tabBarStyle: {
+                            position: 'absolute',
+                            bottom: RFValue(25),
+                            left: RFValue(20),
+                            right: RFValue(20),
+                            elevation: 0,
+                            backgroundColor: 'transparent',
+                            borderRadius: RFValue(20),
+                            height: RFValue(70),
+                            overflow: 'hidden',  
+
+                            // need to remove safeareaview on iPhone X and newer devices
+                            paddingBottom: 0,
+                        },
+                        tabBarLabelStyle: {
+                            paddingBottom: RFValue(10),
+                        },
+
+                        tabBarBackground: () => (
+                            <BlurView
+                                intensity={80}
+                                style={{
+                                    ...StyleSheet.absoluteFillObject,
+                                    borderTopLeftRadius: RFValue(20),
+                                    borderTopRightRadius: RFValue(20),
+                                    overflow: 'hidden',
+                                    backgroundColor: 'transparent',
+                                }}
+                            />
+                        ),
                     }}>
                     {matchCreated ? (
-                        <Drawer.Screen name="Scouting" component={ScoutingPageNavigate} />
+                        <Tab.Screen
+                            name="Scouting"
+                            component={ScoutingPageNavigate}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <Icon
+                                        type="Feather"
+                                        name="play"
+                                        color={color}
+                                        size={size}
+                                    />
+                                ),
+                            }}
+                        />
                     ) : (
-                        <Drawer.Screen
-                        screenOptions={{
-                            activeBackgroundColor: 'white',
-                            drawerLabelStyle: {color: 'white'},
-                            activeTintColor: 'white',
-                        }}
-                        name="New Match"
-                        component={NewMatchNavigate}
-                    />
+                        <Tab.Screen
+                            screenOptions={{
+                                // activeBackgroundColor: 'white',
+                                // drawerLabelStyle: {color: 'white'},
+                                // activeTintColor: 'white',
+                            }}
+                            name="New Match"
+                            component={NewMatchNavigate}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <Icon
+                                        type="Feather"
+                                        name="trello"
+                                        color={color}
+                                        size={size}
+                                    />
+                                ),
+                            }}
+                        />
                     )}
-                    <Drawer.Screen name="Data" component={DataPageNavigate} />
-                    <Drawer.Screen name="Help" component={HelpPageNavigate} />
-                    <Drawer.Screen
+                    <Tab.Screen
+                        name="Data"
+                        component={DataPageNavigate}
+                        options={{
+                            tabBarIcon: ({color, size}) => (
+                                <Icon
+                                    type="Feather"
+                                    name="upload-cloud"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}
+                    />
+                    <Tab.Screen
+                        name="Help"
+                        component={HelpPageNavigate}
+                        options={{
+                            tabBarIcon: ({color, size}) => (
+                                <Icon
+                                    type="Feather"
+                                    name="help-circle" // random value so question mark is used
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}
+                    />
+                    <Tab.Screen
                         name={user.name}
                         component={AccountManagementNavigate}
+                        options={{
+                            tabBarIcon: ({color, size}) => (
+                                <Icon
+                                    type="Feather"
+                                    name="users"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}
                     />
-                </Drawer.Navigator>
+                </Tab.Navigator>
             ) : (
-                <Drawer.Navigator>
-                    <Drawer.Screen name="Login" component={LoginPageNavigate} />
-                </Drawer.Navigator>
+                <Tab.Navigator>
+                    <Tab.Screen name="Login" component={LoginPageNavigate} />
+                </Tab.Navigator>
             )}
         </NavigationContainer>
+        </SafeAreaView>
     );
 };
 
