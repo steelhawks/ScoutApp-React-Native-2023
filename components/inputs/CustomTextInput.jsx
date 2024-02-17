@@ -31,6 +31,7 @@ const CustomTextInput = props => {
                 placeholder={props.placeholder}
                 onChangeText={props.onChangeText}
                 alignSelf={'center'}
+                keyboardType={props.keyboardType}
             />
         </>
     );

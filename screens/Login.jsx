@@ -8,7 +8,8 @@ import {
     Image,
     Keyboard,
 } from 'react-native';
-import {fetchUserCredentialsFromServer} from '../authentication/api';
+import {fetchUserCredentialsFromServer} from '../authentication/request_login';
+import {fetchTeamDataFromServer} from '../authentication/request_team_data';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
@@ -18,7 +19,14 @@ import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
 
-const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
+const Login = ({
+    user,
+    setUser,
+    setServerIp,
+    setEventName,
+    appVersion,
+    setTeamData,
+}) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
     const [Ip, setIp] = useState(null);
@@ -35,25 +43,31 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
         }
 
         if (stayRemembered) {
-
         }
 
         try {
-            const userCredentials = await fetchUserCredentialsFromServer(
+            // login info request
+            const userData = await fetchUserCredentialsFromServer(
                 Ip,
                 username,
                 osis,
                 appVersion, // sends a request to see if the app is up to date
             );
+            
+            // team data request
+            const allTeamData = await fetchTeamDataFromServer(Ip);
+            setTeamData(allTeamData);
+            // console.log('allTeamData', allTeamData);
 
+            // console.log(userData);
             // this checks if login is correct as an empty array will be sent back if the password is incorrect
-            if (!userCredentials) {
+            if (!userData) {
                 Alert.alert('App version mismatch', 'Please update the app');
                 setIsLoading(false);
                 return;
             }
-            if (userCredentials.length > 0) {
-                const user = userCredentials[0];
+            if (userData.length > 0) {
+                const user = userData[0];
                 setUser(user);
 
                 const eventName = user.competition_name;
@@ -100,6 +114,7 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
                                     onChangeText={text => setUsername(text)}
                                     value={username}
                                     autoCapitalize="none"
+                                    keyboardType='username'
                                 />
                                 <TextInput
                                     style={styles.input}
@@ -108,6 +123,7 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
                                     onChangeText={text => setOsis(text)}
                                     value={osis}
                                     secureTextEntry
+                                    keyboardType='password'
                                 />
                                 <TextInput
                                     style={styles.input}
@@ -115,6 +131,7 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
                                     placeholder="Server IP"
                                     onChangeText={text => setIp(text)}
                                     value={Ip}
+                                    keyboardType='ip-address'
                                 />
 
                                 <Button
@@ -124,17 +141,22 @@ const Login = ({user, setUser, setServerIp, setEventName, appVersion}) => {
                                         handleLogin();
                                     }}
                                 />
-                                <BouncyCheckbox 
+                                {/* Keep off during tablet deployment */}
+                                {/* <BouncyCheckbox 
                                     size={20}
                                     paddingTop={10}
                                     alignSelf={'center'}
                                     text={'Remember me'}
                                     textAlign={'center'}
+                                    unfillColor='black'
                                     fillColor='rgba(136, 3, 21, 1)'
                                     onPress={(stayRemembered) => {
                                         setStayRemembered(stayRemembered);
                                     }}
-                                />
+                                    textStyle={{
+                                        textDecorationLine: "none",
+                                      }}
+                                /> */}
                             </AvoidKeyboardContainer>
                         </React.Fragment>
                     )}

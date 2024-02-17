@@ -22,22 +22,26 @@ const App = () => {
     const [serverIp, setServerIp] = useState();
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v0.6a');
+    const [appVersion] = useState('v0.7a');
+
+    const [teamData, setTeamData] = useState(null);
 
     // NewMatch VARS
-    const [matchNumber, setMatchNumber] = useState(0);
     const [teamNumber, setTeamNumber] = useState(0);
+    const [matchNumber, setMatchNumber] = useState(0);
+    const [matchType, setMatchType] = useState('EMPTY'); // COMP, QUAL, Default: EMPTY
     const [driveStation, setDriveStation] = useState(0);
 
     const NewMatchNavigate = props => {
+        // console.log('Team Data', teamData);
         return (
             <NewMatch
                 {...props}
-                user={user}
-                eventName={eventName}
+                teamData={teamData}
                 setMatchCreated={setMatchCreated}
                 setTeamNumber={setTeamNumber}
                 setMatchNumber={setMatchNumber}
+                setMatchType={setMatchType}
                 setDriveStation={setDriveStation}
             />
         );
@@ -52,6 +56,7 @@ const App = () => {
                 setMatchCreated={setMatchCreated}
                 teamNumber={teamNumber}
                 matchNumber={matchNumber}
+                matchType={matchType}
                 driveStation={driveStation}
             />
         );
@@ -77,6 +82,7 @@ const App = () => {
                 user={user}
                 setEventName={setEventName}
                 setServerIp={setServerIp}
+                setTeamData={setTeamData}
                 setUser={setUser}
                 appVersion={appVersion}
             />

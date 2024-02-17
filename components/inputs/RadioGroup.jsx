@@ -10,17 +10,32 @@ const RadioGroup = props => {
         unfillColor: '#FFFFFF',
         iconStyle: {borderColor: 'red'},
         innerIconStyle: {borderWidth: 2},
-        flex: 1,
+        // flex: 1,
         padding: 10,
+        // paddingLeft: 20,
         textStyle: {
+            textDecorationLine: "none",
             fontFamily: 'JosefinSans-Regular',
         },
+        iconStyle: {
+            width: 20,
+            height: 20,
+            borderWidth: 1,
+            borderColor: 'black',
+            borderRadius: 10,
+            alignSelf: 'center',
+            margin: 10,
+        }
     };
 
     const updateDict = useContext(UserContext);
 
     return (
         <BouncyCheckboxGroup
+            style={{
+                alignSelf: 'center',
+                alignItems: 'center',
+            }}
             data={props.buttons.map(button => {
                 return {
                     id: button,

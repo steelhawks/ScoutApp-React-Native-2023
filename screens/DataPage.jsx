@@ -35,31 +35,33 @@ const DataPage = ({serverIp, navigation}) => {
         useState(false);
 
     const [dict, setDict] = useState({
-        scouterName: '',
-        teamNumber: 0,
-        matchNumber: 0,
-        driveStation: 0,
-        alliance: 'EMPTY', // red or blue
+        scouterName: 'NULL!',
+        teamNumber: 'NULL!',
+        matchNumber: 'NULL!',
+        matchType: 'NULL!', // COMP, QUAL, Default: EMPTY
+        driveStation: 'NULL!',
+        alliance: 'NULL!', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
-        autonSpeakerNotesScored: 0,
-        autonAmpNotesScored: 0,
-        autonMissed: 0,
-        autonNotesReceived: 0,
-        autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        telopSpeakerNotesScored: 0,
-        telopAmpNotesScored: 0,
-        telopAmplifiedSpeakerNotes: 0,
-        telopSpeakerNotesMissed: 0,
-        telopAmpNotesMissed: 0,
-        telopNotesReceivedFromHumanPlayer: 0,
-        telopNotesReceivedFromGround: 0,
-        endGame: [], // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
-        trap: 0,
-        penalties: [], // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
-        telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
+        autonSpeakerNotesScored: 'NULL!',
+        autonAmpNotesScored: 'NULL!',
+        autonMissed: 'NULL!',
+        autonNotesReceived: 'NULL!',
+        autonIssues: 'No Issues', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        telopSpeakerNotesScored: 'NULL!',
+        telopAmpNotesScored: 'NULL!',
+        telopAmplifiedSpeakerNotes: 'NULL!',
+        telopSpeakerNotesMissed: 'NULL!',
+        telopAmpNotesMissed: 'NULL!',
+        telopNotesReceivedFromHumanPlayer: 'NULL!',
+        telopNotesReceivedFromGround: 'NULL!',
+        endGame: 'NULL!', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        trap: 'NULL!',
+        penalties: 'NULL!', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        telopIssues: 'NULL!', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: [], // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        robotType: 'NULL!', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        timeOfCreation: 'NULL!',
     });
 
     // use this to change values after the match
@@ -143,6 +145,7 @@ const DataPage = ({serverIp, navigation}) => {
         setIsLoading(true);
 
         try {
+            setJsonSelected(false);
             const serverEndpoint = `http://${serverIp}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
@@ -183,7 +186,10 @@ const DataPage = ({serverIp, navigation}) => {
                 },
                 {
                     text: 'Delete',
-                    onPress: () => handleDelete(file),
+                    onPress: () => {
+                        handleDelete(file);
+                        setJsonSelected(false);
+                    },
                     style: 'destructive',
                 },
             ],
@@ -253,6 +259,8 @@ const DataPage = ({serverIp, navigation}) => {
                                 {'\n'}
                                 Match Number: {dict.matchNumber}
                                 {'\n'}
+                                Match Type: {dict.matchType}
+                                {'\n'}
                                 Drive Station: {dict.driveStation}
                                 {'\n'}
                                 Alliance: {dict.alliance}
@@ -305,6 +313,8 @@ const DataPage = ({serverIp, navigation}) => {
                                 Did Team Play Defense: {dict.didTeamPlayDefense}
                                 {'\n'}
                                 What Type of Robot: {dict.robotType}
+                                {'\n'}
+                                Time of Creation: {dict.timeOfCreation}
                                 {'\n'}
                             </Text>
                         ) : (
@@ -407,7 +417,7 @@ const styles = StyleSheet.create({
     valueText: {
         color: 'white',
         textAlign: 'center',
-},
+    },
     infoText: {
         color: 'white',
         textAlign: 'center',

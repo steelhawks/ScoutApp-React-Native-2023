@@ -15,13 +15,24 @@ import DriveStationUI from './inputs/DriveStationUI';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from './AvoidKeyboardContainer';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import DropdownComponent from './inputs/Dropdown';
 
-const NewMatch = props => {
+const NewMatch = ({
+    teamData,
+    setMatchCreated,
+    setTeamNumber,
+    setMatchNumber,
+    setMatchType,
+    setDriveStation,
+}) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [teamNumberLocal, setTeamNumberLocal] = useState(0);
     const [matchNumberLocal, setMatchNumberLocal] = useState(0);
+    const [matchTypeLocal, setMatchTypeLocal] = useState('');
     const [driveStationLocal, setDriveStationLocal] = useState(0);
+
+    const [testing, setTesting] = useState('testing');
 
     const navigation = useNavigation();
 
@@ -44,6 +55,7 @@ const NewMatch = props => {
         return (
             teamNumberLocal !== '' &&
             matchNumberLocal !== '' &&
+            matchTypeLocal !== '' &&
             driveStationLocal !== 0
         );
     };
@@ -52,17 +64,43 @@ const NewMatch = props => {
         if (checkFilledOut()) {
             setIsLoading(true);
             setTimeout(async () => {
-                props.setTeamNumber(teamNumberLocal);
-                props.setMatchNumber(matchNumberLocal);
-                props.setDriveStation(driveStationLocal);
+                setTeamNumber(teamNumberLocal);
+                setMatchNumber(matchNumberLocal);
+                setMatchType(matchTypeLocal);
+                setDriveStation(driveStationLocal);
 
-                props.setMatchCreated(true);
+                setMatchCreated(true);
                 setIsLoading(false);
             }, 1);
         } else {
             Alert.alert('Please fill out all fields');
         }
     };
+
+    const parseTeamData = () => {
+        console.log('teamData:', teamData);
+    
+        const testTeamData = teamData.team_data.map(item => ({
+            label: `${item.nickname} : ${item.team_number}`,
+            value: item.team_number,
+        }));
+    
+        console.log('testTeamData:', testTeamData);
+    };
+    
+    
+    
+
+    const matchTypeData = [
+        {label: 'Practice', value: 'PRACTICE'},
+        {label: 'Qualification', value: 'QUALIFICATION'},
+        {label: 'Elimination', value: 'ELIMINATION'},
+    ];
+
+    const testTeamData = teamData.team_data.map(item => ({
+        label: `${item.nickname} : ${item.team_number}`,
+        value: item.team_number,
+    }));
 
     return (
         <>
@@ -73,18 +111,23 @@ const NewMatch = props => {
                             <ScrollView
                                 contentContainerStyle={styles.scrollView}
                                 showsVerticalScrollIndicator={false}>
-                                <Text style={styles.title}>
-                                    {/* Hello {props.user.name}! */}
-                                    New Match
-                                </Text>
+                                <Text style={styles.title}>New Match</Text>
 
-                                <CustomTextInput
+                                {/* <CustomTextInput
                                     label={'Enter Team Number:'}
                                     placeholder={'Team Number'}
                                     onChangeText={value =>
                                         setTeamNumberLocal(value)
                                     }
                                     value={teamNumberLocal}
+                                /> */}
+                                <DropdownComponent
+                                    data={testTeamData}
+                                    placeholder={'Select Team Number'}
+                                    onValueChange={value =>
+                                        setTeamNumberLocal(value)
+                                    }
+                                    searchable={true}
                                 />
                                 <CustomTextInput
                                     label={'Enter Match Number:'}
@@ -93,12 +136,24 @@ const NewMatch = props => {
                                         setMatchNumberLocal(value)
                                     }
                                     value={matchNumberLocal}
+                                    keyboardType={'numeric'}
                                 />
-                                <Text style={{...styles.title,
-                                    marginTop: 0,
-                                    paddingTop: RFValue(10),
-                                    fontSize: RFValue(15)
-                                }}>
+
+                                <DropdownComponent
+                                    data={matchTypeData}
+                                    placeholder={'Select Match Type'}
+                                    onValueChange={value =>
+                                        setMatchTypeLocal(value)
+                                    }
+                                />
+
+                                <Text
+                                    style={{
+                                        ...styles.title,
+                                        marginTop: 0,
+                                        paddingTop: RFValue(10),
+                                        fontSize: RFValue(15),
+                                    }}>
                                     Select Drive Station
                                 </Text>
                                 <DriveStationUI

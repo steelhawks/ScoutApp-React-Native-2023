@@ -1,9 +1,4 @@
-import {
-    StyleSheet,
-    View,
-    Alert,
-    ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Alert, ScrollView} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Form from '../components/scouting_components/Form';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -15,8 +10,9 @@ import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
 import {UserContext} from '..';
 import Button from '../components/inputs/Button';
-import { useBackHandler } from '@react-native-community/hooks';
-import { RFValue } from 'react-native-responsive-fontsize';
+import {useBackHandler} from '@react-native-community/hooks';
+import {RFValue} from 'react-native-responsive-fontsize';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 const ScoutingPage = ({
     user,
@@ -25,38 +21,19 @@ const ScoutingPage = ({
     setMatchCreated,
     teamNumber,
     matchNumber,
+    matchType,
     driveStation,
 }) => {
-    const [formattedDate, setFormattedDate] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
-
-    useEffect(() => {
-        // Update the formatted date every second
-        const interval = setInterval(() => {
-            const currentDate = new Date();
-            const options = {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false, // Use 24-hour format
-            };
-            const formatted = currentDate.toLocaleString('en-US', options);
-            setFormattedDate(formatted);
-        }, 1000);
-
-        // Cleanup the interval on component unmount
-        return () => clearInterval(interval);
-    }, []); // Empty dependency array to run the effect only once on mount
 
     const [dict, setDict] = useState({
         eventName: eventName,
         scouterName: user.name,
         teamNumber: teamNumber,
         matchNumber: matchNumber,
-        driveStation: driveStation, // 1-3 for red, 4-6 for blue
+        matchType: matchType, // qualification, practice, or elimination
+        driveStation: driveStation,
         alliance: 'EMPTY', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
@@ -72,12 +49,13 @@ const ScoutingPage = ({
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
         telopNotesReceivedFromGround: 0,
-        endGame: [], // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
         penalties: [], // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
         telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: [], // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        timeOfCreation: '',
     });
 
     const updateDict = (key, value) => {
@@ -85,11 +63,38 @@ const ScoutingPage = ({
         setDict({...dict, [key]: value});
     };
 
+    const handlePenalitiesSelect = value => {
+        const updatedPenalities = [...dict.penalties];
+
+        const penaltyIndex = updatedPenalities.indexOf(value);
+
+        if (penaltyIndex !== -1) {
+            updatedPenalities.splice(penaltyIndex, 1);
+        } else {
+            updatedPenalities.push(value);
+        }
+
+        updateDict('penalties', updatedPenalities);
+    };
+
     const endMatch = () => {
         setIsLoading(true);
         setIsDone(true);
 
+        const currentDate = new Date();
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false, // Use 24-hour format
+        };
+        const formatted = currentDate.toLocaleString('en-US', options);
+        console.log('formatted:'+ formatted);
+
         setTimeout(async () => {
+            updateDict('timeOfCreation', formatted);
             saveToJson(dict);
             setIsLoading(false);
             setIsDone(true);
@@ -175,6 +180,10 @@ const ScoutingPage = ({
 
     const tele_missed_queries = [
         <Query
+            title="Auton Notes Missed"
+            item={<Counter id="autonMissed" />}
+        />,
+        <Query
             title="Speaker Notes Missed"
             item={<Counter id="telopSpeakerNotesMissed" />}
         />,
@@ -209,10 +218,41 @@ const ScoutingPage = ({
         <Query
             title="Penalties"
             item={
-                <RadioGroup
-                    buttons={['Foul', 'Tech Foul', 'Yellow Card', 'Red Card']}
-                    id="penalties"
-                />
+                <>
+                    <BouncyCheckbox
+                        {...styles.checkboxOnlyStyle}
+                        size={25}
+                        text="Foul"
+                        onPress={() => {
+                            handlePenalitiesSelect('FOUL');
+                        }}
+                    />
+
+                    <BouncyCheckbox
+                        {...styles.checkboxOnlyStyle}
+                        size={25}
+                        text="Tech Foul"
+                        onPress={() => {
+                            handlePenalitiesSelect('TECH_FOUL');
+                        }}
+                    />
+                    <BouncyCheckbox
+                        {...styles.checkboxOnlyStyle}
+                        size={25}
+                        text="Yellow Card"
+                        onPress={() => {
+                            handlePenalitiesSelect('YELLOW_CARD');
+                        }}
+                    />
+                    <BouncyCheckbox
+                        {...styles.checkboxOnlyStyle}
+                        size={25}
+                        text="Red Card"
+                        onPress={() => {
+                            handlePenalitiesSelect('RED_CARD');
+                        }}
+                    />
+                </>
             }
         />,
         <Query
@@ -277,11 +317,24 @@ const ScoutingPage = ({
         return true;
     });
 
+    const backConfirm = () => {
+        Alert.alert('You have unsaved changes', 'Continue without saving?', [
+            {
+                text: 'No',
+            },
+            {
+                text: 'Yes',
+                onPress: () => setMatchCreated(false),
+                style: 'destructive',
+            },
+        ]);
+    };
+
     return (
         <SafeAreaView style={styles.mainView}>
             <View style={styles.container}>
-                <ScrollView>
-                    <Button onPress={() => setMatchCreated(false)} label="Cancel" />
+                <ScrollView style={{flex: 1}}>
+                    <Button onPress={backConfirm} label="Cancel" />
                     <UserContext.Provider value={updateDict}>
                         <Form
                             sections={form_sections}
@@ -317,6 +370,28 @@ const styles = StyleSheet.create({
     sectionStyle: {
         alignItems: 'center',
         width: '100%',
+    },
+    checkboxOnlyStyle: {
+        alignItems: 'flex-start', // or 'baseline'
+        width: '100%',
+        size: 30,
+        fillColor: 'green',
+        unfillColor: '#FFFFFF',
+        iconStyle: {borderColor: 'red', alignSelf: 'flex-start'},
+        innerIconStyle: {borderWidth: 2},
+        padding: 10,
+        textStyle: {
+            textDecorationLine: 'none',
+            fontFamily: 'JosefinSans-Regular',
+        },
+        iconStyle: {
+            width: 20,
+            height: 20,
+            borderWidth: 1,
+            borderColor: 'black',
+            borderRadius: 10,
+            margin: 10,
+        },
     },
 });
 
