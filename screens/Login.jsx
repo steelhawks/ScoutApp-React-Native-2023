@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     View,
     TextInput,
@@ -18,6 +18,8 @@ import SafeAreaContainer from '../components/SafeAreaContainer';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
+import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({
     user,
@@ -33,6 +35,38 @@ const Login = ({
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 
+    useEffect(() => {
+        const tryAutoLogin = async () => {
+            try {
+                const savedIp = await AsyncStorage.getItem('serverIp');
+                const savedUsername = await AsyncStorage.getItem('username');
+                const savedOsis = await AsyncStorage.getItem('osis');
+
+                // if (savedIp && savedUsername && savedOsis) {
+                //     // authenticate with the server using the saved credentials
+                //     const userData = await fetchUserCredentialsFromServer(
+                //         savedIp,
+                //         savedUsername,
+                //         savedOsis,
+                //         appVersion,
+                //     );
+
+                //     if (userData && userData.length > 0) {
+                //         const user = userData[0];
+                //         setUser(user);
+                //         setEventName(user.competition_name);
+                //         setServerIp(savedIp);
+                //         setTeamData(await fetchTeamDataFromServer(savedIp));
+                //     }
+                // }
+            } catch (error) {
+                console.error('Error during auto-login:', error);
+            }
+        };
+
+        tryAutoLogin();
+    }, []);
+
     const handleLogin = async () => {
         setIsLoading(true);
 
@@ -42,7 +76,16 @@ const Login = ({
             return;
         }
 
+        // save the IP address to AsyncStorage
+        try {
+            await AsyncStorage.setItem('serverIp', Ip);
+        } catch (error) {
+            console.error('Error saving IP address:', error);
+        }
+
         if (stayRemembered) {
+            await AsyncStorage.setItem('username', username);
+            await AsyncStorage.setItem('osis', osis);
         }
 
         try {
@@ -51,27 +94,17 @@ const Login = ({
                 Ip,
                 username,
                 osis,
-                appVersion, // sends a request to see if the app is up to date
+                appVersion,
             );
-            
+
             // team data request
             const allTeamData = await fetchTeamDataFromServer(Ip);
             setTeamData(allTeamData);
-            // console.log('allTeamData', allTeamData);
 
-            // console.log(userData);
-            // this checks if login is correct as an empty array will be sent back if the password is incorrect
-            if (!userData) {
-                Alert.alert('App version mismatch', 'Please update the app');
-                setIsLoading(false);
-                return;
-            }
-            if (userData.length > 0) {
+            if (userData && userData.length > 0) {
                 const user = userData[0];
                 setUser(user);
-
-                const eventName = user.competition_name;
-                setEventName(eventName);
+                setEventName(user.competition_name);
                 setServerIp(Ip);
             } else {
                 console.error('Incorrect username or password');
@@ -83,6 +116,10 @@ const Login = ({
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const isTablet = () => {
+        return DeviceInfo.isTablet();
     };
 
     return (
@@ -114,7 +151,7 @@ const Login = ({
                                     onChangeText={text => setUsername(text)}
                                     value={username}
                                     autoCapitalize="none"
-                                    keyboardType='username'
+                                    keyboardType="username"
                                 />
                                 <TextInput
                                     style={styles.input}
@@ -122,8 +159,7 @@ const Login = ({
                                     placeholder="OSIS"
                                     onChangeText={text => setOsis(text)}
                                     value={osis}
-                                    secureTextEntry
-                                    keyboardType='password'
+                                    keyboardType="numeric"
                                 />
                                 <TextInput
                                     style={styles.input}
@@ -131,7 +167,7 @@ const Login = ({
                                     placeholder="Server IP"
                                     onChangeText={text => setIp(text)}
                                     value={Ip}
-                                    keyboardType='ip-address'
+                                    keyboardType="numeric"
                                 />
 
                                 <Button
@@ -141,22 +177,35 @@ const Login = ({
                                         handleLogin();
                                     }}
                                 />
-                                {/* Keep off during tablet deployment */}
-                                {/* <BouncyCheckbox 
-                                    size={20}
-                                    paddingTop={10}
-                                    alignSelf={'center'}
-                                    text={'Remember me'}
-                                    textAlign={'center'}
-                                    unfillColor='black'
-                                    fillColor='rgba(136, 3, 21, 1)'
-                                    onPress={(stayRemembered) => {
-                                        setStayRemembered(stayRemembered);
-                                    }}
-                                    textStyle={{
-                                        textDecorationLine: "none",
-                                      }}
-                                /> */}
+                                {!isTablet() && (
+                                    <View style={styles.tabletView}>
+                                        <BouncyCheckbox
+                                            size={20}
+                                            paddingTop={10}
+                                            alignSelf={'center'}
+                                            alignItems={'center'}
+                                            text={'Remember me'}
+                                            textAlign={'center'}
+                                            unfillColor="black"
+                                            fillColor="rgba(136, 3, 21, 1)"
+                                            onPress={stayRemembered => {
+                                                setStayRemembered(
+                                                    stayRemembered,
+                                                );
+                                            }}
+                                            textStyle={{
+                                                paddingRight: 10,
+                                                color: 'white',
+                                                textDecorationLine: 'none',
+                                                fontWeight: 'bold',
+                                            }}
+                                        />
+                                    </View>
+                                )}
+                                <Text style={styles.footer}>
+                                    App Version: {appVersion} Build:{' '}
+                                    {DeviceInfo.getBuildNumber()}
+                                </Text>
                             </AvoidKeyboardContainer>
                         </React.Fragment>
                     )}
@@ -243,9 +292,10 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontWeight: 'bold',
     },
-    checkBoxText: {
+    footer: {
+        top: 15,
         color: 'white',
-        fontSize: RFValue(20),
+        fontSize: RFValue(10),
         alignSelf: 'center',
         fontWeight: 'bold',
     },

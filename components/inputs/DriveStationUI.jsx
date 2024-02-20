@@ -22,7 +22,7 @@ const DriveStationUI = props => {
                         style={{
                             backgroundColor:
                                 selectedButton === buttonNumber
-                                    ? 'red'
+                                    ? '#ff6961'
                                     : 'transparent',
                         }}
                     />

@@ -14,6 +14,7 @@ const Counter = props => {
         <CounterInput
             min={0}
             horizontal={true}
+            reverseCounterButtons={true}
             onChange={counter => {
                 updateDict(props.id, counter);
             }}

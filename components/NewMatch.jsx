@@ -16,6 +16,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from './AvoidKeyboardContainer';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropdownComponent from './inputs/Dropdown';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const NewMatch = ({
     teamData,
@@ -24,6 +25,8 @@ const NewMatch = ({
     setMatchNumber,
     setMatchType,
     setDriveStation,
+    setScoutingType,
+    scoutingType,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -32,24 +35,22 @@ const NewMatch = ({
     const [matchTypeLocal, setMatchTypeLocal] = useState('');
     const [driveStationLocal, setDriveStationLocal] = useState(0);
 
-    const [testing, setTesting] = useState('testing');
+    // const navigation = useNavigation();
 
-    const navigation = useNavigation();
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('beforeRemove', e => {
+    //         // Prevent default behavior when the back button is pressed
+    //         e.preventDefault();
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            // Prevent default behavior when the back button is pressed
-            e.preventDefault();
+    //         // Save the state or any other necessary actions
+    //         // You can use AsyncStorage or other state management solutions for long-term storage
 
-            // Save the state or any other necessary actions
-            // You can use AsyncStorage or other state management solutions for long-term storage
+    //         // Continue with the navigation
+    //         navigation.dispatch(e.data.action);
+    //     });
 
-            // Continue with the navigation
-            navigation.dispatch(e.data.action);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
+    //     return unsubscribe;
+    // }, [navigation]);
 
     const checkFilledOut = () => {
         return (
@@ -61,35 +62,35 @@ const NewMatch = ({
     };
 
     const handleStartScouting = async () => {
-        if (checkFilledOut()) {
-            setIsLoading(true);
-            setTimeout(async () => {
-                setTeamNumber(teamNumberLocal);
-                setMatchNumber(matchNumberLocal);
-                setMatchType(matchTypeLocal);
-                setDriveStation(driveStationLocal);
+        if (scoutingType === 'Match Scouting') {
+            if (checkFilledOut()) {
+                setIsLoading(true);
+                setTimeout(async () => {
+                    setTeamNumber(teamNumberLocal);
+                    setMatchNumber(matchNumberLocal);
+                    setMatchType(matchTypeLocal);
+                    setDriveStation(driveStationLocal);
 
-                setMatchCreated(true);
-                setIsLoading(false);
-            }, 1);
-        } else {
-            Alert.alert('Please fill out all fields');
+                    setMatchCreated(true);
+                    setIsLoading(false);
+                }, 1);
+            } else {
+                Alert.alert('Please fill out all fields.');
+            }
+        } else if (scoutingType === 'Pit Scouting') {
+            if (teamNumberLocal !== 0) {
+                setIsLoading(true);
+                setTimeout(async () => {
+                    setTeamNumber(teamNumberLocal);
+
+                    setMatchCreated(true);
+                    setIsLoading(false);
+                }, 1);
+            } else {
+                Alert.alert('Please fill out the team number.');
+            }
         }
     };
-
-    const parseTeamData = () => {
-        console.log('teamData:', teamData);
-    
-        const testTeamData = teamData.team_data.map(item => ({
-            label: `${item.nickname} : ${item.team_number}`,
-            value: item.team_number,
-        }));
-    
-        console.log('testTeamData:', testTeamData);
-    };
-    
-    
-    
 
     const matchTypeData = [
         {label: 'Practice', value: 'PRACTICE'},
@@ -102,76 +103,96 @@ const NewMatch = ({
         value: item.team_number,
     }));
 
+    const match_scouting = [
+        <>
+            <CustomTextInput
+                label={'Enter Match Number:'}
+                placeholder={'Match Number'}
+                onChangeText={value => setMatchNumberLocal(value)}
+                value={matchNumberLocal}
+                keyboardType={'numeric'}
+            />
+
+            <DropdownComponent
+                data={matchTypeData}
+                placeholder={'Select Match Type'}
+                onValueChange={value => setMatchTypeLocal(value)}
+            />
+
+            <Text
+                style={{
+                    ...styles.title,
+                    marginTop: 0,
+                    paddingTop: RFValue(10),
+                    fontSize: RFValue(15),
+                }}>
+                Select Drive Station
+            </Text>
+            <DriveStationUI
+                updateDict={(key, value) => setDriveStationLocal(value)}
+            />
+        </>,
+    ];
+
+    const handleScoutSelect = () => {
+        if (scoutingType === 'Match Scouting') {
+            setScoutingType('Pit Scouting');
+        } else if (scoutingType === 'Pit Scouting') {
+            setScoutingType('Match Scouting');
+        }
+    };
+
     return (
         <>
-            <SafeAreaView style={styles.avoidTabBar}>
-                <AvoidKeyboardContainer>
-                    <View style={styles.avoidTabBar}>
-                        <View style={styles.container}>
-                            <ScrollView
-                                contentContainerStyle={styles.scrollView}
-                                showsVerticalScrollIndicator={false}>
+            <GestureHandlerRootView style={styles.container}>
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                        paddingBottom: RFValue(40),
+                    }}>
+                    <AvoidKeyboardContainer>
+                        <View style={styles.avoidTabBar}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
                                 <Text style={styles.title}>New Match</Text>
+                                <View style={styles.centerContent}>
+                                    <Text
+                                        style={{
+                                            ...styles.title,
+                                            marginTop: 0,
+                                            paddingTop: RFValue(10),
+                                            fontSize: RFValue(15),
+                                        }}>
+                                        Select Match Type
+                                    </Text>
+                                    <Button
+                                        label={scoutingType}
+                                        onPress={() => handleScoutSelect()}
+                                    />
 
-                                {/* <CustomTextInput
-                                    label={'Enter Team Number:'}
-                                    placeholder={'Team Number'}
-                                    onChangeText={value =>
-                                        setTeamNumberLocal(value)
-                                    }
-                                    value={teamNumberLocal}
-                                /> */}
-                                <DropdownComponent
-                                    data={testTeamData}
-                                    placeholder={'Select Team Number'}
-                                    onValueChange={value =>
-                                        setTeamNumberLocal(value)
-                                    }
-                                    searchable={true}
-                                />
-                                <CustomTextInput
-                                    label={'Enter Match Number:'}
-                                    placeholder={'Match Number'}
-                                    onChangeText={value =>
-                                        setMatchNumberLocal(value)
-                                    }
-                                    value={matchNumberLocal}
-                                    keyboardType={'numeric'}
-                                />
+                                    <DropdownComponent
+                                        data={testTeamData}
+                                        placeholder={'Select Team Number'}
+                                        onValueChange={value =>
+                                            setTeamNumberLocal(value)
+                                        }
+                                        searchable={true}
+                                    />
 
-                                <DropdownComponent
-                                    data={matchTypeData}
-                                    placeholder={'Select Match Type'}
-                                    onValueChange={value =>
-                                        setMatchTypeLocal(value)
-                                    }
-                                />
+                                    {scoutingType === 'Match Scouting'
+                                        ? match_scouting
+                                        : null}
 
-                                <Text
-                                    style={{
-                                        ...styles.title,
-                                        marginTop: 0,
-                                        paddingTop: RFValue(10),
-                                        fontSize: RFValue(15),
-                                    }}>
-                                    Select Drive Station
-                                </Text>
-                                <DriveStationUI
-                                    updateDict={(key, value) =>
-                                        setDriveStationLocal(value)
-                                    }
-                                />
-
-                                <Button
-                                    label={'Create Match'}
-                                    onPress={handleStartScouting}
-                                />
+                                    <Button
+                                        label={'Create Match'}
+                                        onPress={handleStartScouting}
+                                    />
+                                </View>
                             </ScrollView>
+                            <AnimationLoader isLoading={isLoading} />
                         </View>
-                        <AnimationLoader isLoading={isLoading} />
-                    </View>
-                </AvoidKeyboardContainer>
-            </SafeAreaView>
+                    </AvoidKeyboardContainer>
+                </SafeAreaView>
+            </GestureHandlerRootView>
         </>
     );
 };
@@ -185,18 +206,43 @@ const styles = StyleSheet.create({
         paddingTop: RFValue(10),
         paddingBottom: RFValue(40),
     },
+    // container: {
+    //     backgroundColor: '#121212',
+    //     padding: 20,
+    //     color: 'transparent',
+    //     borderTopLeftRadius: RFValue(10),
+    //     borderTopRightRadius: RFValue(10),
+    //     flex: 1,
+    // },
     container: {
-        backgroundColor: '#121212',
-        padding: 20,
-        color: 'transparent',
-        borderTopLeftRadius: RFValue(10),
-        borderTopRightRadius: RFValue(10),
         flex: 1,
-    },
-    scrollView: {
-        flexGrow: 1,
         alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#121212',
+        padding: RFValue(16),
+        borderTopLeftRadius: RFValue(16),
+        borderTopRightRadius: RFValue(16),
+        // paddingBottom: RFValue(120),
     },
+    centerContent: {
+        borderRadius: RFValue(16),
+        paddingTop: RFValue(20),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#1e1e1e',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        padding: RFValue(16),
+        width: '100%',
+        alignSelf: 'center',
+    },
+
     titleScreen: {
         position: 'absolute',
         // paddingBottom: 500,

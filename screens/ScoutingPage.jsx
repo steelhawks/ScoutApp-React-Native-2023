@@ -26,6 +26,31 @@ const ScoutingPage = ({
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
+    const [readyToPlaySuccessAnimation, setReadyToPlaySuccessAnimation] =
+        useState(false);
+    const [currentDate, setCurrentDate] = useState('');
+
+    useEffect(() => {
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+        setCurrentDate(
+            date +
+                '/' +
+                month +
+                '/' +
+                year +
+                ' ' +
+                hours +
+                ':' +
+                min +
+                ':' +
+                sec,
+        );
+    }, []);
 
     const [dict, setDict] = useState({
         eventName: eventName,
@@ -34,7 +59,7 @@ const ScoutingPage = ({
         matchNumber: matchNumber,
         matchType: matchType, // qualification, practice, or elimination
         driveStation: driveStation,
-        alliance: 'EMPTY', // red or blue
+        alliance: driveStation < 4 ? 'RED' : 'BLUE', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
         autonSpeakerNotesScored: 0,
@@ -51,10 +76,13 @@ const ScoutingPage = ({
         telopNotesReceivedFromGround: 0,
         endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
-        penalties: [], // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        fouls: 0,
+        techFouls: 0,
+        yellowCards: 0,
+        redCards: 0,
         telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        // robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
         timeOfCreation: '',
     });
 
@@ -63,51 +91,33 @@ const ScoutingPage = ({
         setDict({...dict, [key]: value});
     };
 
-    const handlePenalitiesSelect = value => {
-        const updatedPenalities = [...dict.penalties];
-
-        const penaltyIndex = updatedPenalities.indexOf(value);
-
-        if (penaltyIndex !== -1) {
-            updatedPenalities.splice(penaltyIndex, 1);
-        } else {
-            updatedPenalities.push(value);
-        }
-
-        updateDict('penalties', updatedPenalities);
-    };
-
     const endMatch = () => {
+        setReadyToPlaySuccessAnimation(true);
         setIsLoading(true);
         setIsDone(true);
 
-        const currentDate = new Date();
-        const options = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false, // Use 24-hour format
-        };
-        const formatted = currentDate.toLocaleString('en-US', options);
-        console.log('formatted:'+ formatted);
+        setDict(prevDict => {
+            return {
+                ...prevDict,
+                timeOfCreation: currentDate,
+            };
+        });
+    };
 
-        setTimeout(async () => {
-            updateDict('timeOfCreation', formatted);
+    useEffect(() => {
+        if (isDone) {
             saveToJson(dict);
             setIsLoading(false);
-            setIsDone(true);
-        }, 500);
-    };
+            setIsDone(false);
+        }
+    }, [isDone, dict]);
 
     const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/scoutdata-${user.name.replace(
-                /\s/g,
-                '',
-            )}-${dict.matchNumber}.json`;
+            const filePath = `${docDir}/${user.name.replace(/\s/g, '')}-${
+                dict.teamNumber
+            }-${dict.matchNumber}.json`;
 
             const jsonData = JSON.stringify(data, null, 4);
 
@@ -130,10 +140,6 @@ const ScoutingPage = ({
     };
 
     const prematch_queries = [
-        <Query
-            title="Alliance Color"
-            item={<RadioGroup buttons={['Red', 'Blue']} id="alliance" />}
-        />,
         <Query
             title="Preloaded?"
             item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
@@ -158,10 +164,21 @@ const ScoutingPage = ({
             item={<Counter id="autonNotesReceived" />}
         />,
         <Query
+            title="Auton Notes Missed"
+            item={<Counter id="autonMissed" />}
+        />,
+        <Query
             title="Auton Issues"
             item={<RadioGroup buttons={['Yes', 'No']} id="autonIssues" />}
         />,
     ];
+
+    const auton_issues_queries = [
+        // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        <Query title="Not Moving" item={<BouncyCheckbox />} />,
+        <Query title="Stopped" item={<BouncyCheckbox />} />,
+        <Query title="Out of Control" item={<BouncyCheckbox />} />,
+    ]
 
     const tele_scoring_queries = [
         <Query
@@ -179,10 +196,6 @@ const ScoutingPage = ({
     ];
 
     const tele_missed_queries = [
-        <Query
-            title="Auton Notes Missed"
-            item={<Counter id="autonMissed" />}
-        />,
         <Query
             title="Speaker Notes Missed"
             item={<Counter id="telopSpeakerNotesMissed" />}
@@ -204,6 +217,29 @@ const ScoutingPage = ({
         />,
     ];
 
+    const penalties_queries = [
+        <Query title="Fouls" item={<Counter id="fouls" />} />,
+        <Query title="Tech Fouls" item={<Counter id="techFouls" />} />,
+        <Query title="Yellow Cards" item={<Counter id="yellowCards" />} />,
+        <Query title="Red Cards" item={<Counter id="redCards" />} />,
+    ];
+
+    const teleop_issues_queries =[
+        <Query title="Not Moving" item={<BouncyCheckbox />} />,
+        <Query title="Lost Connect" item={<BouncyCheckbox />} />,
+        <Query title="FMS Issues" item={<BouncyCheckbox />} />,
+        <Query title="Disabled" item={<BouncyCheckbox />} />,
+    ]
+
+    const defense_queries = [
+        <Query
+            title="Defense"
+            item={
+                <RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />
+            }
+        />,
+    ];
+
     const endgame_queries = [
         <Query
             title="Position"
@@ -215,65 +251,6 @@ const ScoutingPage = ({
             }
         />,
         <Query title="Trap" item={<Counter id="trap" />} />,
-        <Query
-            title="Penalties"
-            item={
-                <>
-                    <BouncyCheckbox
-                        {...styles.checkboxOnlyStyle}
-                        size={25}
-                        text="Foul"
-                        onPress={() => {
-                            handlePenalitiesSelect('FOUL');
-                        }}
-                    />
-
-                    <BouncyCheckbox
-                        {...styles.checkboxOnlyStyle}
-                        size={25}
-                        text="Tech Foul"
-                        onPress={() => {
-                            handlePenalitiesSelect('TECH_FOUL');
-                        }}
-                    />
-                    <BouncyCheckbox
-                        {...styles.checkboxOnlyStyle}
-                        size={25}
-                        text="Yellow Card"
-                        onPress={() => {
-                            handlePenalitiesSelect('YELLOW_CARD');
-                        }}
-                    />
-                    <BouncyCheckbox
-                        {...styles.checkboxOnlyStyle}
-                        size={25}
-                        text="Red Card"
-                        onPress={() => {
-                            handlePenalitiesSelect('RED_CARD');
-                        }}
-                    />
-                </>
-            }
-        />,
-        <Query
-            title="Teleop Issues"
-            item={<RadioGroup buttons={['Yes', 'No']} id="telopIssues" />}
-        />,
-        <Query
-            title="Defense"
-            item={
-                <RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />
-            }
-        />,
-        <Query
-            title="Robot Type"
-            item={
-                <RadioGroup
-                    buttons={['Amp Scorer', 'Speaker Scorer', 'Both']}
-                    id="robotType"
-                />
-            }
-        />,
     ];
 
     const form_sections = [
@@ -285,20 +262,23 @@ const ScoutingPage = ({
         <Section
             title={'Auton'}
             queries={auton_queries}
-            style={[
-                styles.sectionStyle,
-                {backgroundColor: 'rgba(136, 3, 21, 1)'},
-            ]}
+            style={[styles.patternSectionStyle]}
         />,
         <Section
             title={'Teleop Scoring'}
             queries={tele_scoring_queries}
-            style={styles.sectionStyle}
+            style={[
+                styles.sectionStyle,
+                {backgroundColor: 'lightblue'},
+                {borderRadius: 20},
+                {marginBottom: 10},
+                {marginTop: 10},
+            ]}
         />,
         <Section
             title={'Teleop Missed'}
             queries={tele_missed_queries}
-            style={styles.sectionStyle}
+            style={[styles.patternSectionStyle]}
         />,
         <Section
             title={'Teleop Received'}
@@ -308,8 +288,23 @@ const ScoutingPage = ({
         <Section
             title={'Endgame'}
             queries={endgame_queries}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
+        />,
+        <Section
+            title={'Defense'}
+            queries={defense_queries}
             style={styles.sectionStyle}
         />,
+        <Section
+            title={'Penalties'}
+            queries={penalties_queries}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
+        />,
+        <Section 
+            title={'Teleop Issues'}
+            queries={teleop_issues_queries}
+            style={styles.sectionStyle}
+        />
     ];
 
     useBackHandler(() => {
@@ -345,10 +340,12 @@ const ScoutingPage = ({
                 </ScrollView>
             </View>
             <AnimationLoader
-                isLoading={isDone}
+                isLoading={readyToPlaySuccessAnimation}
                 loop={false}
                 animationKey={'SUCCESS_01'}
-                onAnimationComplete={() => setIsDone(false)}
+                onAnimationComplete={() =>
+                    setReadyToPlaySuccessAnimation(false)
+                }
             />
         </SafeAreaView>
     );
@@ -370,6 +367,12 @@ const styles = StyleSheet.create({
     sectionStyle: {
         alignItems: 'center',
         width: '100%',
+    },
+    patternSectionStyle: {
+        backgroundColor: 'rgba(136, 3, 21, 1)',
+        borderRadius: 20,
+        marginBottom: 10,
+        marginTop: 10,
     },
     checkboxOnlyStyle: {
         alignItems: 'flex-start', // or 'baseline'

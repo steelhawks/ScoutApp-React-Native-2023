@@ -1,3 +1,4 @@
+// Copy this when you want to make a new screen page
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -9,34 +10,12 @@ import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Tutorial = ({props}) => {
-    const [tutorialStarted, setTutorialStarted] = useState(false);
-
-    const tutorialSetup = () => {
-        setTutorialStarted(true);
-    };
-
+const YourPageName = ({props}) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={styles.title}>Help Page</Text>
-                    <View style={styles.centerContent}>
-                        {tutorialStarted ? (
-                            <View>
-                                <Text style={styles.title}>
-                                    Tutorial Creation in Progress. {'\n'}
-                                    {'\n'}
-                                    Please come back later.
-                                </Text>
-                            </View>
-                        ) : (
-                            <Button
-                                label="Start Tutorial"
-                                onPress={tutorialSetup}
-                            />
-                        )}
-                    </View>
+                    <Text style={styles.title}>Your Title Text</Text>
                 </ScrollView>
 
                 {/* This is optional and for a loading screen */}
@@ -157,4 +136,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Tutorial;
+export default YourPageName;

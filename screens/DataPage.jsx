@@ -8,6 +8,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Feather';
 
 const DataPage = ({serverIp, navigation}) => {
     useFocusEffect(
@@ -47,7 +48,7 @@ const DataPage = ({serverIp, navigation}) => {
         autonAmpNotesScored: 'NULL!',
         autonMissed: 'NULL!',
         autonNotesReceived: 'NULL!',
-        autonIssues: 'No Issues', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        autonIssues: 'NULL!', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
         telopSpeakerNotesScored: 'NULL!',
         telopAmpNotesScored: 'NULL!',
         telopAmplifiedSpeakerNotes: 'NULL!',
@@ -57,10 +58,13 @@ const DataPage = ({serverIp, navigation}) => {
         telopNotesReceivedFromGround: 'NULL!',
         endGame: 'NULL!', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 'NULL!',
-        penalties: 'NULL!', // FOUL, TECH_FOUL, YELLOW_CARD, RED_CARD, Default: EMPTY
+        fouls: 0,
+        techFouls: 0,
+        yellowCards: 0,
+        redCards: 0,
         telopIssues: 'NULL!', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
         didTeamPlayDefense: null, // YES, NO, Default: null
-        robotType: 'NULL!', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
+        // robotType: 'NULL!', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
         timeOfCreation: 'NULL!',
     });
 
@@ -209,6 +213,40 @@ const DataPage = ({serverIp, navigation}) => {
         }
     };
 
+    const confirmDeleteAll = () => {
+        Alert.alert(
+            'Are you sure you want to delete all?',
+            'This cannot be recovered',
+            [
+                {
+                    text: 'Cancel',
+                },
+                {
+                    text: 'Delete All',
+                    onPress: () => {
+                        handleDeleteAll(true);
+                        setJsonSelected(false);
+                    },
+                    style: 'destructive',
+                },
+            ],
+        );
+    };
+
+    const handleDeleteAll = async () => {
+        try {
+            selectedJson = null;
+            for (const index in jsonFiles) {
+                const json = jsonFiles[index];
+                const path = fs.DocumentDirectoryPath + '/' + json;
+                await fs.unlink(path);
+            }
+            setJsonFiles([]);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        }
+    };
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView
@@ -219,10 +257,29 @@ const DataPage = ({serverIp, navigation}) => {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Previous Matches</Text>
                     <View style={styles.centerContent}>
-                        <Button label="Sync to Server" onPress={handleSync} />
+                        <View
+                            style={[
+                                styles.centerContent,
+                                {flexDirection: 'row'},
+                            ]}>
+                            <Button
+                                label="Sync to Server"
+                                onPress={handleSync}
+                            />
+                            <Icon.Button
+                                name="trash-2"
+                                backgroundColor="transparent"
+                                onPress={confirmDeleteAll}
+                                size={RFValue(20)}
+                                borderRadius={10}
+                                iconStyle={styles.iconStyle}
+                                style={styles.squareButton}
+                            />
+                        </View>
                         <View>
                             {jsonFiles.map(file => (
                                 <Swipeable
+                                    overshootFriction={20}
                                     key={file}
                                     renderRightActions={() => (
                                         <TouchableOpacity
@@ -306,13 +363,17 @@ const DataPage = ({serverIp, navigation}) => {
                                 {'\n'}
                                 Trap: {dict.trap}
                                 {'\n'}
-                                Penalties: {dict.penalties}
+                                Fouls Received: {dict.fouls}
+                                {'\n'}
+                                Tech Fouls Received: {dict.techFouls}
+                                {'\n'}
+                                Yellow Cards Received: {dict.yellowCards}
+                                {'\n'}
+                                Red Cards Received: {dict.redCards}
                                 {'\n'}
                                 Telop Issues: {dict.telopIssues}
                                 {'\n'}
                                 Did Team Play Defense: {dict.didTeamPlayDefense}
-                                {'\n'}
-                                What Type of Robot: {dict.robotType}
                                 {'\n'}
                                 Time of Creation: {dict.timeOfCreation}
                                 {'\n'}
@@ -431,7 +492,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e74c3c',
         padding: RFValue(14),
         borderRadius: RFValue(8),
-        width: '40%',
+        width: '50%',
         alignSelf: 'center',
         marginTop: RFValue(10),
         marginBottom: RFValue(10),
@@ -443,6 +504,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignSelf: 'center',
         fontFamily: 'Arial',
+    },
+    iconStyle: {
+        position: 'relative',
+        color: 'white',
+        alignSelf: 'center',
+    },
+    squareButton: {
+        width: (50),
+        height: (50),
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
