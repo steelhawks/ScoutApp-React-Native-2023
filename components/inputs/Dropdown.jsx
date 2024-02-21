@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const DropdownComponent = ({ data, placeholder, onValueChange, searchable = false }) => {
     const [value, setValue] = useState(null);
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
         height: 50,
         // borderBottomColor: 'gray',
         borderBottomWidth: 0.5,
-        width: '80%',
+        width: '90%',
         backgroundColor: '#1e1e1e',
         padding: 10,
         borderRadius: 10,

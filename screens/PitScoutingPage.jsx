@@ -9,9 +9,10 @@ import fs from 'react-native-fs';
 import {UserContext} from '..';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
-import CustomTextInput from '../components/inputs/CustomTextInput'
+import CustomTextInput from '../components/inputs/CustomTextInput';
 import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
 import Counter from '../components/inputs/Counter';
+import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 
 const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +31,8 @@ const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
     };
 
     const submitToServer = async () => {
-        Alert.alert('Submit Successful.')
-    }
+        Alert.alert('Submit Successful.');
+    };
 
     const [dict, setDict] = useState({
         teamNumber: teamNumber,
@@ -146,10 +147,10 @@ const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
         //         />
         //     }
         // />,
-        <Query 
+        <Query
             title="Can your robot score using trap?"
             item={
-                <CustomTextInput 
+                <CustomTextInput
                     label="Can your robot score using trap?"
                     placeholder="Type an explanation"
                     onChangeText={text => updateDict('trapScorer', text)}
@@ -164,34 +165,36 @@ const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
         <Section
             title="General"
             queries={general_queries}
-            style={styles.sectionStyle}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
         />,
         <Section
             title="Auton"
             queries={auton_queries}
-            style={[styles.sectionStyle, styles.patternSectionStyle]}
+            style={[styles.sectionStyle]}
         />,
         <Section
             title="Scoring"
             queries={scoring_queries}
-            style={styles.sectionStyle}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
         />,
     ];
 
     return (
         <SafeAreaView style={styles.mainView}>
-            <View style={styles.container}>
-                <ScrollView style={{flex: 1}}>
-                    <Button onPress={backConfirm} label="Cancel" />
-                    <UserContext.Provider value={updateDict}>
-                        <Form
-                            sections={form_sections}
-                            updateDict={updateDict}
-                        />
-                    </UserContext.Provider>
-                    <Button onPress={submitToServer} label="Submit" />
-                </ScrollView>
-            </View>
+            <AvoidKeyboardContainer>
+                <View style={styles.container}>
+                    <ScrollView style={{flex: 1}}>
+                        <Button onPress={backConfirm} label="Cancel" />
+                        <UserContext.Provider value={updateDict}>
+                            <Form
+                                sections={form_sections}
+                                updateDict={updateDict}
+                            />
+                        </UserContext.Provider>
+                        <Button onPress={submitToServer} label="Submit" />
+                    </ScrollView>
+                </View>
+            </AvoidKeyboardContainer>
         </SafeAreaView>
     );
 };

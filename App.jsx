@@ -222,50 +222,50 @@ const App = () => {
                                         ),
                                     }}
                                 />
-                                <Tab.Screen
-                                    name="Data"
-                                    component={DataPageNavigate}
-                                    options={{
-                                        tabBarIcon: ({color, size}) => (
-                                            <Icon
-                                                type="Feather"
-                                                name="upload-cloud"
-                                                color={color}
-                                                size={size}
-                                            />
-                                        ),
-                                    }}
-                                />
-                                <Tab.Screen
-                                    name="Help"
-                                    component={HelpPageNavigate}
-                                    options={{
-                                        tabBarIcon: ({color, size}) => (
-                                            <Icon
-                                                type="Feather"
-                                                name="help-circle" // random value so question mark is used
-                                                color={color}
-                                                size={size}
-                                            />
-                                        ),
-                                    }}
-                                />
-                                <Tab.Screen
-                                    name={user.name}
-                                    component={AccountManagementNavigate}
-                                    options={{
-                                        tabBarIcon: ({color, size}) => (
-                                            <Icon
-                                                type="Feather"
-                                                name="users"
-                                                color={color}
-                                                size={size}
-                                            />
-                                        ),
-                                    }}
-                                />
                             </>
                         )}
+                        <Tab.Screen
+                            name="Data"
+                            component={DataPageNavigate}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <Icon
+                                        type="Feather"
+                                        name="upload-cloud"
+                                        color={color}
+                                        size={size}
+                                    />
+                                ),
+                            }}
+                        />
+                        <Tab.Screen
+                            name="Help"
+                            component={HelpPageNavigate}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <Icon
+                                        type="Feather"
+                                        name="help-circle" // random value so question mark is used
+                                        color={color}
+                                        size={size}
+                                    />
+                                ),
+                            }}
+                        />
+                        <Tab.Screen
+                            name={user.name}
+                            component={AccountManagementNavigate}
+                            options={{
+                                tabBarIcon: ({color, size}) => (
+                                    <Icon
+                                        type="Feather"
+                                        name="users"
+                                        color={color}
+                                        size={size}
+                                    />
+                                ),
+                            }}
+                        />
                     </Tab.Navigator>
                 ) : (
                     <Tab.Navigator>

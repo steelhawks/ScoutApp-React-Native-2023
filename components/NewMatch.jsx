@@ -17,6 +17,7 @@ import AvoidKeyboardContainer from './AvoidKeyboardContainer';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropdownComponent from './inputs/Dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import CounterInput from 'react-native-counter-input';
 
 const NewMatch = ({
     teamData,
@@ -63,7 +64,7 @@ const NewMatch = ({
 
     const handleStartScouting = async () => {
         if (scoutingType === 'Match Scouting') {
-            if (checkFilledOut()) {
+            if (true) {
                 setIsLoading(true);
                 setTimeout(async () => {
                     setTeamNumber(teamNumberLocal);
@@ -105,12 +106,29 @@ const NewMatch = ({
 
     const match_scouting = [
         <>
-            <CustomTextInput
+            {/* <CustomTextInput
                 label={'Enter Match Number:'}
                 placeholder={'Match Number'}
                 onChangeText={value => setMatchNumberLocal(value)}
                 value={matchNumberLocal}
                 keyboardType={'numeric'}
+            /> */}
+            <Text
+                style={{
+                    ...styles.title,
+                    marginTop: 0,
+                    paddingTop: RFValue(10),
+                    fontSize: RFValue(15),
+                }}>
+                Enter Match Number:
+            </Text>
+            <CounterInput
+                min={1}
+                horizontal={true}
+                reverseCounterButtons={true}
+                onChange={counter => {
+                    setMatchNumberLocal(counter);
+                }}
             />
 
             <DropdownComponent

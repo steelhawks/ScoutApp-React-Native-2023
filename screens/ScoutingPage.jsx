@@ -1,4 +1,10 @@
-import {StyleSheet, View, Alert, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Alert,
+    ScrollView,
+    useWindowDimensions,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import Form from '../components/scouting_components/Form';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -13,6 +19,9 @@ import Button from '../components/inputs/Button';
 import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {NavigationContainer} from '@react-navigation/native';
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 
 const ScoutingPage = ({
     user,
@@ -24,6 +33,8 @@ const ScoutingPage = ({
     matchType,
     driveStation,
 }) => {
+    // const Tab = createMaterialTopTabNavigator();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const [readyToPlaySuccessAnimation, setReadyToPlaySuccessAnimation] =
@@ -178,7 +189,7 @@ const ScoutingPage = ({
         <Query title="Not Moving" item={<BouncyCheckbox />} />,
         <Query title="Stopped" item={<BouncyCheckbox />} />,
         <Query title="Out of Control" item={<BouncyCheckbox />} />,
-    ]
+    ];
 
     const tele_scoring_queries = [
         <Query
@@ -224,12 +235,12 @@ const ScoutingPage = ({
         <Query title="Red Cards" item={<Counter id="redCards" />} />,
     ];
 
-    const teleop_issues_queries =[
+    const teleop_issues_queries = [
         <Query title="Not Moving" item={<BouncyCheckbox />} />,
         <Query title="Lost Connect" item={<BouncyCheckbox />} />,
         <Query title="FMS Issues" item={<BouncyCheckbox />} />,
         <Query title="Disabled" item={<BouncyCheckbox />} />,
-    ]
+    ];
 
     const defense_queries = [
         <Query
@@ -300,11 +311,11 @@ const ScoutingPage = ({
             queries={penalties_queries}
             style={[styles.sectionStyle, styles.patternSectionStyle]}
         />,
-        <Section 
+        <Section
             title={'Teleop Issues'}
             queries={teleop_issues_queries}
             style={styles.sectionStyle}
-        />
+        />,
     ];
 
     useBackHandler(() => {
@@ -325,8 +336,133 @@ const ScoutingPage = ({
         ]);
     };
 
+    const Prematch = () => (
+        <UserContext.Provider value={updateDict}>
+            <ScrollView>
+                <Button onPress={backConfirm} label="Cancel" />
+                <Section
+                    title={'Pre-Match'}
+                    queries={prematch_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+            </ScrollView>
+        </UserContext.Provider>
+    );
+
+    const Auton = () => (
+        <UserContext.Provider value={updateDict}>
+            <ScrollView>
+                <Section
+                    title={'Auton'}
+                    queries={auton_queries}
+                    style={[styles.patternSectionStyle]}
+                    updateDict={updateDict}
+                />
+            </ScrollView>
+        </UserContext.Provider>
+    );
+
+    const Teleop = () => (
+        <ScrollView>
+            <UserContext.Provider value={updateDict}>
+                <Section
+                    title={'Teleop Scoring'}
+                    queries={tele_scoring_queries}
+                    style={[
+                        styles.sectionStyle,
+                        {backgroundColor: 'lightblue'},
+                        {borderRadius: 20},
+                        {marginBottom: 10},
+                        {marginTop: 10},
+                    ]}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Missed'}
+                    queries={tele_missed_queries}
+                    style={[styles.patternSectionStyle]}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Received'}
+                    queries={tele_received_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Issues'}
+                    queries={teleop_issues_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+            </UserContext.Provider>
+        </ScrollView>
+    );
+
+    const Endgame = () => (
+        <ScrollView>
+            <Section
+                title={'Endgame'}
+                queries={endgame_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+                updateDict={updateDict}
+            />
+            <Section
+                title={'Defense'}
+                queries={defense_queries}
+                style={styles.sectionStyle}
+                updateDict={updateDict}
+            />
+            <Section
+                title={'Penalties'}
+                queries={penalties_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+                updateDict={updateDict}
+            />
+
+            <Button onPress={() => endMatch()} label="End Match" />
+        </ScrollView>
+    );
+
+    const renderScene = SceneMap({
+        prematch: Prematch,
+        auton: Auton,
+        teleop: Teleop,
+        endgame: Endgame,
+    });
+
+    const layout = useWindowDimensions();
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        {key: 'prematch', title: 'Pre-Match'},
+        {key: 'auton', title: 'Auton'},
+        {key: 'teleop', title: 'Teleop'},
+        {key: 'endgame', title: 'Endgame'},
+    ]);
+
+    const renderTabBar = props => (
+        <TabBar
+            {...props}
+            indicatorStyle={{backgroundColor: 'lightblue'}}
+            style={{backgroundColor: 'black'}}
+        />
+    );
+
     return (
         <SafeAreaView style={styles.mainView}>
+            {/*This doesnt work we need to fix this asap*/}
+            {/* <UserContext.Provider value={updateDict}>
+                <TabView
+                    renderTabBar={renderTabBar}
+                    navigationState={{index, routes}}
+                    renderScene={renderScene}
+                    onIndexChange={setIndex}
+                    initialLayout={{width: layout.width}}
+                    style={styles.tabView}
+                />
+            </UserContext.Provider> */}
+            {/*This works (OLD) */}
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
                     <Button onPress={backConfirm} label="Cancel" />
@@ -394,6 +530,12 @@ const styles = StyleSheet.create({
             borderColor: 'black',
             borderRadius: 10,
             margin: 10,
+        },
+        tabView: {
+            flex: 1,
+            backgroundColor: '#3498db', // Example color
+            borderWidth: 2, // Add a border to help identify the component boundaries
+            borderColor: 'red', // Border color for visibility
         },
     },
 });
