@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/request_login';
 import {fetchTeamDataFromServer} from '../authentication/request_team_data';
+import {fetchEventNameFromServer} from '../authentication/request_event_name';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Button from '../components/inputs/Button';
@@ -97,6 +98,9 @@ const Login = ({
                 appVersion,
             );
 
+            const eventName = await fetchEventNameFromServer(Ip);
+            setEventName(eventName.name);
+
             // team data request
             const allTeamData = await fetchTeamDataFromServer(Ip);
             setTeamData(allTeamData);
@@ -104,7 +108,6 @@ const Login = ({
             if (userData && userData.length > 0) {
                 const user = userData[0];
                 setUser(user);
-                setEventName(user.competition_name);
                 setServerIp(Ip);
             } else {
                 console.error('Incorrect username or password');

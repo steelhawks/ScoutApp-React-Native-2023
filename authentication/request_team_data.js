@@ -6,7 +6,6 @@ export const fetchTeamDataFromServer = async serverIp => {
 
         if (teamDataResponse.ok) {
             const teamData = await teamDataResponse.json();
-            console.log('teamData:', teamData);
             return teamData
         } else {
             console.error('Error fetching team data:', teamDataResponse.status);

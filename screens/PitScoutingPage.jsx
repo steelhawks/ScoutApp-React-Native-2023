@@ -14,8 +14,32 @@ import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
 import Counter from '../components/inputs/Counter';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 
-const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
+const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isDone, setIsDone] = useState(false);
+    const [currentDate, setCurrentDate] = useState('');
+
+    useEffect(() => {
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+        setCurrentDate(
+            date +
+                '/' +
+                month +
+                '/' +
+                year +
+                ' ' +
+                hours +
+                ':' +
+                min +
+                ':' +
+                sec,
+        );
+    }, []);
 
     const backConfirm = () => {
         Alert.alert('You have unsaved changes', 'Continue without saving?', [
@@ -31,11 +55,22 @@ const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
     };
 
     const submitToServer = async () => {
-        Alert.alert('Submit Successful.');
+        setIsLoading(true);
+        setIsDone(true);
+
+        setDict(prevDict => {
+            return {
+                ...prevDict,
+                timeOfCreation: currentDate,
+            };
+        });
     };
 
     const [dict, setDict] = useState({
+        eventName: eventName,
+        scouterName: user.name,
         teamNumber: teamNumber,
+        matchNumber: 'PIT',
         dimensions: '',
         weight: '',
         drivetrain: '',
@@ -44,11 +79,50 @@ const PitScoutingPage = ({setMatchCreated, teamNumber}) => {
         auton: '',
         robotExcel: '',
         trapScorer: '',
+        timeOfCreation: '',
     });
 
     const updateDict = (key, value) => {
         setIsLoading(true);
         setDict({...dict, [key]: value});
+    };
+
+    useEffect(() => {
+        if (isDone) {
+            saveToJson(dict);
+            setIsLoading(false);
+            setIsDone(false);
+        }
+    }, [isDone, dict]);
+
+    const saveToJson = async data => {
+        try {
+            const docDir = fs.DocumentDirectoryPath;
+            const filePath = `${docDir}/PIT_SCOUTING-${user.name.replace(
+                /\s/g,
+                '',
+            )}-${dict.teamNumber}.json`;
+
+            const jsonData = JSON.stringify(data, null, 4);
+
+            await fs.writeFile(filePath, jsonData, 'utf8');
+
+            // console.log('Located at', filePath);
+
+            Alert.alert('Pit Scouting of Team ' + dict.teamNumber + ' saved.', '', [
+                {text: 'New Match', onPress: () => setMatchCreated(false)},
+                {
+                    text: 'View Match',
+                    onPress: () => {
+                        setMatchCreated(false);
+                        navigation.navigate('Data');
+                    },
+                },
+                {text: 'OK', onPress: () => setMatchCreated(false)},
+            ]);
+        } catch (error) {
+            console.error('Error saving data to file:', error.message);
+        }
     };
 
     const general_queries = [

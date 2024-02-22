@@ -69,6 +69,8 @@ const App = () => {
         return (
             <PitScoutingPage
                 {...props}
+                user={user}
+                eventName={eventName}
                 setMatchCreated={setMatchCreated}
                 teamNumber={teamNumber}
             />

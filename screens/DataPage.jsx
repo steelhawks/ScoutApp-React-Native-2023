@@ -247,6 +247,77 @@ const DataPage = ({serverIp, navigation}) => {
         }
     };
 
+    const matchScouting = [
+        <Text style={styles.valueText}>
+            Event Name: {dict.eventName}
+            {'\n'}
+            Scouter Name: {dict.scouterName}
+            {'\n'}
+            Team Number: {dict.teamNumber}
+            {'\n'}
+            Match Number: {dict.matchNumber}
+            {'\n'}
+            Match Type: {dict.matchType}
+            {'\n'}
+            Drive Station: {dict.driveStation}
+            {'\n'}
+            Alliance: {dict.alliance}
+            {'\n'}
+            Preloaded: {dict.preloaded}
+            {'\n'}
+            Robot Left: {dict.robotLeft}
+            {'\n'}
+            Auton Speaker Notes Scored: {dict.autonSpeakerNotesScored}
+            {'\n'}
+            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
+            {'\n'}
+            Auton Missed: {dict.autonMissed}
+            {'\n'}
+            Auton Notes Received: {dict.autonNotesReceived}
+            {'\n'}
+            Auton Issues: {dict.autonIssues}
+            {'\n'}
+            Telop Speaker Notes Scored: {dict.telopSpeakerNotesScored}
+            {'\n'}
+            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
+            {'\n'}
+            Telop Amplified Speaker Notes: {dict.telopAmplifiedSpeakerNotes}
+            {'\n'}
+            Telop Speaker Notes Missed: {dict.telopSpeakerNotesMissed}
+            {'\n'}
+            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
+            {'\n'}
+            Telop Notes Received From Human Player:{' '}
+            {dict.telopNotesReceivedFromHumanPlayer}
+            {'\n'}
+            Telop Notes Received From Ground:{' '}
+            {dict.telopNotesReceivedFromGround}
+            {'\n'}
+            End Game: {dict.endGame}
+            {'\n'}
+            Trap: {dict.trap}
+            {'\n'}
+            Fouls Received: {dict.fouls}
+            {'\n'}
+            Tech Fouls Received: {dict.techFouls}
+            {'\n'}
+            Yellow Cards Received: {dict.yellowCards}
+            {'\n'}
+            Red Cards Received: {dict.redCards}
+            {'\n'}
+            Telop Issues: {dict.telopIssues}
+            {'\n'}
+            Did Team Play Defense: {dict.didTeamPlayDefense}
+            {'\n'}
+            Time of Creation: {dict.timeOfCreation}
+            {'\n'}
+        </Text>,
+    ];
+
+    const pitScouting = [
+        // add pit scouting view here
+    ];
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView
@@ -307,77 +378,8 @@ const DataPage = ({serverIp, navigation}) => {
                         </View>
 
                         {jsonSelected ? (
-                            <Text style={styles.valueText}>
-                                Event Name: {dict.eventName}
-                                {'\n'}
-                                Scouter Name: {dict.scouterName}
-                                {'\n'}
-                                Team Number: {dict.teamNumber}
-                                {'\n'}
-                                Match Number: {dict.matchNumber}
-                                {'\n'}
-                                Match Type: {dict.matchType}
-                                {'\n'}
-                                Drive Station: {dict.driveStation}
-                                {'\n'}
-                                Alliance: {dict.alliance}
-                                {'\n'}
-                                Preloaded: {dict.preloaded}
-                                {'\n'}
-                                Robot Left: {dict.robotLeft}
-                                {'\n'}
-                                Auton Speaker Notes Scored:{' '}
-                                {dict.autonSpeakerNotesScored}
-                                {'\n'}
-                                Auton Amp Notes Scored:{' '}
-                                {dict.autonAmpNotesScored}
-                                {'\n'}
-                                Auton Missed: {dict.autonMissed}
-                                {'\n'}
-                                Auton Notes Received: {dict.autonNotesReceived}
-                                {'\n'}
-                                Auton Issues: {dict.autonIssues}
-                                {'\n'}
-                                Telop Speaker Notes Scored:{' '}
-                                {dict.telopSpeakerNotesScored}
-                                {'\n'}
-                                Telop Amp Notes Scored:{' '}
-                                {dict.telopAmpNotesScored}
-                                {'\n'}
-                                Telop Amplified Speaker Notes:{' '}
-                                {dict.telopAmplifiedSpeakerNotes}
-                                {'\n'}
-                                Telop Speaker Notes Missed:{' '}
-                                {dict.telopSpeakerNotesMissed}
-                                {'\n'}
-                                Telop Amp Notes Missed:{' '}
-                                {dict.telopAmpNotesMissed}
-                                {'\n'}
-                                Telop Notes Received From Human Player:{' '}
-                                {dict.telopNotesReceivedFromHumanPlayer}
-                                {'\n'}
-                                Telop Notes Received From Ground:{' '}
-                                {dict.telopNotesReceivedFromGround}
-                                {'\n'}
-                                End Game: {dict.endGame}
-                                {'\n'}
-                                Trap: {dict.trap}
-                                {'\n'}
-                                Fouls Received: {dict.fouls}
-                                {'\n'}
-                                Tech Fouls Received: {dict.techFouls}
-                                {'\n'}
-                                Yellow Cards Received: {dict.yellowCards}
-                                {'\n'}
-                                Red Cards Received: {dict.redCards}
-                                {'\n'}
-                                Telop Issues: {dict.telopIssues}
-                                {'\n'}
-                                Did Team Play Defense: {dict.didTeamPlayDefense}
-                                {'\n'}
-                                Time of Creation: {dict.timeOfCreation}
-                                {'\n'}
-                            </Text>
+                            // make a way to show pit scouting and match scouting view separately with conditional
+                            matchScouting
                         ) : (
                             <Text style={styles.infoText}>
                                 Select a JSON file to view the data
@@ -511,8 +513,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     squareButton: {
-        width: (50),
-        height: (50),
+        width: 50,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
     },
