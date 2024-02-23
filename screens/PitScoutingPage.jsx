@@ -6,7 +6,7 @@ import AnimationLoader from '../AnimationLoader';
 import Section from '../components/scouting_components/Section';
 import Query from '../components/scouting_components/Query';
 import fs from 'react-native-fs';
-import {UserContext} from '..';
+import {RadioGroup, UserContext} from '..';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import CustomTextInput from '../components/inputs/CustomTextInput';
@@ -14,10 +14,18 @@ import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
 import Counter from '../components/inputs/Counter';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 
-const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigation}) => {
+const PitScoutingPage = ({
+    setMatchCreated,
+    teamNumber,
+    eventName,
+    user,
+    navigation,
+}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const [currentDate, setCurrentDate] = useState('');
+    const [readyToPlaySuccessAnimation, setReadyToPlaySuccessAnimation] =
+        useState(false);
 
     useEffect(() => {
         var date = new Date().getDate(); //Current Date
@@ -55,6 +63,7 @@ const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigati
     };
 
     const submitToServer = async () => {
+        setReadyToPlaySuccessAnimation(true);
         setIsLoading(true);
         setIsDone(true);
 
@@ -109,17 +118,21 @@ const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigati
 
             // console.log('Located at', filePath);
 
-            Alert.alert('Pit Scouting of Team ' + dict.teamNumber + ' saved.', '', [
-                {text: 'New Match', onPress: () => setMatchCreated(false)},
-                {
-                    text: 'View Match',
-                    onPress: () => {
-                        setMatchCreated(false);
-                        navigation.navigate('Data');
+            Alert.alert(
+                'Pit Scouting of Team ' + dict.teamNumber + ' saved.',
+                '',
+                [
+                    {text: 'New Match', onPress: () => setMatchCreated(false)},
+                    {
+                        text: 'View Match',
+                        onPress: () => {
+                            setMatchCreated(false);
+                            navigation.navigate('Data');
+                        },
                     },
-                },
-                {text: 'OK', onPress: () => setMatchCreated(false)},
-            ]);
+                    {text: 'OK', onPress: () => setMatchCreated(false)},
+                ],
+            );
         } catch (error) {
             console.error('Error saving data to file:', error.message);
         }
@@ -204,23 +217,15 @@ const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigati
     ];
 
     const scoring_queries = [
-        // <Query
-        //     title="Scoring"
-        //     item={
-        //         <BouncyCheckboxGroup
-        //             label="What does your robot excel in?"
-        //             data={{
-        //                 Amp: 'AMP',
-        //                 Speaker: 'SPEAKER',
-        //                 Both: 'BOTH',
-        //                 Neither: 'NEITHER',
-        //             }}
-        //             onChange={(checked, id) => {
-        //                 updateDict('robotExcel', id);
-        //             }}
-        //         />
-        //     }
-        // />,
+        <Query
+            title="What does your robot excel in?"
+            item={
+                <RadioGroup
+                    buttons={['AMP', 'Speaker', 'Both', 'Neither']}
+                    id="robotExcel"
+                />
+            }
+        />,
         <Query
             title="Can your robot score using trap?"
             item={
@@ -268,6 +273,14 @@ const PitScoutingPage = ({setMatchCreated, teamNumber, eventName, user, navigati
                         <Button onPress={submitToServer} label="Submit" />
                     </ScrollView>
                 </View>
+                <AnimationLoader
+                    isLoading={readyToPlaySuccessAnimation}
+                    loop={false}
+                    animationKey={'SUCCESS_01'}
+                    onAnimationComplete={() =>
+                        setReadyToPlaySuccessAnimation(false)
+                    }
+                />
             </AvoidKeyboardContainer>
         </SafeAreaView>
     );

@@ -66,6 +66,17 @@ const DataPage = ({serverIp, navigation}) => {
         didTeamPlayDefense: null, // YES, NO, Default: null
         // robotType: 'NULL!', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
         timeOfCreation: 'NULL!',
+
+        // for pit scouting
+        dimensions: '',
+        weight: '',
+        drivetrain: '',
+        intake: '',
+        vision: '',
+        auton: '',
+        robotExcel: '',
+        trapScorer: '',
+        timeOfCreation: '',
     });
 
     // use this to change values after the match
@@ -214,6 +225,11 @@ const DataPage = ({serverIp, navigation}) => {
     };
 
     const confirmDeleteAll = () => {
+        if (jsonFiles.length === 0) {
+            Alert.alert('No files to delete');
+            return;
+        }
+
         Alert.alert(
             'Are you sure you want to delete all?',
             'This cannot be recovered',
@@ -316,6 +332,31 @@ const DataPage = ({serverIp, navigation}) => {
 
     const pitScouting = [
         // add pit scouting view here
+        <Text style={styles.valueText}>
+            Event Name: {dict.eventName}
+            {'\n'}
+            Scouter Name: {dict.scouterName}
+            {'\n'}
+            Dimensions: {dict.dimensions}
+            {'\n'}
+            Weight: {dict.weight}
+            {'\n'}
+            Drivetrain: {dict.drivetrain}
+            {'\n'}
+            Intake: {dict.intake}
+            {'\n'}
+            Vision: {dict.vision}
+            {'\n'}
+
+            Auton: {dict.auton}
+            {'\n'}
+            Robot Excel: {dict.robotExcel}
+            {'\n'}
+            Trap Scorer: {dict.trapScorer}
+            {'\n'}
+            Time of Creation: {dict.timeOfCreation}
+            {'\n'}
+        </Text>
     ];
 
     return (
@@ -379,7 +420,9 @@ const DataPage = ({serverIp, navigation}) => {
 
                         {jsonSelected ? (
                             // make a way to show pit scouting and match scouting view separately with conditional
-                            matchScouting
+                            dict.matchNumber === 'PIT' ? (
+                                pitScouting
+                            ) : matchScouting
                         ) : (
                             <Text style={styles.infoText}>
                                 Select a JSON file to view the data
