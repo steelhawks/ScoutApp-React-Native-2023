@@ -64,7 +64,7 @@ const NewMatch = ({
 
     const handleStartScouting = async () => {
         if (scoutingType === 'Match Scouting') {
-            if (checkFilledOut()) {
+            if ((true)) {
                 setIsLoading(true);
                 setTimeout(async () => {
                     setTeamNumber(teamNumberLocal);
@@ -123,6 +123,7 @@ const NewMatch = ({
                 Enter Match Number:
             </Text>
             <CounterInput
+                defaultValue={1}
                 min={1}
                 horizontal={true}
                 reverseCounterButtons={true}

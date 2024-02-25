@@ -16,7 +16,7 @@ export {default as RadioGroup} from "./components/inputs/RadioGroup";
 
 //screens
 export {default as DataPage} from "./screens/DataPage";
-export {default as ScoutingPage} from "./screens/ScoutingPage";
+export {default as ScoutingPage} from "./screens/ScoutingPageNOTWORK";
 
 const UserContext = createContext();
 

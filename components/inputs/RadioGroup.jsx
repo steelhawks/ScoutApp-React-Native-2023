@@ -32,6 +32,7 @@ const RadioGroup = props => {
 
     return (
         <BouncyCheckboxGroup
+            value={props.value}
             style={{
                 alignSelf: 'center',
                 alignItems: 'center',
