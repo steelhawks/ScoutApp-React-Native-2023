@@ -154,7 +154,7 @@ const Login = ({
                                     onChangeText={text => setUsername(text)}
                                     value={username}
                                     autoCapitalize="none"
-                                    keyboardType="username"
+                                    keyboardType="email-address"
                                 />
                                 <TextInput
                                     style={styles.input}

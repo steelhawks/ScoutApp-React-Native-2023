@@ -23,7 +23,7 @@ const App = () => {
     const [serverIp, setServerIp] = useState();
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v0.9a');
+    const [appVersion] = useState('v0.9a'); 
 
     const [teamData, setTeamData] = useState(null);
 

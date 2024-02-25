@@ -107,7 +107,7 @@ const PitScoutingPage = ({
     const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/PIT_SCOUTING-${user.name.replace(
+            const filePath = `${docDir}/PIT-SCOUTING-${user.name.replace(
                 /\s/g,
                 '',
             )}-${dict.teamNumber}.json`;
@@ -115,8 +115,6 @@ const PitScoutingPage = ({
             const jsonData = JSON.stringify(data, null, 4);
 
             await fs.writeFile(filePath, jsonData, 'utf8');
-
-            // console.log('Located at', filePath);
 
             Alert.alert(
                 'Pit Scouting of Team ' + dict.teamNumber + ' saved.',

@@ -56,7 +56,7 @@ const NewMatch = ({
     const checkFilledOut = () => {
         return (
             teamNumberLocal !== '' &&
-            matchNumberLocal !== '' &&
+            matchNumberLocal !== 0 &&
             matchTypeLocal !== '' &&
             driveStationLocal !== 0
         );
@@ -64,7 +64,7 @@ const NewMatch = ({
 
     const handleStartScouting = async () => {
         if (scoutingType === 'Match Scouting') {
-            if (true) {
+            if (checkFilledOut()) {
                 setIsLoading(true);
                 setTimeout(async () => {
                     setTeamNumber(teamNumberLocal);

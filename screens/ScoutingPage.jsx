@@ -33,7 +33,6 @@ const ScoutingPage = ({
     matchType,
     driveStation,
 }) => {
-    // const Tab = createMaterialTopTabNavigator();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
@@ -452,7 +451,7 @@ const ScoutingPage = ({
     return (
         <SafeAreaView style={styles.mainView}>
             {/*This doesnt work we need to fix this asap*/}
-            {/* <UserContext.Provider value={updateDict}>
+            <UserContext.Provider value={updateDict}>
                 <TabView
                     renderTabBar={renderTabBar}
                     navigationState={{index, routes}}
@@ -461,9 +460,9 @@ const ScoutingPage = ({
                     initialLayout={{width: layout.width}}
                     style={styles.tabView}
                 />
-            </UserContext.Provider> */}
+            </UserContext.Provider>
             {/*This works (OLD) */}
-            <View style={styles.container}>
+            {/* <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
                     <Button onPress={backConfirm} label="Cancel" />
                     <UserContext.Provider value={updateDict}>
@@ -474,7 +473,7 @@ const ScoutingPage = ({
                     </UserContext.Provider>
                     <Button onPress={() => endMatch()} label="End Match" />
                 </ScrollView>
-            </View>
+            </View> */}
             <AnimationLoader
                 isLoading={readyToPlaySuccessAnimation}
                 loop={false}
@@ -509,7 +508,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginBottom: 10,
         marginTop: 10,
-    },
+    },    
     checkboxOnlyStyle: {
         alignItems: 'flex-start', // or 'baseline'
         width: '100%',
