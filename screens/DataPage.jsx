@@ -9,8 +9,9 @@ import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DataPage = ({serverIp, navigation}) => {
+const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
@@ -117,18 +118,54 @@ const DataPage = ({serverIp, navigation}) => {
     const handleSync = async () => {
         const response = null;
 
-        if (jsonFiles.length === 0) {
-            Alert.alert('No files to upload', '', [
-                {
-                    text: 'Create a Match',
-                    onPress: () => {
-                        navigation.navigate('New Match');
+        if (serverIp === '101') {
+            // Alert.alert(
+            //     'You are logged in as an offline user.',
+            //     'Want to connect to a server?',
+            //     [
+            //         {text: 'Dismiss'},
+            //         {
+            //             text: 'Log Out and Connect',
+            //             onPress: async () => {
+            //                 await AsyncStorage.removeItem('username');
+            //                 await AsyncStorage.removeItem('osis');
+            //                 setUser(null);
+            //             },
+            //             style: 'destructive',
+            //         },
+            //     ],
+            // );
+
+            if (jsonFiles.length === 0) {
+                Alert.alert('No files to upload', '', [
+                    {
+                        text: 'Create a Match',
+                        onPress: () => {
+                            navigation.navigate('New Match');
+                        },
                     },
-                },
-                {text: 'OK'},
-            ]);
-            return;
+                    {text: 'OK'},
+                ]);
+                return;
+            }
+
+            await new Promise(resolve => {
+                Alert.prompt(
+                    'You are logged in as an offline user.',
+                    'Enter Server IP to sync.',
+                    [
+                        {text: 'Cancel'},
+                        {
+                            text: 'Connect',
+                            onPress: async ip => {
+                                setServerIp(ip);
+                            },
+                        },
+                    ],
+                );
+            });
         }
+
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
             const path = fs.DocumentDirectoryPath + '/' + json;
@@ -347,7 +384,6 @@ const DataPage = ({serverIp, navigation}) => {
             {'\n'}
             Vision: {dict.vision}
             {'\n'}
-
             Auton: {dict.auton}
             {'\n'}
             Robot Excel: {dict.robotExcel}
@@ -356,7 +392,7 @@ const DataPage = ({serverIp, navigation}) => {
             {'\n'}
             Time of Creation: {dict.timeOfCreation}
             {'\n'}
-        </Text>
+        </Text>,
     ];
 
     return (
@@ -422,7 +458,9 @@ const DataPage = ({serverIp, navigation}) => {
                             // make a way to show pit scouting and match scouting view separately with conditional
                             dict.matchNumber === 'PIT' ? (
                                 pitScouting
-                            ) : matchScouting
+                            ) : (
+                                matchScouting
+                            )
                         ) : (
                             <Text style={styles.infoText}>
                                 Select a JSON file to view the data

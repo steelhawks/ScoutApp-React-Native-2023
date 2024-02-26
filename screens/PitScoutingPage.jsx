@@ -20,6 +20,7 @@ const PitScoutingPage = ({
     eventName,
     user,
     navigation,
+    serverIp,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
@@ -65,6 +66,25 @@ const PitScoutingPage = ({
     const submitToServer = async () => {
         setReadyToPlaySuccessAnimation(true);
         setIsLoading(true);
+
+        // if (serverIp === '101') {
+        //     await new Promise(resolve => {
+        //         Alert.prompt(
+        //             'You are logged in as an offline user.',
+        //             'Enter your name to save.',
+        //             [
+        //                 {text: 'Cancel'},
+        //                 {
+        //                     text: 'Set Name',
+        //                     onPress: async name => {
+        //                         updateDict('scouterName', name);
+        //                     },
+        //                 },
+        //             ],
+        //         );
+        //     });
+        // }
+
         setIsDone(true);
 
         setDict(prevDict => {
@@ -107,6 +127,7 @@ const PitScoutingPage = ({
     const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
+
             const filePath = `${docDir}/PIT-SCOUTING-${user.name.replace(
                 /\s/g,
                 '',

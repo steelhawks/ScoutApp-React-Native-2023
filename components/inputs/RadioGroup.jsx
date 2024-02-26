@@ -46,6 +46,7 @@ const RadioGroup = props => {
             })}
             onChange={selectedItem =>
                 updateDict(props.id, selectedItem['text'])
+                // props.onChange(selectedItem['text'])
             }
         />
     );

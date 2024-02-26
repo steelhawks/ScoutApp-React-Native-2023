@@ -77,6 +77,12 @@ const Login = ({
             return;
         }
 
+        if (Ip === '101') {
+            console.log('Logging in with offline mode');
+            handleOfflineLogin();
+            return;
+        }
+
         // save the IP address to AsyncStorage
         try {
             await AsyncStorage.setItem('serverIp', Ip);
@@ -99,14 +105,17 @@ const Login = ({
             );
 
             const eventName = await fetchEventNameFromServer(Ip);
+            await AsyncStorage.setItem('eventName', eventName.name);
             setEventName(eventName.name);
 
             // team data request
             const allTeamData = await fetchTeamDataFromServer(Ip);
+            await AsyncStorage.setItem('teamData', JSON.stringify(allTeamData));
             setTeamData(allTeamData);
 
             if (userData && userData.length > 0) {
                 const user = userData[0];
+                console.log(user);
                 setUser(user);
                 setServerIp(Ip);
             } else {
@@ -118,6 +127,32 @@ const Login = ({
             console.error('Error connecting to the server', error);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleOfflineLogin = async () => {
+        try {
+            const teamData = await AsyncStorage.getItem('teamData');
+            const eventName = await AsyncStorage.getItem('eventName');
+            const user = {
+                id: 1,
+                name: 'Offine User',
+                osis: '1234',
+                password: '1234',
+                username: 'Offline User',
+            };
+
+            setUser(user);
+            setEventName(eventName);
+            setTeamData(JSON.parse(teamData));
+            setServerIp('101');
+        } catch (error) {
+            Alert.alert(
+                'Error with retreiving offline data',
+                'Please connect to a server as soon as possible to sync.',
+                error,
+            );
+        } finally {
         }
     };
 

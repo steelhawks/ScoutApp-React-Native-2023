@@ -15,12 +15,11 @@ import {BlurView} from '@react-native-community/blur';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Drawer = createDrawerNavigator(); // old
 const Tab = createBottomTabNavigator(); // new
 
 const App = () => {
     const [user, setUser] = useState(null);
-    const [serverIp, setServerIp] = useState();
+    const [serverIp, setServerIp] = useState('');
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
     const [appVersion] = useState('v0.9a');
@@ -69,6 +68,7 @@ const App = () => {
         return (
             <PitScoutingPage
                 {...props}
+                serverIp={serverIp}
                 user={user}
                 eventName={eventName}
                 setMatchCreated={setMatchCreated}
@@ -109,7 +109,14 @@ const App = () => {
     };
 
     const DataPageNavigate = props => {
-        return <DataPage {...props} serverIp={serverIp} />;
+        return (
+            <DataPage
+                {...props}
+                serverIp={serverIp}
+                setUser={setUser}
+                setServerIp={setServerIp}
+            />
+        );
     };
 
     return (
@@ -240,7 +247,7 @@ const App = () => {
                                 ),
                             }}
                         />
-                        <Tab.Screen
+                        {/* <Tab.Screen
                             name="Help"
                             component={HelpPageNavigate}
                             options={{
@@ -253,7 +260,7 @@ const App = () => {
                                     />
                                 ),
                             }}
-                        />
+                        /> */}
                         <Tab.Screen
                             name={user.name}
                             component={AccountManagementNavigate}

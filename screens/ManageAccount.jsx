@@ -36,7 +36,7 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
                             Username: {user.username} {'\n'}
                             OSIS: {user.osis} {'\n'}
                             Event: {eventName} {'\n'}
-                            Server: {serverIp} {'\n'}
+                            Server: {serverIp === '101' ? 'Offline' : serverIp} {'\n'}
                             App Version: {appVersion}
                         </Text>
                     </View>
