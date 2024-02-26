@@ -14,6 +14,7 @@ import Query from '../components/scouting_components/Query';
 import RadioGroup from '../components/inputs/RadioGroup';
 import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
+import {UserContext} from '..';
 import Button from '../components/inputs/Button';
 import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -21,9 +22,6 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {NavigationContainer} from '@react-navigation/native';
 // import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import CounterInput from 'react-native-counter-input';
-
-export const Context = React.createContext();
 
 const ScoutingPage = ({
     user,
@@ -35,6 +33,7 @@ const ScoutingPage = ({
     matchType,
     driveStation,
 }) => {
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const [readyToPlaySuccessAnimation, setReadyToPlaySuccessAnimation] =
@@ -98,6 +97,7 @@ const ScoutingPage = ({
     });
 
     const updateDict = (key, value) => {
+        setIsLoading(true);
         setDict({...dict, [key]: value});
     };
 
@@ -150,12 +150,10 @@ const ScoutingPage = ({
     };
 
     const prematch_queries = [
-        <Context.Provider value={updateDict}>
-            <Query
-                title="Preloaded?"
-                item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
-            />
-        </Context.Provider>,
+        <Query
+            title="Preloaded?"
+            item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
+        />,
     ];
 
     const auton_queries = [
@@ -265,128 +263,6 @@ const ScoutingPage = ({
         <Query title="Trap" item={<Counter id="trap" />} />,
     ];
 
-    useBackHandler(() => {
-        setMatchCreated(false);
-        return true;
-    });
-
-    const backConfirm = () => {
-        Alert.alert('You have unsaved changes', 'Continue without saving?', [
-            {
-                text: 'No',
-            },
-            {
-                text: 'Yes',
-                onPress: () => setMatchCreated(false),
-                style: 'destructive',
-            },
-        ]);
-    };
-
-    const Prematch = () => (
-        <ScrollView>
-            <Section
-                title={'Pre-Match'}
-                queries={prematch_queries}
-                style={styles.sectionStyle}
-            />
-            {/* <CounterInput
-                onChange={(value) => updateDict('preloaded', value)}
-            /> */}
-        </ScrollView>
-    );
-
-    const Auton = () => (
-        <Context.Provider value={updateDict}>
-            <ScrollView>
-                <Section
-                    title={'Auton'}
-                    queries={auton_queries}
-                    style={[styles.patternSectionStyle]}
-                />
-            </ScrollView>
-        </Context.Provider>
-    );
-
-    const Teleop = () => (
-        <ScrollView>
-            <Context.Provider value={updateDict}>
-                <Section
-                    title={'Teleop Scoring'}
-                    queries={tele_scoring_queries}
-                    style={[
-                        styles.sectionStyle,
-                        {backgroundColor: 'lightblue'},
-                        {borderRadius: 20},
-                        {marginBottom: 10},
-                        {marginTop: 10},
-                    ]}
-                />
-                <Section
-                    title={'Teleop Missed'}
-                    queries={tele_missed_queries}
-                    style={[styles.patternSectionStyle]}
-                />
-                <Section
-                    title={'Teleop Received'}
-                    queries={tele_received_queries}
-                    style={styles.sectionStyle}
-                />
-                <Section
-                    title={'Teleop Issues'}
-                    queries={teleop_issues_queries}
-                    style={styles.sectionStyle}
-                />
-            </Context.Provider>
-        </ScrollView>
-    );
-
-    const Endgame = () => (
-        <ScrollView>
-            <Section
-                title={'Endgame'}
-                queries={endgame_queries}
-                style={[styles.sectionStyle, styles.patternSectionStyle]}
-            />
-            <Section
-                title={'Defense'}
-                queries={defense_queries}
-                style={styles.sectionStyle}
-            />
-            <Section
-                title={'Penalties'}
-                queries={penalties_queries}
-                style={[styles.sectionStyle, styles.patternSectionStyle]}
-            />
-
-            <Button onPress={() => endMatch()} label="End Match" />
-        </ScrollView>
-    );
-
-    const renderScene = SceneMap({
-        prematch: Prematch,
-        auton: Auton,
-        teleop: Teleop,
-        endgame: Endgame,
-    });
-
-    const layout = useWindowDimensions();
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        {key: 'prematch', title: 'Pre-Match'},
-        {key: 'auton', title: 'Auton'},
-        {key: 'teleop', title: 'Teleop'},
-        {key: 'endgame', title: 'Endgame'},
-    ]);
-
-    const renderTabBar = props => (
-        <TabBar
-            {...props}
-            indicatorStyle={{backgroundColor: 'lightblue'}}
-            style={{backgroundColor: 'black'}}
-        />
-    );
-
     const form_sections = [
         <Section
             title={'Pre-Match'}
@@ -441,27 +317,160 @@ const ScoutingPage = ({
         />,
     ];
 
+    useBackHandler(() => {
+        setMatchCreated(false);
+        return true;
+    });
+
+    const backConfirm = () => {
+        Alert.alert('You have unsaved changes', 'Continue without saving?', [
+            {
+                text: 'No',
+            },
+            {
+                text: 'Yes',
+                onPress: () => setMatchCreated(false),
+                style: 'destructive',
+            },
+        ]);
+    };
+
+    const Prematch = () => (
+        <UserContext.Provider value={updateDict}>
+            <ScrollView>
+                <Button onPress={backConfirm} label="Cancel" />
+                <Section
+                    title={'Pre-Match'}
+                    queries={prematch_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+            </ScrollView>
+        </UserContext.Provider>
+    );
+
+    const Auton = () => (
+        <UserContext.Provider value={updateDict}>
+            <ScrollView>
+                <Section
+                    title={'Auton'}
+                    queries={auton_queries}
+                    style={[styles.patternSectionStyle]}
+                    updateDict={updateDict}
+                />
+            </ScrollView>
+        </UserContext.Provider>
+    );
+
+    const Teleop = () => (
+        <ScrollView>
+            <UserContext.Provider value={updateDict}>
+                <Section
+                    title={'Teleop Scoring'}
+                    queries={tele_scoring_queries}
+                    style={[
+                        styles.sectionStyle,
+                        {backgroundColor: 'lightblue'},
+                        {borderRadius: 20},
+                        {marginBottom: 10},
+                        {marginTop: 10},
+                    ]}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Missed'}
+                    queries={tele_missed_queries}
+                    style={[styles.patternSectionStyle]}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Received'}
+                    queries={tele_received_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+                <Section
+                    title={'Teleop Issues'}
+                    queries={teleop_issues_queries}
+                    style={styles.sectionStyle}
+                    updateDict={updateDict}
+                />
+            </UserContext.Provider>
+        </ScrollView>
+    );
+
+    const Endgame = () => (
+        <ScrollView>
+            <Section
+                title={'Endgame'}
+                queries={endgame_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+                updateDict={updateDict}
+            />
+            <Section
+                title={'Defense'}
+                queries={defense_queries}
+                style={styles.sectionStyle}
+                updateDict={updateDict}
+            />
+            <Section
+                title={'Penalties'}
+                queries={penalties_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+                updateDict={updateDict}
+            />
+
+            <Button onPress={() => endMatch()} label="End Match" />
+        </ScrollView>
+    );
+
+    const renderScene = SceneMap({
+        prematch: Prematch,
+        auton: Auton,
+        teleop: Teleop,
+        endgame: Endgame,
+    });
+
+    const layout = useWindowDimensions();
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        {key: 'prematch', title: 'Pre-Match'},
+        {key: 'auton', title: 'Auton'},
+        {key: 'teleop', title: 'Teleop'},
+        {key: 'endgame', title: 'Endgame'},
+    ]);
+
+    const renderTabBar = props => (
+        <TabBar
+            {...props}
+            indicatorStyle={{backgroundColor: 'lightblue'}}
+            style={{backgroundColor: 'black'}}
+        />
+    );
+
     return (
         <SafeAreaView style={styles.mainView}>
             {/*This doesnt work we need to fix this asap*/}
-            {/* <TabView
-                renderTabBar={renderTabBar}
-                navigationState={{index, routes}}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{width: layout.width}}
-                style={styles.tabView}
-            /> */}
+            {/* <UserContext.Provider value={updateDict}>
+                <TabView
+                    renderTabBar={renderTabBar}
+                    navigationState={{index, routes}}
+                    renderScene={renderScene}
+                    onIndexChange={setIndex}
+                    initialLayout={{width: layout.width}}
+                    style={styles.tabView}
+                />
+            </UserContext.Provider> */}
             {/*This works (OLD) */}
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
                     <Button onPress={backConfirm} label="Cancel" />
-                    <Context.Provider value={updateDict}>
+                    <UserContext.Provider value={updateDict}>
                         <Form
                             sections={form_sections}
                             updateDict={updateDict}
                         />
-                    </Context.Provider>
+                    </UserContext.Provider>
                     <Button onPress={() => endMatch()} label="End Match" />
                 </ScrollView>
             </View>
@@ -499,7 +508,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginBottom: 10,
         marginTop: 10,
-    },
+    },    
     checkboxOnlyStyle: {
         alignItems: 'flex-start', // or 'baseline'
         width: '100%',
