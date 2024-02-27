@@ -14,6 +14,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import {BlurView} from '@react-native-community/blur';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
+// import {checkLocalNetworkAccess, requestLocalNetworkAccess} from 'react-native-local-network-permission';
+
+// await checkLocalNetworkAccess();
 
 const Tab = createBottomTabNavigator(); // new
 
@@ -91,6 +94,8 @@ const App = () => {
     };
 
     const LoginPageNavigate = props => {
+        // make sure network access is allowed on start
+        // requestLocalNetworkAccess();
         return (
             <Login
                 {...props}
