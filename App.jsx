@@ -15,6 +15,7 @@ import {BlurView} from '@react-native-community/blur';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import {checkLocalNetworkAccess, requestLocalNetworkAccess} from 'react-native-local-network-permission';
+import { RequestDefaultPermissions, RequestNotifications } from './permissions/RequestPermissions';
 
 // await checkLocalNetworkAccess();
 
@@ -37,6 +38,8 @@ const App = () => {
     const [scoutingType, setScoutingType] = useState('Match Scouting'); // either pit scout or match scout
 
     const NewMatchNavigate = props => {
+        // request notification access
+        RequestNotifications();
         return (
             <NewMatch
                 {...props}
@@ -94,8 +97,8 @@ const App = () => {
     };
 
     const LoginPageNavigate = props => {
-        // make sure network access is allowed on start
-        // requestLocalNetworkAccess();
+        // request permissions
+        RequestDefaultPermissions();
         return (
             <Login
                 {...props}

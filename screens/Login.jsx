@@ -21,6 +21,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFS from 'react-native-fs';
 
 const Login = ({
     user,
@@ -80,6 +81,12 @@ const Login = ({
         if (Ip === '101') {
             console.log('Logging in with offline mode');
             handleOfflineLogin();
+            return;
+        }
+
+        if (Ip === '102') {
+            console.log('Logging in with demo mode');
+            handleDemoMode();
             return;
         }
 
@@ -152,7 +159,32 @@ const Login = ({
                 'Please connect to a server as soon as possible to sync.',
                 error,
             );
+        } finally {}
+    };
+
+    const handleDemoMode = async () => {
+        try {
+            const teamDataPath = RNFS.DocumentDirectoryPath + '/teamData.json';
+            const user = {
+                id: 1,
+                name: 'Demo User',
+                osis: '1234',
+                password: null,
+                username: 'Demo User',
+            };
+
+            setTeamData(JSON.parse(await RNFS.readFile(teamDataPath)));
+            setUser(user);
+            setServerIp('101');
+            setEventName('Demo Event');
+        } catch (loginError) {
+            Alert.alert(
+                'Error with retreiving demo data',
+                'Please contact',
+                loginError,
+            )
         } finally {
+            setIsLoading(false);
         }
     };
 
@@ -204,8 +236,10 @@ const Login = ({
                                     placeholderTextColor={'white'}
                                     placeholder="Server IP"
                                     onChangeText={text => setIp(text)}
-                                    value={Ip}
-                                    keyboardType="numeric"
+                                    value={async () =>
+                                        await AsyncStorage.getItem('serverIp')
+                                    }
+                                    keyboardType={'url'} 
                                 />
 
                                 <Button
