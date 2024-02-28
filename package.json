@@ -44,7 +44,8 @@
     "react-native-svg-uri": "^0.0.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.3",
-    "rn-local-authentication": "^1.2.5"
+    "rn-local-authentication": "^1.2.5",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

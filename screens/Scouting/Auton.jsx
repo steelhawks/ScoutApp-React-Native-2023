@@ -1,20 +1,22 @@
 import {StyleSheet, ScrollView} from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
-import Button from '../../components/inputs/Button';
 import Counter from '../../components/inputs/Counter';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {useDictStore} from '../../contexts/dict';
 
-const Auton = ({dict, updateDict}) => {
+const Auton = () => {
+    const setDict = useDictStore(state => state.setDict);
+
     const auton_queries = [
         <Query
             title="Did the robot leave?"
             item={
                 <RadioGroup
                     buttons={['Yes', 'No']}
-                    onChange={value => updateDict('robotLeft', value)}
+                    onChange={value => setDict('robotLeft', value)}
                 />
             }
         />,
@@ -23,7 +25,7 @@ const Auton = ({dict, updateDict}) => {
             item={
                 <Counter
                     onChange={value =>
-                        updateDict('autonSpeakerNotesScored', value)
+                        setDict('autonSpeakerNotesScored', value)
                     }
                 />
             }
@@ -32,7 +34,7 @@ const Auton = ({dict, updateDict}) => {
             title="Amp Notes Scored"
             item={
                 <Counter
-                    onChange={value => updateDict('autonAmpNotesScored', value)}
+                    onChange={value => setDict('autonAmpNotesScored', value)}
                 />
             }
         />,
@@ -40,22 +42,20 @@ const Auton = ({dict, updateDict}) => {
             title="Notes Received"
             item={
                 <Counter
-                    onChange={value => updateDict('autonNotesReceived', value)}
+                    onChange={value => setDict('autonNotesReceived', value)}
                 />
             }
         />,
         <Query
             title="Auton Notes Missed"
-            item={
-                <Counter onChange={value => updateDict('autonMissed', value)} />
-            }
+            item={<Counter onChange={value => setDict('autonMissed', value)} />}
         />,
         <Query
             title="Auton Issues"
             item={
                 <RadioGroup
                     buttons={['Yes', 'No']}
-                    onChange={value => updateDict('autonIssues', value)}
+                    onChange={value => setDict('autonIssues', value)}
                 />
             }
         />,
@@ -74,7 +74,6 @@ const Auton = ({dict, updateDict}) => {
                 title={'Auton'}
                 queries={auton_queries}
                 style={[styles.patternSectionStyle]}
-                updateDict={updateDict}
             />
         </ScrollView>
     );

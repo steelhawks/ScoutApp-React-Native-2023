@@ -591,7 +591,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -622,7 +622,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -652,7 +652,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Scout 24";
@@ -692,7 +692,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Scout 24";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";

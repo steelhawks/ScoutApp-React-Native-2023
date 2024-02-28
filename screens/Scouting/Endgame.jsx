@@ -1,28 +1,42 @@
-import {
-    StyleSheet,
-    ScrollView,
-} from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
 import Counter from '../../components/inputs/Counter';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { useDictStore } from '../../contexts/dict';
 
-const Endgame = ({dict, updateDict, endMatch}) => {
+const Endgame = ({endMatch}) => {
+    const setDict = useDictStore(state => state.setDict);
+
     const penalties_queries = [
-        <Query title="Fouls" item={<Counter onChange={value => updateDict('fouls', value)} />} />,
-        <Query title="Tech Fouls" item={<Counter onChange={value => updateDict('techFouls', value)} />} />,
-        <Query title="Yellow Cards" item={<Counter onChange={value => updateDict('yellowCards', value)} />} />,
-        <Query title="Red Cards" item={<Counter onChange={value => updateDict('redCards', value)} />} />,
+        <Query
+            title="Fouls"
+            item={<Counter onChange={value => setDict('fouls', value)} />}
+        />,
+        <Query
+            title="Tech Fouls"
+            item={<Counter onChange={value => setDict('techFouls', value)} />}
+        />,
+        <Query
+            title="Yellow Cards"
+            item={<Counter onChange={value => setDict('yellowCards', value)} />}
+        />,
+        <Query
+            title="Red Cards"
+            item={<Counter onChange={value => setDict('redCards', value)} />}
+        />,
     ];
 
     const defense_queries = [
         <Query
             title="Defense"
             item={
-                <RadioGroup buttons={['Yes', 'No']} onChange={value => updateDict('didTeamPlayDefense', value)} />
+                <RadioGroup
+                    buttons={['Yes', 'No']}
+                    onChange={value => setDict('didTeamPlayDefense', value)}
+                />
             }
         />,
     ];
@@ -33,37 +47,37 @@ const Endgame = ({dict, updateDict, endMatch}) => {
             item={
                 <RadioGroup
                     buttons={['Parked', 'Onstage', 'Spotlight']}
-                    onChange={value => updateDict('endGame', value)}
+                    onChange={value => setDict('endGame', value)}
                 />
             }
         />,
-        <Query title="Trap" item={<Counter onChange={value => updateDict('trap', value)} />} />,
+        <Query
+            title="Trap"
+            item={<Counter onChange={value => setDict('trap', value)} />}
+        />,
     ];
-    
+
     return (
         <ScrollView>
-                <Section
-                    title={'Endgame'}
-                    queries={endgame_queries}
-                    style={[styles.sectionStyle, styles.patternSectionStyle]}
-                    updateDict={updateDict}
-                />
-                <Section
-                    title={'Defense'}
-                    queries={defense_queries}
-                    style={styles.sectionStyle}
-                    updateDict={updateDict}
-                />
-                <Section
-                    title={'Penalties'}
-                    queries={penalties_queries}
-                    style={[styles.sectionStyle, styles.patternSectionStyle]}
-                    updateDict={updateDict}
-                />
+            <Section
+                title={'Endgame'}
+                queries={endgame_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+            />
+            <Section
+                title={'Defense'}
+                queries={defense_queries}
+                style={styles.sectionStyle}
+            />
+            <Section
+                title={'Penalties'}
+                queries={penalties_queries}
+                style={[styles.sectionStyle, styles.patternSectionStyle]}
+            />
             <Button onPress={() => endMatch()} label="End Match" />
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     sectionStyle: {

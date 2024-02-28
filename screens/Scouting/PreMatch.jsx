@@ -1,38 +1,37 @@
-import {StyleSheet, ScrollView, TextInput} from 'react-native';
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import { StyleSheet } from 'react-native';
+import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {DictContext} from '../ScoutingPageNEW2';
+import { useDictStore } from '../../contexts/dict';
 
 const Prematch = ({backConfirm}) => {
-    const [dict, updateDict] = useContext(DictContext);
+    const setDict = useDictStore(state => state.setDict);
 
     const prematch_queries = [
         <Query
             title="Preloaded?"
             item={
                 <RadioGroup
-                    value={dict.preloaded}
                     buttons={['Yes', 'No']}
-                    onChange={(value) => updateDict('preloaded', value)}
+                    onChange={(selectedItem) => {
+                        setDict('preloaded', selectedItem);
+                    }}
                 />
             }
         />,
     ];
 
     return (
-        <ScrollView>
+        <>
             <Button onPress={backConfirm} label="Cancel" />
             <Section
                 title={'Pre-Match'}
                 queries={prematch_queries}
                 style={styles.sectionStyle}
-                updateDict={updateDict}
             />
-        </ScrollView>
+        </>
     );
 };
 

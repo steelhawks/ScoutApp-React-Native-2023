@@ -1,50 +1,86 @@
-import {
-    StyleSheet,
-    ScrollView,
-} from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
-import RadioGroup from '../../components/inputs/RadioGroup';
-import Button from '../../components/inputs/Button';
 import Counter from '../../components/inputs/Counter';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { useDictStore } from '../../contexts/dict';
 
-const Teleop = ({dict, updateDict}) => {
+const Teleop = () => {
+    const setDict = useDictStore(state => state.setDict);
+
     const tele_scoring_queries = [
         <Query
             title="Speaker Notes Scored"
-            item={<Counter onChange={value => updateDict('telopSpeakerNotesScored', value)}/>}
+            item={
+                <Counter
+                    onChange={value =>
+                        setDict('telopSpeakerNotesScored', value)
+                    }
+                />
+            }
         />,
         <Query
             title="Amp Notes Scored"
-            item={<Counter onChange={value => updateDict('telopAmpNotesScored', value)}/>}
+            item={
+                <Counter
+                    onChange={value => setDict('telopAmpNotesScored', value)}
+                />
+            }
         />,
         <Query
             title="Amplified Speaker Notes Scored"
-            item={<Counter onChange={value => updateDict('telopAmplifiedSpeakerNotes', value)}/>}
+            item={
+                <Counter
+                    onChange={value =>
+                        setDict('telopAmplifiedSpeakerNotes', value)
+                    }
+                />
+            }
         />,
     ];
 
     const tele_missed_queries = [
         <Query
             title="Speaker Notes Missed"
-            item={<Counter onChange={value => updateDict('telopSpeakerNotesMissed', value)}/>}
+            item={
+                <Counter
+                    onChange={value =>
+                        setDict('telopSpeakerNotesMissed', value)
+                    }
+                />
+            }
         />,
         <Query
             title="Amp Notes Missed"
-            item={<Counter onChange={value => updateDict('telopAmpNotesMissed', value)}/>}
+            item={
+                <Counter
+                    onChange={value => setDict('telopAmpNotesMissed', value)}
+                />
+            }
         />,
     ];
 
     const tele_received_queries = [
         <Query
             title="Note Received from Human Player"
-            item={<Counter onChange={value => updateDict('telopNotesReceivedFromHumanPlayer', value)}/>}
+            item={
+                <Counter
+                    onChange={value =>
+                        setDict('telopNotesReceivedFromHumanPlayer', value)
+                    }
+                />
+            }
         />,
         <Query
             title="Note Received from Ground"
-            item={<Counter onChange={value => updateDict('telopNotesReceivedFromGround', value)}/>}
+            item={
+                <Counter
+                    onChange={value =>
+                        setDict('telopNotesReceivedFromGround', value)
+                    }
+                />
+            }
         />,
     ];
 
@@ -54,42 +90,38 @@ const Teleop = ({dict, updateDict}) => {
         <Query title="FMS Issues" item={<BouncyCheckbox />} />,
         <Query title="Disabled" item={<BouncyCheckbox />} />,
     ];
-    
+
     return (
         <ScrollView>
-                <Section
-                    title={'Teleop Scoring'}
-                    queries={tele_scoring_queries}
-                    style={[
-                        styles.sectionStyle,
-                        {backgroundColor: 'lightblue'},
-                        {borderRadius: 20},
-                        {marginBottom: 10},
-                        {marginTop: 10},
-                    ]}
-                    updateDict={updateDict}
-                />
-                <Section
-                    title={'Teleop Missed'}
-                    queries={tele_missed_queries}
-                    style={[styles.patternSectionStyle]}
-                    updateDict={updateDict}
-                />
-                <Section
-                    title={'Teleop Received'}
-                    queries={tele_received_queries}
-                    style={styles.sectionStyle}
-                    updateDict={updateDict}
-                />
-                <Section
-                    title={'Teleop Issues'}
-                    queries={teleop_issues_queries}
-                    style={styles.sectionStyle}
-                    updateDict={updateDict}
-                />
+            <Section
+                title={'Teleop Scoring'}
+                queries={tele_scoring_queries}
+                style={[
+                    styles.sectionStyle,
+                    {backgroundColor: 'lightblue'},
+                    {borderRadius: 20},
+                    {marginBottom: 10},
+                    {marginTop: 10},
+                ]}
+            />
+            <Section
+                title={'Teleop Missed'}
+                queries={tele_missed_queries}
+                style={[styles.patternSectionStyle]}
+            />
+            <Section
+                title={'Teleop Received'}
+                queries={tele_received_queries}
+                style={styles.sectionStyle}
+            />
+            <Section
+                title={'Teleop Issues'}
+                queries={teleop_issues_queries}
+                style={styles.sectionStyle}
+            />
         </ScrollView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     sectionStyle: {

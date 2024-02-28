@@ -2,8 +2,12 @@ import React from 'react';
 import {useContext} from 'react';
 import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
 import { UserContext } from '../..';
+import { useDictStore } from '../../contexts/dict';
 
 const RadioGroup = props => {
+    const dict = useDictStore(state => state.dict);
+    const setDict = useDictStore(state => state.setDict);
+
     const styles = {
         size: 30,
         fillColor: 'green',
@@ -32,7 +36,6 @@ const RadioGroup = props => {
 
     return (
         <BouncyCheckboxGroup
-            value={props.value}
             style={{
                 alignSelf: 'center',
                 alignItems: 'center',
@@ -45,8 +48,8 @@ const RadioGroup = props => {
                 };
             })}
             onChange={selectedItem =>
-                updateDict(props.id, selectedItem['text'])
-                // props.onChange(selectedItem['text'])
+                // updateDict(props.id, selectedItem['text'])
+                props.onChange(selectedItem['text'])
             }
         />
     );
