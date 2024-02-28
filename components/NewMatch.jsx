@@ -97,6 +97,7 @@ const NewMatch = ({
         {label: 'Practice', value: 'PRACTICE'},
         {label: 'Qualification', value: 'QUALIFICATION'},
         {label: 'Elimination', value: 'ELIMINATION'},
+        {label: 'Finals', value: 'FINALS'},
     ];
 
     const testTeamData = teamData.team_data.map(item => ({

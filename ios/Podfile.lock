@@ -534,7 +534,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.12.1):
     - React-Core
-  - RNPermissions (4.1.1):
+  - RNPermissions (4.1.4):
     - React-Core
   - RNReanimated (3.3.0):
     - DoubleConversion
@@ -873,13 +873,13 @@ SPEC CHECKSUMS:
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
-  RNPermissions: 250047ffa01a1fa65e870fcae3e2b87786acf0d8
+  RNPermissions: fdbf20401069d01894d193ccf8debc9f11886267
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: d0003f849d2b5224c072cef6568b540d8bb15cd3
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 493edfd70ae66235b72e69598da5dbdcf04d3c0f
+PODFILE CHECKSUM: f4e54c48d543da3b2e8fe92c58e483e5cef9fc91
 
 COCOAPODS: 1.14.3

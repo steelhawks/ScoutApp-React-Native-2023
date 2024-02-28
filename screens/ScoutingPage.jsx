@@ -163,6 +163,183 @@ const ScoutingPage = ({
         }
     };
 
+    const prematch_queries = [
+        <Query
+            title="Preloaded?"
+            item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
+        />,
+    ];
+
+    const auton_queries = [
+        <Query
+            title="Did the robot leave?"
+            item={<RadioGroup buttons={['Yes', 'No']} id="robotLeft" />}
+        />,
+        <Query
+            title="Speaker Notes Scored"
+            item={<Counter id="autonSpeakerNotesScored" />}
+        />,
+        <Query
+            title="Amp Notes Scored"
+            item={<Counter id="autonAmpNotesScored" />}
+        />,
+        <Query
+            title="Notes Received"
+            item={<Counter id="autonNotesReceived" />}
+        />,
+        <Query
+            title="Auton Notes Missed"
+            item={<Counter id="autonMissed" />}
+        />,
+        <Query
+            title="Auton Issues"
+            item={<RadioGroup buttons={['Yes', 'No']} id="autonIssues" />}
+        />,
+    ];
+
+    const auton_issues_queries = [
+        // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        <Query title="Not Moving" item={<BouncyCheckbox />} />,
+        <Query title="Stopped" item={<BouncyCheckbox />} />,
+        <Query title="Out of Control" item={<BouncyCheckbox />} />,
+    ];
+
+    const tele_scoring_queries = [
+        <Query
+            title="Speaker Notes Scored"
+            item={<Counter id="telopSpeakerNotesScored" />}
+        />,
+        <Query
+            title="Amp Notes Scored"
+            item={<Counter id="telopAmpNotesScored" />}
+        />,
+        <Query
+            title="Amplified Speaker Notes Scored"
+            item={<Counter id="telopAmplifiedSpeakerNotes" />}
+        />,
+    ];
+
+    const tele_missed_queries = [
+        <Query
+            title="Speaker Notes Missed"
+            item={<Counter id="telopSpeakerNotesMissed" />}
+        />,
+        <Query
+            title="Amp Notes Missed"
+            item={<Counter id="telopAmpNotesMissed" />}
+        />,
+    ];
+
+    const tele_received_queries = [
+        <Query
+            title="Note Received from Human Player"
+            item={<Counter id="telopNotesReceivedFromHumanPlayer" />}
+        />,
+        <Query
+            title="Note Received from Ground"
+            item={<Counter id="telopNotesReceivedFromGround" />}
+        />,
+    ];
+
+    const penalties_queries = [
+        <Query title="Fouls" item={<Counter id="fouls" />} />,
+        <Query title="Tech Fouls" item={<Counter id="techFouls" />} />,
+        <Query title="Yellow Cards" item={<Counter id="yellowCards" />} />,
+        <Query title="Red Cards" item={<Counter id="redCards" />} />,
+    ];
+
+    const handleTeleopIssuesQueries = (isSelected, id) => {
+        const updatedIssues = isSelected
+            ? [...dict.telopIssues, id]  // add to array if selected
+            : dict.telopIssues.filter(issueId => issueId !== id);  // remove from array if deselected
+    
+        updateDict('telopIssues', updatedIssues);
+    };
+       
+
+    const teleop_issues_queries = [
+        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'NOT_MOVING')}/>} />,
+        <Query title="Lost Connect" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')}/>} />,,
+        <Query title="FMS Issues" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'FMS_ISSUES')}/>} />,,,
+        <Query title="Disabled" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'DISABLED')} />} />,
+    ];
+
+    const defense_queries = [
+        <Query
+            title="Defense"
+            item={
+                <RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />
+            }
+        />,
+    ];
+
+    const endgame_queries = [
+        <Query
+            title="Position"
+            item={
+                <RadioGroup
+                    buttons={['Parked', 'Onstage', 'Spotlight']}
+                    id="endGame"
+                />
+            }
+        />,
+        <Query title="Trap" item={<Counter id="trap" />} />,
+    ];
+
+    const form_sections = [
+        <Section
+            title={'Pre-Match'}
+            queries={prematch_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Auton'}
+            queries={auton_queries}
+            style={[styles.patternSectionStyle]}
+        />,
+        <Section
+            title={'Teleop Scoring'}
+            queries={tele_scoring_queries}
+            style={[
+                styles.sectionStyle,
+                {backgroundColor: 'lightblue'},
+                {borderRadius: 20},
+                {marginBottom: 10},
+                {marginTop: 10},
+            ]}
+        />,
+        <Section
+            title={'Teleop Missed'}
+            queries={tele_missed_queries}
+            style={[styles.patternSectionStyle]}
+        />,
+        <Section
+            title={'Teleop Received'}
+            queries={tele_received_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Endgame'}
+            queries={endgame_queries}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
+        />,
+        <Section
+            title={'Defense'}
+            queries={defense_queries}
+            style={styles.sectionStyle}
+        />,
+        <Section
+            title={'Penalties'}
+            queries={penalties_queries}
+            style={[styles.sectionStyle, styles.patternSectionStyle]}
+        />,
+        <Section
+            title={'Teleop Issues'}
+            queries={teleop_issues_queries}
+            style={styles.sectionStyle}
+        />,
+    ];
+
     useBackHandler(() => {
         setMatchCreated(false);
         return true;

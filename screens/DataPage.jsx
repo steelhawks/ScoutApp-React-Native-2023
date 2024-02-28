@@ -18,7 +18,7 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
             fs.readdir(docDir)
                 .then(files => {
                     const jsonFiles = files.filter(file =>
-                        file.endsWith('.json'),
+                        file !== 'teamData.json' && file.endsWith('.json'),
                     );
                     setJsonFiles(jsonFiles);
                 })
@@ -168,6 +168,7 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
 
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
+            if (json === 'teamData.json') { continue; }
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
@@ -291,6 +292,7 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
             selectedJson = null;
             for (const index in jsonFiles) {
                 const json = jsonFiles[index];
+                if (json === 'teamData.json') { continue; } // makes sure it doesnt delete sys files
                 const path = fs.DocumentDirectoryPath + '/' + json;
                 await fs.unlink(path);
             }
