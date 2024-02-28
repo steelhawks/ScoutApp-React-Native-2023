@@ -107,13 +107,6 @@ const NewMatch = ({
 
     const match_scouting = [
         <>
-            {/* <CustomTextInput
-                label={'Enter Match Number:'}
-                placeholder={'Match Number'}
-                onChangeText={value => setMatchNumberLocal(value)}
-                value={matchNumberLocal}
-                keyboardType={'numeric'}
-            /> */}
             <Text
                 style={{
                     ...styles.title,

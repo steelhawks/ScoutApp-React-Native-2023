@@ -4,8 +4,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import {createContext} from 'react';
 
-//Components
-// export {default as Input} from "./components/Input";
+// Components
 export {default as NewMatch} from "./components/NewMatch";
 
 //inputcomponents

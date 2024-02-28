@@ -33,7 +33,7 @@ const Login = ({
 }) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
-    const [Ip, setIp] = useState('173.52.84.162');
+    const [Ip, setIp] = useState('173.52.84.162'); // prod server 173.52.84.162
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 

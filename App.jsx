@@ -18,6 +18,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import { RequestDefaultPermissions, RequestNotifications } from './permissions/RequestPermissions';
 
 // await checkLocalNetworkAccess();
+// requestLocalNetworkAccess();
 
 const Tab = createBottomTabNavigator(); // new
 

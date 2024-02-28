@@ -10,7 +10,8 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDictStore, usePitDict } from '../contexts/dict';
+import {useDictStore, usePitDict} from '../contexts/dict';
+import EmptyPage from './EmptyPage';
 
 const DataPage = ({serverIp, navigation, setServerIp}) => {
     // zustand hooks
@@ -64,21 +65,9 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
 
             // parses the JSON content and updates the dictionary
             const jsonData = JSON.parse(content);
-            jsonData.matchNumber === 'PIT' ? (setPitDict(jsonData), setIsPitScouting(true)) : (setDict(jsonData), setIsPitScouting(false));
-
-        //     eventName: '',
-        // scouterName: '',
-        // teamNumber: '',
-        // matchNumber: 'PIT',
-        // dimensions: '',
-        // weight: '',
-        // drivetrain: '',
-        // intake: '',
-        // vision: '',
-        // auton: '',
-        // robotExcel: '',
-        // trapScorer: '',
-        // timeOfCreation: '',
+            jsonData.matchNumber === 'PIT'
+                ? (setPitDict(jsonData), setIsPitScouting(true))
+                : (setDict(jsonData), setIsPitScouting(false));
 
             console.log(pitDict);
             // updates the boolean to false when the selected json is deselected
@@ -249,7 +238,9 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             selectedJson = null;
             for (const index in jsonFiles) {
                 const json = jsonFiles[index];
-                if (json === 'teamData.json') { continue; } // makes sure it doesnt delete sys files
+                if (json === 'teamData.json') {
+                    continue;
+                } // makes sure it doesnt delete sys files
                 const path = fs.DocumentDirectoryPath + '/' + json;
                 await fs.unlink(path);
             }
@@ -353,6 +344,78 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         </Text>,
     ];
 
+    const empty_page = [
+        <EmptyPage />,
+    ]
+
+    const data_page = [
+        <>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={styles.title}>Previous Matches</Text>
+                <View style={styles.centerContent}>
+                    <View
+                        style={[styles.centerContent, {flexDirection: 'row'}]}>
+                        <Button label="Sync to Server" onPress={handleSync} />
+                        <Icon.Button
+                            name="trash-2"
+                            backgroundColor="transparent"
+                            onPress={confirmDeleteAll}
+                            size={RFValue(20)}
+                            borderRadius={10}
+                            iconStyle={styles.iconStyle}
+                            style={styles.squareButton}
+                        />
+                    </View>
+                    <View>
+                        {jsonFiles.map(file => (
+                            <Swipeable
+                                overshootFriction={20}
+                                key={file}
+                                renderRightActions={() => (
+                                    <TouchableOpacity
+                                        style={styles.swipeDeleteButton}
+                                        onPress={() => handleSwipeDelete(file)}>
+                                        <Text style={styles.swipeDeleteText}>
+                                            Delete
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}>
+                                <TouchableOpacity
+                                    style={styles.filesButton}
+                                    onPress={() => handleJsonSelection(file)}>
+                                    <Text style={styles.filesText}>{file}</Text>
+                                </TouchableOpacity>
+                            </Swipeable>
+                        ))}
+                    </View>
+
+                    {jsonSelected ? (
+                        isPitScouting ? (
+                            pitScouting
+                        ) : (
+                            matchScouting
+                        )
+                    ) : (
+                        <Text style={styles.infoText}>
+                            Select a JSON file to view the data
+                        </Text>
+                    )}
+                </View>
+            </ScrollView>
+            <AnimationLoader isLoading={isLoading} />
+            {successfullySyncedWithServer ? (
+                <AnimationLoader
+                    isLoading={successfullySyncedWithServer}
+                    animationKey="SUCCESS_01"
+                    loop={false}
+                    onAnimationComplete={() =>
+                        setSuccessfullySyncedWithServer(false)
+                    }
+                />
+            ) : null}
+        </>,
+    ];
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView
@@ -360,79 +423,8 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                     flex: 1,
                     paddingBottom: RFValue(100),
                 }}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={styles.title}>Previous Matches</Text>
-                    <View style={styles.centerContent}>
-                        <View
-                            style={[
-                                styles.centerContent,
-                                {flexDirection: 'row'},
-                            ]}>
-                            <Button
-                                label="Sync to Server"
-                                onPress={handleSync}
-                            />
-                            <Icon.Button
-                                name="trash-2"
-                                backgroundColor="transparent"
-                                onPress={confirmDeleteAll}
-                                size={RFValue(20)}
-                                borderRadius={10}
-                                iconStyle={styles.iconStyle}
-                                style={styles.squareButton}
-                            />
-                        </View>
-                        <View>
-                            {jsonFiles.map(file => (
-                                <Swipeable
-                                    overshootFriction={20}
-                                    key={file}
-                                    renderRightActions={() => (
-                                        <TouchableOpacity
-                                            style={styles.swipeDeleteButton}
-                                            onPress={() =>
-                                                handleSwipeDelete(file)
-                                            }>
-                                            <Text
-                                                style={styles.swipeDeleteText}>
-                                                Delete
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )}>
-                                    <TouchableOpacity
-                                        style={styles.filesButton}
-                                        onPress={() =>
-                                            handleJsonSelection(file)
-                                        }>
-                                        <Text style={styles.filesText}>
-                                            {file}
-                                        </Text>
-                                    </TouchableOpacity>
-                                </Swipeable>
-                            ))}
-                        </View>
-
-                        {jsonSelected ? (
-                            isPitScouting ? pitScouting : matchScouting
-                        ) : (
-                            <Text style={styles.infoText}>
-                                Select a JSON file to view the data
-                            </Text>
-                        )}
-                    </View>
-                </ScrollView>
-                <AnimationLoader isLoading={isLoading} />
-                {successfullySyncedWithServer ? (
-                    <AnimationLoader
-                        isLoading={successfullySyncedWithServer}
-                        animationKey="SUCCESS_01"
-                        loop={false}
-                        onAnimationComplete={() =>
-                            setSuccessfullySyncedWithServer(false)
-                        }
-                    />
-                ) : null}
-            </SafeAreaView>
+                {jsonFiles.length != 0 ? data_page : empty_page}
+                </SafeAreaView>
         </GestureHandlerRootView>
     );
 };
