@@ -5,6 +5,7 @@ import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
 const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -36,14 +37,16 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
                             Username: {user.username} {'\n'}
                             OSIS: {user.osis} {'\n'}
                             Event: {eventName} {'\n'}
-                            Server: {serverIp === '101' ? 'Offline' : serverIp} {'\n'}
+                            {/* Server: {serverIp === '101' ? 'Offline' : serverIp} {'\n'} */}
                             App Version: {appVersion}
                         </Text>
                     </View>
 
                     <Text style={styles.infoText}>
-                        Any issues with login or requested changes, please email{' '}
-                        farhanj2@nycstudents.net {'\n'}Scout 24 {appVersion}
+                        {/* Any issues with login or requested changes, please email{' '}
+                        farhanj2@nycstudents.net {'\n'} */}
+                        Scout 24 {appVersion} {'\n'}
+                        Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                     <AnimationLoader />
                 </View>
