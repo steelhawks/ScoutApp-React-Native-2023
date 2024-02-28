@@ -7,7 +7,16 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDictStore } from '../../contexts/dict';
 
 const Teleop = () => {
+    const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
+
+    const handleTeleopIssuesQueries = (isSelected, id) => {
+        const updatedIssues = isSelected
+            ? [...dict.telopIssues, id]  // add to array if selected
+            : dict.telopIssues.filter(issueId => issueId !== id);  // remove from array if deselected
+    
+        setDict('telopIssues', updatedIssues);
+    };
 
     const tele_scoring_queries = [
         <Query
@@ -85,10 +94,10 @@ const Teleop = () => {
     ];
 
     const teleop_issues_queries = [
-        <Query title="Not Moving" item={<BouncyCheckbox />} />,
-        <Query title="Lost Connect" item={<BouncyCheckbox />} />,
-        <Query title="FMS Issues" item={<BouncyCheckbox />} />,
-        <Query title="Disabled" item={<BouncyCheckbox />} />,
+        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'NOT_MOVING')}/>} />,
+        <Query title="Lost Connect" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')}/>} />,,
+        <Query title="FMS Issues" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'FMS_ISSUES')}/>} />,,,
+        <Query title="Disabled" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'DISABLED')} />} />,
     ];
 
     return (

@@ -8,6 +8,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useDictStore} from '../../contexts/dict';
 
 const Auton = () => {
+    const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
 
     const auton_queries = [
@@ -50,22 +51,21 @@ const Auton = () => {
             title="Auton Notes Missed"
             item={<Counter onChange={value => setDict('autonMissed', value)} />}
         />,
-        <Query
-            title="Auton Issues"
-            item={
-                <RadioGroup
-                    buttons={['Yes', 'No']}
-                    onChange={value => setDict('autonIssues', value)}
-                />
-            }
-        />,
     ];
+
+    const handleAutonIssuesQueries = (isSelected, id) => {
+        const updatedIssues = isSelected
+            ? [...dict.autonIssues, id]  // add to array if selected
+            : dict.autonIssues.filter(issueId => issueId !== id);  // remove from array if deselected
+    
+        setDict('autonIssues', updatedIssues);
+    };
 
     const auton_issues_queries = [
         // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        <Query title="Not Moving" item={<BouncyCheckbox />} />,
-        <Query title="Stopped" item={<BouncyCheckbox />} />,
-        <Query title="Out of Control" item={<BouncyCheckbox />} />,
+        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'NOT_MOVING')} />} />,
+        <Query title="Stopped" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'STOPPED')} />} />,
+        <Query title="Out of Control" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'OUT_OF_CONTROL')}/>} />,
     ];
 
     return (
@@ -74,6 +74,11 @@ const Auton = () => {
                 title={'Auton'}
                 queries={auton_queries}
                 style={[styles.patternSectionStyle]}
+            />
+            <Section 
+                title={'Auton Issues'}
+                queries={auton_issues_queries}
+                style={[styles.sectionStyle]}
             />
         </ScrollView>
     );

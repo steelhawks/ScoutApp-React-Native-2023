@@ -33,7 +33,7 @@ const Login = ({
 }) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
-    const [Ip, setIp] = useState(null);
+    const [Ip, setIp] = useState('173.52.84.162');
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 
@@ -231,7 +231,8 @@ const Login = ({
                                     value={osis}
                                     keyboardType="numeric"
                                 />
-                                <TextInput
+                                {/* turned off for apple deployment */}
+                                {/* <TextInput
                                     style={styles.input}
                                     placeholderTextColor={'white'}
                                     placeholder="Server IP"
@@ -240,7 +241,7 @@ const Login = ({
                                         await AsyncStorage.getItem('serverIp')
                                     }
                                     keyboardType={'url'} 
-                                />
+                                /> */}
 
                                 <Button
                                     label="Login"

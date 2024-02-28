@@ -6,13 +6,12 @@ import AnimationLoader from '../AnimationLoader';
 import Section from '../components/scouting_components/Section';
 import Query from '../components/scouting_components/Query';
 import fs from 'react-native-fs';
-import {RadioGroup, UserContext} from '..';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import CustomTextInput from '../components/inputs/CustomTextInput';
-import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
-import Counter from '../components/inputs/Counter';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
+import {usePitDict} from '../contexts/dict';
 
 const PitScoutingPage = ({
     setMatchCreated,
@@ -22,6 +21,9 @@ const PitScoutingPage = ({
     navigation,
     serverIp,
 }) => {
+    const dict = usePitDict(state => state.dict);
+    const setDict = usePitDict(state => state.setDict);
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const [currentDate, setCurrentDate] = useState('');
@@ -63,57 +65,16 @@ const PitScoutingPage = ({
         ]);
     };
 
-    const submitToServer = async () => {
+    const endGame = async () => {
         setReadyToPlaySuccessAnimation(true);
         setIsLoading(true);
 
-        // if (serverIp === '101') {
-        //     await new Promise(resolve => {
-        //         Alert.prompt(
-        //             'You are logged in as an offline user.',
-        //             'Enter your name to save.',
-        //             [
-        //                 {text: 'Cancel'},
-        //                 {
-        //                     text: 'Set Name',
-        //                     onPress: async name => {
-        //                         updateDict('scouterName', name);
-        //                     },
-        //                 },
-        //             ],
-        //         );
-        //     });
-        // }
-
         setIsDone(true);
 
-        setDict(prevDict => {
-            return {
-                ...prevDict,
-                timeOfCreation: currentDate,
-            };
-        });
-    };
-
-    const [dict, setDict] = useState({
-        eventName: eventName,
-        scouterName: user.name,
-        teamNumber: teamNumber,
-        matchNumber: 'PIT',
-        dimensions: '',
-        weight: '',
-        drivetrain: '',
-        intake: '',
-        vision: '',
-        auton: '',
-        robotExcel: '',
-        trapScorer: '',
-        timeOfCreation: '',
-    });
-
-    const updateDict = (key, value) => {
-        setIsLoading(true);
-        setDict({...dict, [key]: value});
+        setDict('eventName', eventName);
+        setDict('scouterName', user.name);
+        setDict('teamNumber', teamNumber);
+        setDict('timeOfCreation', currentDate);
     };
 
     useEffect(() => {
@@ -164,7 +125,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Dimensions (length x width w/ bumpers)"
                     placeholder="Enter dimensions"
-                    onChangeText={text => updateDict('dimensions', text)}
+                    onChangeText={text => setDict('dimensions', text)}
                     value={dict.dimensions}
                     keyboardType={'text'}
                 />
@@ -176,7 +137,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Weight (lbs)"
                     placeholder="Enter weight"
-                    onChangeText={text => updateDict('weight', text)}
+                    onChangeText={text => setDict('weight', text)}
                     value={dict.weight}
                     keyboardType={'numeric'}
                 />
@@ -188,7 +149,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Drivetrain Type"
                     placeholder="Enter drivetrain type"
-                    onChangeText={text => updateDict('drivetrain', text)}
+                    onChangeText={text => setDict('drivetrain', text)}
                     value={dict.drivetrain}
                     keyboardType={'text'}
                 />
@@ -200,7 +161,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Intake Mechanism"
                     placeholder="Enter intake mechanism"
-                    onChangeText={text => updateDict('intake', text)}
+                    onChangeText={text => setDict('intake', text)}
                     value={dict.intake}
                     keyboardType={'text'}
                 />
@@ -212,7 +173,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Vision System"
                     placeholder="Enter vision system"
-                    onChangeText={text => updateDict('vision', text)}
+                    onChangeText={text => setDict('vision', text)}
                     value={dict.vision}
                     keyboardType={'text'}
                 />
@@ -227,7 +188,7 @@ const PitScoutingPage = ({
                 <CustomTextInput
                     label="Auton Pathing"
                     placeholder="Enter auton"
-                    onChangeText={text => updateDict('auton', text)}
+                    onChangeText={text => setDict('auton', text)}
                     value={dict.auton}
                     keyboardType={'text'}
                 />
@@ -235,23 +196,28 @@ const PitScoutingPage = ({
         />,
     ];
 
+    const handleExcelQuery = (isSelected, id) => {
+        const updatedIssues = isSelected
+            ? [...dict.robotExcel, id]  // add to array if selected
+            : dict.robotExcel.filter(issueId => issueId !== id);  // remove from array if deselected
+    
+        setDict('robotExcel', updatedIssues);
+    };
+
+    const scoring_excel_query = [
+        <Query title="What does the robot excel in?"/>,
+        <Query title="AMP" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'NOT_MOVING')} />} />,
+        <Query title="Speaker" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'STOPPED')} />} />,
+    ];
+
     const scoring_queries = [
-        <Query
-            title="What does your robot excel in?"
-            item={
-                <RadioGroup
-                    buttons={['AMP', 'Speaker', 'Both', 'Neither']}
-                    id="robotExcel"
-                />
-            }
-        />,
         <Query
             title="Can your robot score using trap?"
             item={
                 <CustomTextInput
                     label="Can your robot score using trap?"
                     placeholder="Type an explanation"
-                    onChangeText={text => updateDict('trapScorer', text)}
+                    onChangeText={text => setDict('trapScorer', text)}
                     value={dict.trapScorer}
                     keyboardType={'text'}
                 />
@@ -275,6 +241,11 @@ const PitScoutingPage = ({
             queries={scoring_queries}
             style={[styles.sectionStyle, styles.patternSectionStyle]}
         />,
+        <Section 
+            title="Scoring Excel"
+            queries={scoring_excel_query}
+            style={styles.sectionStyle}
+        />,
     ];
 
     return (
@@ -283,13 +254,10 @@ const PitScoutingPage = ({
                 <View style={styles.container}>
                     <ScrollView style={{flex: 1}}>
                         <Button onPress={backConfirm} label="Cancel" />
-                        <UserContext.Provider value={updateDict}>
-                            <Form
-                                sections={form_sections}
-                                updateDict={updateDict}
-                            />
-                        </UserContext.Provider>
-                        <Button onPress={submitToServer} label="Submit" />
+                        <Form
+                            sections={form_sections}
+                        />
+                        <Button onPress={endGame} label="Submit" />
                     </ScrollView>
                 </View>
                 <AnimationLoader
@@ -348,6 +316,14 @@ const styles = StyleSheet.create({
             borderColor: 'black',
             borderRadius: 10,
             margin: 10,
+        },
+        input: {
+            padding: RFValue(10),
+            borderRadius: RFValue(5),
+            borderColor: 'gray',
+            borderWidth: 1,
+            marginBottom: RFValue(10),
+            color: 'white',
         },
     },
 });

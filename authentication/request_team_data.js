@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
 
-const saveFilePath = RNFS.DocumentDirectoryPath + '/teamData.json';
+const saveFilePath = RNFS.DocumentDirectoryPath + '/data/teamData.json';
 
 export const fetchTeamDataFromServer = async serverIp => {
     try {
@@ -13,7 +13,7 @@ export const fetchTeamDataFromServer = async serverIp => {
 
             // ensure the directory exists
             try {
-                await RNFS.mkdir(RNFS.DocumentDirectoryPath);
+                await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/data');
                 console.log('Located at', RNFS.DocumentDirectoryPath);
             } catch (mkdirError) {
                 console.error('Error creating directory:', mkdirError);

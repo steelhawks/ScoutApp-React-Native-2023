@@ -10,15 +10,25 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDictStore, usePitDict } from '../contexts/dict';
 
-const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
+const DataPage = ({serverIp, navigation, setServerIp}) => {
+    // zustand hooks
+    const dict = useDictStore(state => state.dict);
+    const setDict = useDictStore(state => state.setDict);
+
+    const pitDict = usePitDict(state => state.dict);
+    const setPitDict = usePitDict(state => state.setDict);
+
+    const [isPitScouting, setIsPitScouting] = useState(false);
+
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
             fs.readdir(docDir)
                 .then(files => {
                     const jsonFiles = files.filter(file =>
-                        file !== 'teamData.json' && file.endsWith('.json'),
+                        file.endsWith('.json'),
                     );
                     setJsonFiles(jsonFiles);
                 })
@@ -29,61 +39,11 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
     );
 
     const docDir = fs.DocumentDirectoryPath;
-    const [confirmed, setConfirmed] = useState(false);
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] =
         useState(false);
-
-    const [dict, setDict] = useState({
-        scouterName: 'NULL!',
-        teamNumber: 'NULL!',
-        matchNumber: 'NULL!',
-        matchType: 'NULL!', // COMP, QUAL, Default: EMPTY
-        driveStation: 'NULL!',
-        alliance: 'NULL!', // red or blue
-        preloaded: null, // true or false
-        robotLeft: null, // true or false
-        autonSpeakerNotesScored: 'NULL!',
-        autonAmpNotesScored: 'NULL!',
-        autonMissed: 'NULL!',
-        autonNotesReceived: 'NULL!',
-        autonIssues: 'NULL!', // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        telopSpeakerNotesScored: 'NULL!',
-        telopAmpNotesScored: 'NULL!',
-        telopAmplifiedSpeakerNotes: 'NULL!',
-        telopSpeakerNotesMissed: 'NULL!',
-        telopAmpNotesMissed: 'NULL!',
-        telopNotesReceivedFromHumanPlayer: 'NULL!',
-        telopNotesReceivedFromGround: 'NULL!',
-        endGame: 'NULL!', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
-        trap: 'NULL!',
-        fouls: 0,
-        techFouls: 0,
-        yellowCards: 0,
-        redCards: 0,
-        telopIssues: 'NULL!', // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
-        didTeamPlayDefense: null, // YES, NO, Default: null
-        // robotType: 'NULL!', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
-        timeOfCreation: 'NULL!',
-
-        // for pit scouting
-        dimensions: '',
-        weight: '',
-        drivetrain: '',
-        intake: '',
-        vision: '',
-        auton: '',
-        robotExcel: '',
-        trapScorer: '',
-        timeOfCreation: '',
-    });
-
-    // use this to change values after the match
-    const updateDict = (key, value) => {
-        setDict({...dict, [key]: value});
-    };
 
     useEffect(() => {
         // Fetch and set the list of JSON files in the directory
@@ -104,8 +64,23 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
 
             // parses the JSON content and updates the dictionary
             const jsonData = JSON.parse(content);
-            setDict(jsonData);
+            jsonData.matchNumber === 'PIT' ? (setPitDict(jsonData), setIsPitScouting(true)) : (setDict(jsonData), setIsPitScouting(false));
 
+        //     eventName: '',
+        // scouterName: '',
+        // teamNumber: '',
+        // matchNumber: 'PIT',
+        // dimensions: '',
+        // weight: '',
+        // drivetrain: '',
+        // intake: '',
+        // vision: '',
+        // auton: '',
+        // robotExcel: '',
+        // trapScorer: '',
+        // timeOfCreation: '',
+
+            console.log(pitDict);
             // updates the boolean to false when the selected json is deselected
             setJsonSelected(prev =>
                 prev === selectedJson ? '' : selectedJson,
@@ -118,37 +93,20 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
     const handleSync = async () => {
         const response = null;
 
-        if (serverIp === '101') {
-            // Alert.alert(
-            //     'You are logged in as an offline user.',
-            //     'Want to connect to a server?',
-            //     [
-            //         {text: 'Dismiss'},
-            //         {
-            //             text: 'Log Out and Connect',
-            //             onPress: async () => {
-            //                 await AsyncStorage.removeItem('username');
-            //                 await AsyncStorage.removeItem('osis');
-            //                 setUser(null);
-            //             },
-            //             style: 'destructive',
-            //         },
-            //     ],
-            // );
-
-            if (jsonFiles.length === 0) {
-                Alert.alert('No files to upload', '', [
-                    {
-                        text: 'Create a Match',
-                        onPress: () => {
-                            navigation.navigate('New Match');
-                        },
+        if (jsonFiles.length === 0) {
+            Alert.alert('No files to upload', '', [
+                {
+                    text: 'Create a Match',
+                    onPress: () => {
+                        navigation.navigate('New Match');
                     },
-                    {text: 'OK'},
-                ]);
-                return;
-            }
+                },
+                {text: 'OK'},
+            ]);
+            return;
+        }
 
+        if (serverIp === '101') {
             await new Promise(resolve => {
                 Alert.prompt(
                     'You are logged in as an offline user.',
@@ -168,7 +126,6 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
 
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
-            if (json === 'teamData.json') { continue; }
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
@@ -360,7 +317,7 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
             {'\n'}
             Red Cards Received: {dict.redCards}
             {'\n'}
-            Telop Issues: {dict.telopIssues}
+            Teleop Issues: {dict.telopIssues}
             {'\n'}
             Did Team Play Defense: {dict.didTeamPlayDefense}
             {'\n'}
@@ -370,29 +327,28 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
     ];
 
     const pitScouting = [
-        // add pit scouting view here
         <Text style={styles.valueText}>
-            Event Name: {dict.eventName}
+            Event Name: {pitDict.eventName}
             {'\n'}
-            Scouter Name: {dict.scouterName}
+            Scouter Name: {pitDict.scouterName}
             {'\n'}
-            Dimensions: {dict.dimensions}
+            Dimensions: {pitDict.dimensions}
             {'\n'}
-            Weight: {dict.weight}
+            Weight: {pitDict.weight}
             {'\n'}
-            Drivetrain: {dict.drivetrain}
+            Drivetrain: {pitDict.drivetrain}
             {'\n'}
-            Intake: {dict.intake}
+            Intake: {pitDict.intake}
             {'\n'}
-            Vision: {dict.vision}
+            Vision: {pitDict.vision}
             {'\n'}
-            Auton: {dict.auton}
+            Auton: {pitDict.auton}
             {'\n'}
-            Robot Excel: {dict.robotExcel}
+            Robot Excel: {pitDict.robotExcel}
             {'\n'}
-            Trap Scorer: {dict.trapScorer}
+            Trap Scorer: {pitDict.trapScorer}
             {'\n'}
-            Time of Creation: {dict.timeOfCreation}
+            Time of Creation: {pitDict.timeOfCreation}
             {'\n'}
         </Text>,
     ];
@@ -457,12 +413,7 @@ const DataPage = ({serverIp, navigation, setUser, setServerIp}) => {
                         </View>
 
                         {jsonSelected ? (
-                            // make a way to show pit scouting and match scouting view separately with conditional
-                            dict.matchNumber === 'PIT' ? (
-                                pitScouting
-                            ) : (
-                                matchScouting
-                            )
+                            isPitScouting ? pitScouting : matchScouting
                         ) : (
                             <Text style={styles.infoText}>
                                 Select a JSON file to view the data

@@ -35,3 +35,22 @@ export const useDictStore = create((set) => ({
     },
     setDict: (key, value) => set((state) => ({ dict: {...state.dict, [key]: value} })),
 }))
+
+export const usePitDict = create((set) => ({
+    dict: {
+        eventName: '',
+        scouterName: '',
+        teamNumber: '',
+        matchNumber: 'PIT',
+        dimensions: '',
+        weight: '',
+        drivetrain: '',
+        intake: '',
+        vision: '',
+        auton: '',
+        robotExcel: '',
+        trapScorer: '',
+        timeOfCreation: '',
+    },
+    setDict: (key, value) => set((state) => ({ dict: {...state.dict, [key]: value} })),
+}))

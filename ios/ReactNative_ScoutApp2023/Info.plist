@@ -30,6 +30,9 @@
 		<dict>
 			<key>localhost</key>
 			<dict>
+				
+				<key>NSAllowsLocalNetworking</key>
+            	<true/>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>

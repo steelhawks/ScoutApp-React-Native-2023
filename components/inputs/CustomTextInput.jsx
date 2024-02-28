@@ -1,6 +1,6 @@
 import React from 'react';
-import {useState} from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import {TextInput, Text, StyleSheet} from 'react-native';
 
 const CustomTextInput = props => {
     const styles = StyleSheet.create({
@@ -12,14 +12,13 @@ const CustomTextInput = props => {
             paddingBottom: 5,
         },
         input: {
-            padding: 10,
-            borderRadius: 5,
+            padding: RFValue(10),
+            borderRadius: RFValue(5),
             borderColor: 'gray',
             borderWidth: 1,
-            marginBottom: 20,
-            width: '80%',
+            marginBottom: RFValue(10),
             color: 'white',
-        }
+        },
     });
 
     return (

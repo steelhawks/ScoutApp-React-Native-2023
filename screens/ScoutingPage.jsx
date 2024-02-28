@@ -1,34 +1,17 @@
-import {
-    StyleSheet,
-    View,
-    Alert,
-    ScrollView,
-    useWindowDimensions,
-} from 'react-native';
+import {StyleSheet, View, Alert} from 'react-native';
 import React, {useState, useEffect, useCallback, createContext} from 'react';
-import Form from '../components/scouting_components/Form';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AnimationLoader from '../AnimationLoader';
-import Section from '../components/scouting_components/Section';
-import Query from '../components/scouting_components/Query';
-import RadioGroup from '../components/inputs/RadioGroup';
-import Counter from '../components/inputs/Counter';
 import fs from 'react-native-fs';
-import Button from '../components/inputs/Button';
 import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 
 import Prematch from './Scouting/Prematch';
 import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';
 import Endgame from './Scouting/Endgame';
 import {useDictStore} from '../contexts/dict';
-
-import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const ScoutingPage = ({
     user,
@@ -41,7 +24,6 @@ const ScoutingPage = ({
     driveStation,
 }) => {
     const Tab = createMaterialTopTabNavigator();
-    const Drawer = createDrawerNavigator();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
@@ -49,13 +31,17 @@ const ScoutingPage = ({
         useState(false);
     const [currentDate, setCurrentDate] = useState('');
 
+    // zustand hooks
+    const dict = useDictStore(state => state.dict);
+    const setDict = useDictStore(state => state.setDict);
+
     useEffect(() => {
-        var date = new Date().getDate(); //Current Date
-        var month = new Date().getMonth() + 1; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        var hours = new Date().getHours(); //Current Hours
-        var min = new Date().getMinutes(); //Current Minutes
-        var sec = new Date().getSeconds(); //Current Seconds
+        var date = new Date().getDate();
+        var month = new Date().getMonth() + 1;
+        var year = new Date().getFullYear();
+        var hours = new Date().getHours();
+        var min = new Date().getMinutes();
+        var sec = new Date().getSeconds();
         setCurrentDate(
             date +
                 '/' +
@@ -70,48 +56,6 @@ const ScoutingPage = ({
                 sec,
         );
     }, []);
-
-    // const [dict, setDict] = useState({
-    // eventName: eventName,
-    // scouterName: user.name,
-    // teamNumber: teamNumber,
-    // matchNumber: matchNumber,
-    // matchType: matchType, // qualification, practice, or elimination
-    // driveStation: driveStation,
-    // alliance: driveStation < 4 ? 'RED' : 'BLUE', // red or blue
-    //     preloaded: null, // true or false
-    //     robotLeft: null, // true or false
-    //     autonSpeakerNotesScored: 0,
-    //     autonAmpNotesScored: 0,
-    //     autonMissed: 0,
-    //     autonNotesReceived: 0,
-    //     autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-    //     telopSpeakerNotesScored: 0,
-    //     telopAmpNotesScored: 0,
-    //     telopAmplifiedSpeakerNotes: 0,
-    //     telopSpeakerNotesMissed: 0,
-    //     telopAmpNotesMissed: 0,
-    //     telopNotesReceivedFromHumanPlayer: 0,
-    //     telopNotesReceivedFromGround: 0,
-    //     endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
-    //     trap: 0,
-    //     fouls: 0,
-    //     techFouls: 0,
-    //     yellowCards: 0,
-    //     redCards: 0,
-    //     telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
-    //     didTeamPlayDefense: null, // YES, NO, Default: null
-    //     // robotType: 'EMPTY', // AMP_SCORER, SPEAKER_SCORER, BOTH_SCORER, Default: EMPTY
-    //     timeOfCreation: '',
-    // });
-
-    const dict = useDictStore(state => state.dict);
-    const setDict = useDictStore(state => state.setDict);
-
-    // const updateDict = (key, value) => {
-    //     setIsLoading(true);
-    //     setDict({...dict, [key]: value});
-    // };
 
     const endMatch = () => {
         setReadyToPlaySuccessAnimation(true);
@@ -163,183 +107,6 @@ const ScoutingPage = ({
         }
     };
 
-    const prematch_queries = [
-        <Query
-            title="Preloaded?"
-            item={<RadioGroup buttons={['Yes', 'No']} id="preloaded" />}
-        />,
-    ];
-
-    const auton_queries = [
-        <Query
-            title="Did the robot leave?"
-            item={<RadioGroup buttons={['Yes', 'No']} id="robotLeft" />}
-        />,
-        <Query
-            title="Speaker Notes Scored"
-            item={<Counter id="autonSpeakerNotesScored" />}
-        />,
-        <Query
-            title="Amp Notes Scored"
-            item={<Counter id="autonAmpNotesScored" />}
-        />,
-        <Query
-            title="Notes Received"
-            item={<Counter id="autonNotesReceived" />}
-        />,
-        <Query
-            title="Auton Notes Missed"
-            item={<Counter id="autonMissed" />}
-        />,
-        <Query
-            title="Auton Issues"
-            item={<RadioGroup buttons={['Yes', 'No']} id="autonIssues" />}
-        />,
-    ];
-
-    const auton_issues_queries = [
-        // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        <Query title="Not Moving" item={<BouncyCheckbox />} />,
-        <Query title="Stopped" item={<BouncyCheckbox />} />,
-        <Query title="Out of Control" item={<BouncyCheckbox />} />,
-    ];
-
-    const tele_scoring_queries = [
-        <Query
-            title="Speaker Notes Scored"
-            item={<Counter id="telopSpeakerNotesScored" />}
-        />,
-        <Query
-            title="Amp Notes Scored"
-            item={<Counter id="telopAmpNotesScored" />}
-        />,
-        <Query
-            title="Amplified Speaker Notes Scored"
-            item={<Counter id="telopAmplifiedSpeakerNotes" />}
-        />,
-    ];
-
-    const tele_missed_queries = [
-        <Query
-            title="Speaker Notes Missed"
-            item={<Counter id="telopSpeakerNotesMissed" />}
-        />,
-        <Query
-            title="Amp Notes Missed"
-            item={<Counter id="telopAmpNotesMissed" />}
-        />,
-    ];
-
-    const tele_received_queries = [
-        <Query
-            title="Note Received from Human Player"
-            item={<Counter id="telopNotesReceivedFromHumanPlayer" />}
-        />,
-        <Query
-            title="Note Received from Ground"
-            item={<Counter id="telopNotesReceivedFromGround" />}
-        />,
-    ];
-
-    const penalties_queries = [
-        <Query title="Fouls" item={<Counter id="fouls" />} />,
-        <Query title="Tech Fouls" item={<Counter id="techFouls" />} />,
-        <Query title="Yellow Cards" item={<Counter id="yellowCards" />} />,
-        <Query title="Red Cards" item={<Counter id="redCards" />} />,
-    ];
-
-    const handleTeleopIssuesQueries = (isSelected, id) => {
-        const updatedIssues = isSelected
-            ? [...dict.telopIssues, id]  // add to array if selected
-            : dict.telopIssues.filter(issueId => issueId !== id);  // remove from array if deselected
-    
-        updateDict('telopIssues', updatedIssues);
-    };
-       
-
-    const teleop_issues_queries = [
-        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'NOT_MOVING')}/>} />,
-        <Query title="Lost Connect" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')}/>} />,,
-        <Query title="FMS Issues" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'FMS_ISSUES')}/>} />,,,
-        <Query title="Disabled" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'DISABLED')} />} />,
-    ];
-
-    const defense_queries = [
-        <Query
-            title="Defense"
-            item={
-                <RadioGroup buttons={['Yes', 'No']} id="didTeamPlayDefense" />
-            }
-        />,
-    ];
-
-    const endgame_queries = [
-        <Query
-            title="Position"
-            item={
-                <RadioGroup
-                    buttons={['Parked', 'Onstage', 'Spotlight']}
-                    id="endGame"
-                />
-            }
-        />,
-        <Query title="Trap" item={<Counter id="trap" />} />,
-    ];
-
-    const form_sections = [
-        <Section
-            title={'Pre-Match'}
-            queries={prematch_queries}
-            style={styles.sectionStyle}
-        />,
-        <Section
-            title={'Auton'}
-            queries={auton_queries}
-            style={[styles.patternSectionStyle]}
-        />,
-        <Section
-            title={'Teleop Scoring'}
-            queries={tele_scoring_queries}
-            style={[
-                styles.sectionStyle,
-                {backgroundColor: 'lightblue'},
-                {borderRadius: 20},
-                {marginBottom: 10},
-                {marginTop: 10},
-            ]}
-        />,
-        <Section
-            title={'Teleop Missed'}
-            queries={tele_missed_queries}
-            style={[styles.patternSectionStyle]}
-        />,
-        <Section
-            title={'Teleop Received'}
-            queries={tele_received_queries}
-            style={styles.sectionStyle}
-        />,
-        <Section
-            title={'Endgame'}
-            queries={endgame_queries}
-            style={[styles.sectionStyle, styles.patternSectionStyle]}
-        />,
-        <Section
-            title={'Defense'}
-            queries={defense_queries}
-            style={styles.sectionStyle}
-        />,
-        <Section
-            title={'Penalties'}
-            queries={penalties_queries}
-            style={[styles.sectionStyle, styles.patternSectionStyle]}
-        />,
-        <Section
-            title={'Teleop Issues'}
-            queries={teleop_issues_queries}
-            style={styles.sectionStyle}
-        />,
-    ];
-
     useBackHandler(() => {
         setMatchCreated(false);
         return true;
@@ -377,8 +144,6 @@ const ScoutingPage = ({
     return (
         <SafeAreaView style={styles.mainView}>
             <View style={styles.container}>
-            {/* <Button onPress={backConfirm} label="Cancel" /> */}
-
                 <Tab.Navigator
                     initialRouteName="Pre-Match"
                     screenOptions={{
@@ -387,18 +152,10 @@ const ScoutingPage = ({
                             backgroundColor: 'black',
                         },
                     }}>
-                    <Tab.Screen name="Pre-Match">
-                        {PrematchNavigate}
-                    </Tab.Screen>
-                    <Tab.Screen name="Auton">
-                        {AutonNavigate}
-                    </Tab.Screen>
-                    <Tab.Screen name="Teleop">
-                        {TeleopNavigate}
-                    </Tab.Screen>
-                    <Tab.Screen name="Endgame">
-                        {EndgameNavigate}
-                    </Tab.Screen>
+                    <Tab.Screen name="Pre-Match">{PrematchNavigate}</Tab.Screen>
+                    <Tab.Screen name="Auton">{AutonNavigate}</Tab.Screen>
+                    <Tab.Screen name="Teleop">{TeleopNavigate}</Tab.Screen>
+                    <Tab.Screen name="Endgame">{EndgameNavigate}</Tab.Screen>
                 </Tab.Navigator>
             </View>
             <AnimationLoader
