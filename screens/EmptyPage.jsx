@@ -26,7 +26,7 @@ const EmptyPage = ({navigation}) => {
                 <View style={{flexDirection: 'row', paddingTop: RFValue(80)}}>
                     <Button
                         label="Create Match"
-                        onPress={() => navigation.navigate('NewMatch')}
+                        onPress={() => navigation.navigate('New Match')}
                     />
                 </View>
             </SafeAreaView>

@@ -6,7 +6,7 @@ import ManageAccount from './screens/ManageAccount';
 import Tutorial from './screens/Tutorial';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
-import {StyleSheet, Alert} from 'react-native';
+import {StyleSheet, Alert, StatusBar} from 'react-native';
 import {NewMatch} from '.';
 import PitScoutingPage from './screens/PitScoutingPage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -130,6 +130,7 @@ const App = () => {
 
     return (
         <SafeAreaView style={{flex: 1}}>
+            <StatusBar translucent backgroundColor="transparent" />
             <NavigationContainer
                 initialRouteName="Login"
                 backBehavior="firstRoute"

@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Linking} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
+import Icon from 'react-native-vector-icons/Feather';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import {Platform} from 'react-native';
+
+const STEEL_HAWKS_URL = 'https://www.steelhawks.org/'
 
 const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +20,24 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
         await AsyncStorage.removeItem('osis');
         setUser(null);
         setIsLoading(false);
+    };
+
+    const openLinkInBrowserHandler = async () => {
+        InAppBrowser.isAvailable().then(() => {
+            if (Platform.OS === 'ios') {
+                return InAppBrowser.open(STEEL_HAWKS_URL, {
+                    animated: true,
+                    modalEnabled: true,
+                    showTitle: true,
+                });
+            } else if (Platform.OS === 'android') {
+                return InAppBrowser.open(STEEL_HAWKS_URL, {
+                    modalEnabled: true,
+                    showTitle: true,
+                });
+            }
+            
+        });
     };
 
     return (
@@ -48,9 +71,60 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
                         Scout 24 {appVersion} {'\n'}
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
-                    <AnimationLoader />
+
+                    <AnimationLoader isLoading={isLoading} />
                 </View>
             </ScrollView>
+            <View
+                style={{
+                    borderWidth: 0,
+                    position: 'absolute',
+                    alignSelf: 'flex-start',
+                    bottom: RFValue(110), // Adjust this value as needed
+                }}>
+                <Icon.Button
+                    paddingLeft={RFValue(10)}
+                    name="globe"
+                    size={RFValue(25)}
+                    color="white"
+                    alignSelf="center"
+                    backgroundColor="transparent"
+                    underlayColor="transparent"
+                    style={{
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent',
+                        zIndex: 1,
+                    }}
+                    onPress={() => {
+                        openLinkInBrowserHandler();
+                    }}
+                />
+            </View>
+
+            <View
+                style={{
+                    borderWidth: 0,
+                    position: 'absolute',
+                    alignSelf: 'flex-end',
+                    bottom: RFValue(110), // Adjust this value as needed
+                }}>
+                <Icon.Button
+                    name="settings"
+                    size={RFValue(25)}
+                    color="white"
+                    alignSelf="center"
+                    backgroundColor="transparent"
+                    underlayColor="transparent"
+                    style={{
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent',
+                        zIndex: 1,
+                    }}
+                    onPress={() => {
+                        console.log('Settings button pressed');
+                    }}
+                />
+            </View>
         </SafeAreaView>
     );
 };

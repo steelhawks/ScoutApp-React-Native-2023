@@ -345,7 +345,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     ];
 
     const empty_page = [
-        <EmptyPage />,
+        <EmptyPage navigation={navigation}/>,
     ]
 
     const data_page = [

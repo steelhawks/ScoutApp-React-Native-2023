@@ -206,7 +206,7 @@ const Login = ({
                                 <View style={styles.secondContainer}>
                                     <View style={styles.imageContainer}>
                                         <Image
-                                            source={require('../assets/steelhawks.png')}
+                                            source={require('../assets/scout24-icon.jpeg')}
                                             style={styles.image}
                                         />
                                     </View>
