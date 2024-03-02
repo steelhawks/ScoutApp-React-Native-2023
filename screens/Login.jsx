@@ -84,12 +84,6 @@ const Login = ({
             return;
         }
 
-        if (Ip === '102') {
-            console.log('Logging in with demo mode');
-            handleDemoMode();
-            return;
-        }
-
         // save the IP address to AsyncStorage
         try {
             await AsyncStorage.setItem('serverIp', Ip);
@@ -132,6 +126,7 @@ const Login = ({
         } catch (error) {
             Alert.alert('Error connecting to the server', error);
             console.error('Error connecting to the server', error);
+            setIp('173.52.84.162');
         } finally {
             setIsLoading(false);
         }
@@ -159,32 +154,7 @@ const Login = ({
                 'Please connect to a server as soon as possible to sync.',
                 error,
             );
-        } finally {}
-    };
-
-    const handleDemoMode = async () => {
-        try {
-            const teamDataPath = RNFS.DocumentDirectoryPath + '/teamData.json';
-            const user = {
-                id: 1,
-                name: 'Demo User',
-                osis: '1234',
-                password: null,
-                username: 'Demo User',
-            };
-
-            setTeamData(JSON.parse(await RNFS.readFile(teamDataPath)));
-            setUser(user);
-            setServerIp('101');
-            setEventName('Demo Event');
-        } catch (loginError) {
-            Alert.alert(
-                'Error with retreiving demo data',
-                'Please contact',
-                loginError,
-            )
         } finally {
-            setIsLoading(false);
         }
     };
 
@@ -194,97 +164,86 @@ const Login = ({
 
     return (
         <SafeAreaView style={styles.container}>
-            <>
-                <View style={styles.background}>
-                    {user != null ? (
-                        <View>
-                            <Text>Hello!</Text>
+            <View style={styles.container}>
+                <AvoidKeyboardContainer>
+                    <View style={styles.secondContainer}>
+                        <View style={styles.imageContainer}>
+                            <Image
+                                source={require('../assets/scout24-icon.jpeg')}
+                                style={styles.image}
+                            />
                         </View>
-                    ) : (
-                        <React.Fragment>
-                            <AvoidKeyboardContainer>
-                                <View style={styles.secondContainer}>
-                                    <View style={styles.imageContainer}>
-                                        <Image
-                                            source={require('../assets/scout24-icon.jpeg')}
-                                            style={styles.image}
-                                        />
-                                    </View>
-                                </View>
+                    </View>
 
-                                <Text style={styles.title}>Hello</Text>
+                    <Text style={styles.title}>Hello</Text>
 
-                                <TextInput
-                                    style={styles.input}
-                                    placeholderTextColor={'white'}
-                                    placeholder="Username"
-                                    onChangeText={text => setUsername(text)}
-                                    value={username}
-                                    autoCapitalize="none"
-                                    keyboardType="email-address"
-                                />
-                                <TextInput
-                                    style={styles.input}
-                                    placeholderTextColor={'white'}
-                                    placeholder="OSIS"
-                                    onChangeText={text => setOsis(text)}
-                                    value={osis}
-                                    keyboardType="numeric"
-                                />
-                                {/* turned off for apple deployment */}
-                                {/* <TextInput
-                                    style={styles.input}
-                                    placeholderTextColor={'white'}
-                                    placeholder="Server IP"
-                                    onChangeText={text => setIp(text)}
-                                    value={async () =>
-                                        await AsyncStorage.getItem('serverIp')
-                                    }
-                                    keyboardType={'url'} 
-                                /> */}
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor={'white'}
+                        placeholder="Username"
+                        onChangeText={text => setUsername(text)}
+                        value={username}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor={'white'}
+                        placeholder="OSIS"
+                        onChangeText={text => setOsis(text)}
+                        value={osis}
+                        keyboardType="numeric"
+                    />
+                    {/* turned off for apple deployment */}
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor={'white'}
+                        placeholder="Local Server IP"
+                        onTextInput={
+                            text => setIp(text)
+                        }
+                        // onChangeText={text => setIp(text)}
+                        value={async () =>
+                            await AsyncStorage.getItem('serverIp')
+                        }
+                        keyboardType={'url'}
+                    />
 
-                                <Button
-                                    label="Login"
-                                    onPress={() => {
-                                        setIsLoading(true);
-                                        handleLogin();
-                                    }}
-                                />
-                                {!isTablet() && (
-                                    <View style={styles.tabletView}>
-                                        <BouncyCheckbox
-                                            size={20}
-                                            paddingTop={10}
-                                            alignSelf={'center'}
-                                            alignItems={'center'}
-                                            text={'Remember me'}
-                                            textAlign={'center'}
-                                            unfillColor="black"
-                                            fillColor="rgba(136, 3, 21, 1)"
-                                            onPress={stayRemembered => {
-                                                setStayRemembered(
-                                                    stayRemembered,
-                                                );
-                                            }}
-                                            textStyle={{
-                                                paddingRight: 10,
-                                                color: 'white',
-                                                textDecorationLine: 'none',
-                                                fontWeight: 'bold',
-                                            }}
-                                        />
-                                    </View>
-                                )}
-                                <Text style={styles.footer}>
-                                    App Version: {appVersion} Build:{' '}
-                                    {DeviceInfo.getBuildNumber()}
-                                </Text>
-                            </AvoidKeyboardContainer>
-                        </React.Fragment>
+                    <Button
+                        label="Login"
+                        onPress={() => {
+                            setIsLoading(true);
+                            handleLogin();
+                        }}
+                    />
+                    {!isTablet() && (
+                        <BouncyCheckbox
+                            size={20}
+                            paddingTop={10}
+                            alignSelf={'center'}
+                            alignItems={'center'}
+                            text={'Remember me'}
+                            textAlign={'center'}
+                            unfillColor="black"
+                            fillColor="rgba(136, 3, 21, 1)"
+                            onPress={stayRemembered => {
+                                setStayRemembered(stayRemembered);
+                            }}
+                            textStyle={{
+                                paddingRight: 10,
+                                color: 'white',
+                                textDecorationLine: 'none',
+                                fontWeight: 'bold',
+                            }}
+                        />
                     )}
-                </View>
-                <AnimationLoader isLoading={isLoading} />
-            </>
+                    <Text style={styles.footer}>
+                        App Version: {appVersion} Build:{' '}
+                        {DeviceInfo.getBuildNumber()}
+                    </Text>
+                </AvoidKeyboardContainer>
+            </View>
+            <AnimationLoader isLoading={isLoading} />
         </SafeAreaView>
     );
 };
@@ -308,13 +267,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 2,
+        // },
+        // shadowOpacity: 0.2,
+        // shadowRadius: 3,
+        // elevation: 3,
         paddingTop: RFValue(10),
         paddingBottom: RFValue(15),
         width: '90%',

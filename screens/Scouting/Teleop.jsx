@@ -68,6 +68,14 @@ const Teleop = () => {
                 />
             }
         />,
+        <Query
+            title="Dropped Note"
+            item={
+                <Counter
+                    onChange={value => setDict('droppedNotes', value)}
+                />
+            }
+        />,
     ];
 
     const tele_received_queries = [

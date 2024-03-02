@@ -1,6 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-
+import { View, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
 
 // ENUM WITH ALL THE ANIMATION FILES
@@ -17,7 +16,7 @@ const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_
     const setOn = (duration, callback) => {
         setTimeout(() => {
             callback();
-            onAnimationComplete(); // Call the callback provided by the parent component
+            onAnimationComplete && onAnimationComplete(); // Check if onAnimationComplete is defined before calling it
         }, duration);
     };
 
@@ -29,7 +28,7 @@ const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_
                     autoPlay
                     loop={loop}
                     style={{ width: 200, height: 200 }}
-                    onAnimationFinish={() => onAnimationComplete()} // Call the callback when animation finishes
+                    onAnimationFinish={() => setOn(0, onAnimationComplete)} // Use setOn to delay the callback
                 />
             </View>
         ) : (

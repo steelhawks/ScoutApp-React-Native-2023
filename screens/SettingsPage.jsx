@@ -9,26 +9,28 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Feather';
+import DeviceInfo from 'react-native-device-info';
 
-const EmptyPage = ({navigation}) => {
+const SettingsPage = ({setShowSettings, showSettings, appVersion}) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
-                <Text style={styles.title}>No Matches</Text>
-                <Icon
-                    name="file-minus"
-                    size={RFValue(100)}
-                    color="white"
-                    alignSelf="center"
-                    paddingTop={RFValue(60)}
-                />
-                <View style={{flexDirection: 'row', paddingTop: RFValue(80)}}>
-                    <Button
-                        label="Create Match"
-                        onPress={() => navigation.navigate('New Match')}
-                    />
-                </View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={styles.title}>Settings</Text>
+                    <Text style={styles.infoText}>
+                        Scout 24 {appVersion} {'\n'}
+                        Build: {DeviceInfo.getBuildNumber()}
+                    </Text>
+                </ScrollView>
+                <Button onPress={() => setShowSettings(!showSettings)} label="Go Back" />
+
+                {/* This is optional and for a loading screen */}
+                {/* <AnimationLoader
+                isLoading={isDone}
+                loop={false}
+                animationKey={'SUCCESS_01'}
+                onAnimationComplete={() => setIsDone(false)}
+            /> */}
             </SafeAreaView>
         </GestureHandlerRootView>
     );
@@ -140,4 +142,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EmptyPage;
+export default SettingsPage;

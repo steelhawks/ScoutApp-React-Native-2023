@@ -7,13 +7,22 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/Feather';
-import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
+import SettingsPage from './SettingsPage';
 
-const STEEL_HAWKS_URL = 'https://www.steelhawks.org/'
+const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
-const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
+const ManageAccount = ({
+    setUser,
+    user,
+    appVersion,
+    eventName,
+    serverIp,
+    navigation,
+}) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
 
     const logOut = async () => {
         await AsyncStorage.removeItem('username');
@@ -36,45 +45,37 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
                     showTitle: true,
                 });
             }
-            
         });
     };
 
-    return (
+    return showSettings ? (
+        <SettingsPage
+            showSettings={showSettings}
+            setShowSettings={setShowSettings}
+            appVersion={appVersion}
+        />
+    ) : (
         <SafeAreaView style={styles.avoidTabBar}>
-            <ScrollView
-                contentContainerStyle={styles.scrollView}
-                showsVerticalScrollIndicator={false}>
-                <View style={styles.container}>
-                    <Text style={styles.title}>Manage Account</Text>
-                    <View style={styles.centerContent}>
-                        <Button
-                            label="Log Out"
-                            onPress={() => {
-                                setIsLoading(true);
-                                logOut();
-                            }}
-                        />
-                        <Text style={styles.welcomeText}>
-                            Hello {user.name} {'\n'}
-                            Username: {user.username} {'\n'}
-                            OSIS: {user.osis} {'\n'}
-                            Event: {eventName} {'\n'}
-                            {/* Server: {serverIp === '101' ? 'Offline' : serverIp} {'\n'} */}
-                            App Version: {appVersion}
-                        </Text>
-                    </View>
-
-                    <Text style={styles.infoText}>
-                        {/* Any issues with login or requested changes, please email{' '}
-                        farhanj2@nycstudents.net {'\n'} */}
-                        Scout 24 {appVersion} {'\n'}
-                        Build: {DeviceInfo.getBuildNumber()}
+            <View style={styles.container}>
+                <Text style={styles.title}>Manage Account</Text>
+                <View style={styles.centerContent}>
+                    <Button
+                        label="Log Out"
+                        onPress={() => {
+                            setIsLoading(true);
+                            logOut();
+                        }}
+                    />
+                    <Text style={styles.welcomeText}>
+                        Hello {user.name} {'\n'}
+                        Username: {user.username} {'\n'}
+                        OSIS: {user.osis} {'\n'}
+                        Event: {eventName} {'\n'}
+                        App Version: {appVersion}
                     </Text>
-
-                    <AnimationLoader isLoading={isLoading} />
                 </View>
-            </ScrollView>
+                <AnimationLoader isLoading={isLoading} />
+            </View>
             <View
                 style={{
                     borderWidth: 0,
@@ -121,7 +122,7 @@ const ManageAccount = ({setUser, user, appVersion, eventName, serverIp}) => {
                         zIndex: 1,
                     }}
                     onPress={() => {
-                        console.log('Settings button pressed');
+                        setShowSettings(!showSettings);
                     }}
                 />
             </View>

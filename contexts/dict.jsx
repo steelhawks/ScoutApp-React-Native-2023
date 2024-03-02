@@ -15,6 +15,7 @@ export const useDictStore = create((set) => ({
         autonAmpNotesScored: 0,
         autonMissed: 0,
         autonNotesReceived: 0,
+        droppedNotes: 0,
         autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
         telopSpeakerNotesScored: 0,
         telopAmpNotesScored: 0,

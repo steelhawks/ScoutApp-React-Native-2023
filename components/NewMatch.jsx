@@ -36,23 +36,6 @@ const NewMatch = ({
     const [matchTypeLocal, setMatchTypeLocal] = useState('');
     const [driveStationLocal, setDriveStationLocal] = useState(0);
 
-    // const navigation = useNavigation();
-
-    // useEffect(() => {
-    //     const unsubscribe = navigation.addListener('beforeRemove', e => {
-    //         // Prevent default behavior when the back button is pressed
-    //         e.preventDefault();
-
-    //         // Save the state or any other necessary actions
-    //         // You can use AsyncStorage or other state management solutions for long-term storage
-
-    //         // Continue with the navigation
-    //         navigation.dispatch(e.data.action);
-    //     });
-
-    //     return unsubscribe;
-    // }, [navigation]);
-
     const checkFilledOut = () => {
         return (
             teamNumberLocal !== '' &&
@@ -64,7 +47,7 @@ const NewMatch = ({
 
     const handleStartScouting = async () => {
         if (scoutingType === 'Match Scouting') {
-            if ((true)) {
+            if (checkFilledOut()) {
                 setIsLoading(true);
                 setTimeout(async () => {
                     setTeamNumber(teamNumberLocal);
@@ -143,7 +126,7 @@ const NewMatch = ({
             </Text>
             <DriveStationUI
                 updateDict={(key, value) => setDriveStationLocal(value)}
-            />
+            /> 
         </>,
     ];
 

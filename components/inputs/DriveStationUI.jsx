@@ -12,7 +12,7 @@ const DriveStationUI = props => {
     };
 
     return (
-        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <View style={{color: 'blue'}}>
                 {[1, 2, 3].map(buttonNumber => (
                     <Button

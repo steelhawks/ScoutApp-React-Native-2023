@@ -1,7 +1,6 @@
-import React from 'react';
-import {useContext} from 'react';
 import BouncyCheckboxGroup from 'react-native-bouncy-checkbox-group';
-import { UserContext } from '../..';
+import React from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const RadioGroup = props => {
     const styles = {
@@ -10,11 +9,9 @@ const RadioGroup = props => {
         unfillColor: '#FFFFFF',
         iconStyle: {borderColor: 'red'},
         innerIconStyle: {borderWidth: 2},
-        // flex: 1,
         padding: 10,
-        // paddingLeft: 20,
         textStyle: {
-            textDecorationLine: "none",
+            textDecorationLine: 'none',
             fontFamily: 'JosefinSans-Regular',
         },
         iconStyle: {
@@ -24,27 +21,29 @@ const RadioGroup = props => {
             borderColor: 'black',
             borderRadius: 10,
             alignSelf: 'center',
-            margin: 10,
-        }
+            // margin: 10,
+        },
     };
 
     return (
-        <BouncyCheckboxGroup
-            style={{
-                alignSelf: 'center',
-                alignItems: 'center',
-            }}
-            data={props.buttons.map(button => {
-                return {
-                    id: button,
-                    text: button,
-                    ...styles,
-                };
-            })}
-            onChange={selectedItem =>
-                props.onChange(selectedItem['text'])
-            }
-        />
+        <SafeAreaView>
+            <BouncyCheckboxGroup
+                style={{
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                }}
+                checkboxProps={{}}
+                data={props.buttons.map(button => {
+                    return {
+                        id: button,
+                        text: button,
+                        ...styles,
+                    };
+                })}
+                onChange={selectedItem => props.onChange(selectedItem['text'])}
+            />
+        </SafeAreaView>
     );
 };
 

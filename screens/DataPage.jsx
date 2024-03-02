@@ -14,6 +14,8 @@ import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
 
 const DataPage = ({serverIp, navigation, setServerIp}) => {
+    const [ip, setIp] = useState(serverIp);
+
     // zustand hooks
     const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
@@ -23,11 +25,13 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
 
     const [isPitScouting, setIsPitScouting] = useState(false);
 
+    const [refreshFlag, setRefreshFlag] = useState(false); // new state variable
+
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
             fs.readdir(docDir)
-                .then(files => {
+                .then(async files => {
                     const jsonFiles = files.filter(file =>
                         file.endsWith('.json'),
                     );
@@ -56,7 +60,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             .catch(error => {
                 console.error('Error reading directory:', error);
             });
-    }, []); // empty dependency array ensures this effect runs once on component mount
+    }, [docDir, refreshFlag]); // include refreshFlag in the dependency array
 
     const handleJsonSelection = async selectedJson => {
         try {
@@ -79,6 +83,24 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         }
     };
 
+    const addSyncedSuffix = async file => {
+        try {
+            const oldPath = `${docDir}/${file}`;
+            const extension = file.split('.').pop(); // Get the file extension
+            const newName = `${file.replace(
+                `.${extension}`,
+                '_synced',
+            )}.${extension}`;
+            const newPath = `${docDir}/${newName}`;
+
+            await fs.moveFile(oldPath, newPath);
+
+            console.log(`File renamed successfully to ${newName}`);
+        } catch (error) {
+            console.error('Error renaming file:', error.message);
+        }
+    };
+
     const handleSync = async () => {
         const response = null;
 
@@ -95,34 +117,25 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             return;
         }
 
-        if (serverIp === '101') {
-            await new Promise(resolve => {
-                Alert.prompt(
-                    'You are logged in as an offline user.',
-                    'Enter Server IP to sync.',
-                    [
-                        {text: 'Cancel'},
-                        {
-                            text: 'Connect',
-                            onPress: async ip => {
-                                setServerIp(ip);
-                            },
-                        },
-                    ],
-                );
-            });
-        }
-
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
 
-            if (!(await syncToServer(jsonData))) {
-                break;
+            if (json.endsWith('_synced.json')) {
+                continue;
             }
+            if (!(await syncToServer(jsonData))) {
+                Alert.alert('Error syncing files to server');
+                return;
+            }
+
+            addSyncedSuffix(json);
         }
+
+        // After successful syncing, set the refresh flag to trigger a re-render
+        setRefreshFlag(prev => !prev);
 
         Alert.alert('Syncing Successful', '', [
             {
@@ -145,7 +158,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
 
         try {
             setJsonSelected(false);
-            const serverEndpoint = `http://${serverIp}:8080/upload`;
+            const serverEndpoint = `http://${ip}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
@@ -176,6 +189,28 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     };
 
     const handleSwipeDelete = async file => {
+        if (!file.endsWith('_synced.json')) {
+            Alert.alert(
+                'You have not synced this file. Are you sure you want to delete?',
+                'This cannot be recovered',
+                [
+                    {
+                        text: 'Cancel',
+                    },
+                    {
+                        text: 'Delete',
+                        onPress: () => {
+                            handleDelete(file);
+                            setJsonSelected(false);
+                        },
+                        style: 'destructive',
+                    },
+                ],
+            );
+
+            return;
+        }
+
         Alert.alert(
             'Are you sure you want to delete?',
             'This cannot be recovered',
@@ -238,9 +273,6 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             selectedJson = null;
             for (const index in jsonFiles) {
                 const json = jsonFiles[index];
-                if (json === 'teamData.json') {
-                    continue;
-                } // makes sure it doesnt delete sys files
                 const path = fs.DocumentDirectoryPath + '/' + json;
                 await fs.unlink(path);
             }
@@ -289,6 +321,8 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             Telop Speaker Notes Missed: {dict.telopSpeakerNotesMissed}
             {'\n'}
             Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
+            {'\n'}
+            Dropped Notes: {dict.droppedNotes}
             {'\n'}
             Telop Notes Received From Human Player:{' '}
             {dict.telopNotesReceivedFromHumanPlayer}
@@ -344,9 +378,18 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         </Text>,
     ];
 
-    const empty_page = [
-        <EmptyPage navigation={navigation}/>,
-    ]
+    const getFormattedFileName = file => {
+        const fileNameParts = file.split('-');
+
+        const teamNumber = fileNameParts[1];
+
+        let matchNumberPart = fileNameParts[2].split('.')[0];
+        matchNumberPart = matchNumberPart.replace('_synced', '');
+
+        return `Team ${teamNumber}, Match ${matchNumberPart}`;
+    };
+
+    const empty_page = [<EmptyPage navigation={navigation} />];
 
     const data_page = [
         <>
@@ -357,7 +400,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                         style={[styles.centerContent, {flexDirection: 'row'}]}>
                         <Button label="Sync to Server" onPress={handleSync} />
                         <Icon.Button
-                            name="trash-2"
+                            name="trash"
                             backgroundColor="transparent"
                             onPress={confirmDeleteAll}
                             size={RFValue(20)}
@@ -380,10 +423,47 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                                         </Text>
                                     </TouchableOpacity>
                                 )}>
+                                {/* <Icon.Button
+                                    style={styles.filesButton}
+                                    underlayColor="transparent"
+                                    name={
+                                        file.endsWith('_synced.json')
+                                            ? 'check'
+                                            : 'download-cloud'
+                                    }
+                                    onPress={() => handleJsonSelection(file)}>
+                                    <Text style={styles.filesText}>{file}</Text>
+                                </Icon.Button> */}
+                                <Icon
+                                    paddingLeft={RFValue(10)}
+                                    name={
+                                        file.endsWith('_synced.json')
+                                            ? 'check-circle'
+                                            : 'upload-cloud'
+                                    }
+                                    size={RFValue(30)}
+                                    color={
+                                        file.endsWith('_synced.json')
+                                            ? 'lightgreen'
+                                            : 'white'
+                                    }
+                                    backgroundColor="transparent"
+                                    underlayColor="transparent"
+                                    style={{
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'transparent',
+                                        zIndex: 2,
+                                        right: 10,
+                                        top: 30,
+                                    }}
+                                />
+
                                 <TouchableOpacity
                                     style={styles.filesButton}
                                     onPress={() => handleJsonSelection(file)}>
-                                    <Text style={styles.filesText}>{file}</Text>
+                                    <Text style={styles.filesText}>
+                                        {getFormattedFileName(file)}
+                                    </Text>
                                 </TouchableOpacity>
                             </Swipeable>
                         ))}
@@ -403,7 +483,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                 </View>
             </ScrollView>
             <AnimationLoader isLoading={isLoading} />
-            {successfullySyncedWithServer ? (
+            {/* {successfullySyncedWithServer ? (
                 <AnimationLoader
                     isLoading={successfullySyncedWithServer}
                     animationKey="SUCCESS_01"
@@ -412,7 +492,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                         setSuccessfullySyncedWithServer(false)
                     }
                 />
-            ) : null}
+            ) : null} */}
         </>,
     ];
 
@@ -424,7 +504,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                     paddingBottom: RFValue(100),
                 }}>
                 {jsonFiles.length != 0 ? data_page : empty_page}
-                </SafeAreaView>
+            </SafeAreaView>
         </GestureHandlerRootView>
     );
 };
@@ -467,6 +547,10 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     filesButton: {
+        // backgroundColor: 'transparent',
+        // borderColor: 'transparent',
+        zIndex: 1,
+
         alignSelf: 'center',
         marginTop: RFValue(10),
         textAlign: 'center',
@@ -523,7 +607,7 @@ const styles = StyleSheet.create({
         width: '50%',
         alignSelf: 'center',
         marginTop: RFValue(10),
-        marginBottom: RFValue(10),
+        marginBottom: RFValue(-19),
         elevation: 5,
     },
     swipeDeleteText: {
