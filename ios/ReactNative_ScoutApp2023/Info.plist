@@ -28,6 +28,11 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>127.0.0.1</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 			<key>173.52.84.162</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -94,5 +99,7 @@
 	<string>Used to connect to server</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Used to connect to server</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Used to connect to server during offline competitions</string>
 </dict>
 </plist>

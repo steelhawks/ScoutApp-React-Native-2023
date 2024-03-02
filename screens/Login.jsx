@@ -200,13 +200,10 @@ const Login = ({
                         style={styles.input}
                         placeholderTextColor={'white'}
                         placeholder="Local Server IP"
-                        onTextInput={
-                            text => setIp(text)
-                        }
-                        // onChangeText={text => setIp(text)}
-                        value={async () =>
-                            await AsyncStorage.getItem('serverIp')
-                        }
+                        // onTextInput={
+                        //     text => setIp(text)
+                        // }
+                        onChangeText={text => setIp(text)}
                         keyboardType={'url'}
                     />
 
