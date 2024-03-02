@@ -22,6 +22,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
+import * as Sentry from '@sentry/react-native';
 
 const Login = ({
     user,

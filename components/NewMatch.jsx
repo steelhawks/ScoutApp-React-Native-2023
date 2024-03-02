@@ -18,6 +18,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import DropdownComponent from './inputs/Dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import CounterInput from 'react-native-counter-input';
+import * as Sentry from '@sentry/react-native';
 
 const NewMatch = ({
     teamData,
@@ -31,17 +32,17 @@ const NewMatch = ({
 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const [teamNumberLocal, setTeamNumberLocal] = useState(0);
-    const [matchNumberLocal, setMatchNumberLocal] = useState(0);
-    const [matchTypeLocal, setMatchTypeLocal] = useState('');
-    const [driveStationLocal, setDriveStationLocal] = useState(0);
+    const [teamNumberLocal, setTeamNumberLocal] = useState(null);
+    const [matchNumberLocal, setMatchNumberLocal] = useState(null);
+    const [matchTypeLocal, setMatchTypeLocal] = useState(null);
+    const [driveStationLocal, setDriveStationLocal] = useState(null);
 
     const checkFilledOut = () => {
         return (
-            teamNumberLocal !== '' &&
-            matchNumberLocal !== 0 &&
-            matchTypeLocal !== '' &&
-            driveStationLocal !== 0
+            teamNumberLocal !== null &&
+            matchNumberLocal !== null &&
+            matchTypeLocal !== null &&
+            driveStationLocal !== null
         );
     };
 

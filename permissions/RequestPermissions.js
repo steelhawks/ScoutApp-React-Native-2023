@@ -76,7 +76,11 @@ export const RequestDefaultPermissions = async () => {
             PERMISSIONS.IOS.FACE_ID,
             PERMISSIONS.IOS.BLUETOOTH,
         ],
-        [PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.ANDROID.BLUETOOTH],
+        [
+            PERMISSIONS.ANDROID.CAMERA,
+            PERMISSIONS.ANDROID.BLUETOOTH,
+            PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES,
+        ],
     ).then(statuses => {
         if (Platform.OS === 'ios') {
             console.log('Camera', statuses[PERMISSIONS.IOS.CAMERA]);
@@ -85,6 +89,7 @@ export const RequestDefaultPermissions = async () => {
         } else if (Platform.OS === 'android') {
             console.log('CAMERA', statuses[PERMISSIONS.ANDROID.CAMERA]);
             console.log('BLUETOOTH', statuses[PERMISSIONS.ANDROID.BLUETOOTH]);
+            console.log('Wifi', statuses[PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES])
         }
     });
 };

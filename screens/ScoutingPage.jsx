@@ -6,7 +6,7 @@ import fs from 'react-native-fs';
 import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-
+import * as Sentry from '@sentry/react-native';
 import Prematch from './Scouting/Prematch';
 import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';

@@ -73,6 +73,7 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -128,10 +129,10 @@ dependencies {
     implementation project(':react-native-vector-icons')
     // implementation "androidx.biometric:biometric:1.1.0"
 
-    implementation "com.squareup.okhttp3:okhttp:4.7.2"
-    api(platform("com.squareup.okhttp3:okhttp-bom:4.7.2"))
-    api("com.squareup.okhttp3:okhttp")
-    api("com.squareup.okhttp3:logging-interceptor")
+    // implementation "com.squareup.okhttp3:okhttp:4.7.2"
+    // api(platform("com.squareup.okhttp3:okhttp-bom:4.7.2"))
+    // api("com.squareup.okhttp3:okhttp")
+    // api("com.squareup.okhttp3:logging-interceptor")
     
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

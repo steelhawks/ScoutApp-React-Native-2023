@@ -16,6 +16,15 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import {checkLocalNetworkAccess, requestLocalNetworkAccess} from 'react-native-local-network-permission';
 import { RequestDefaultPermissions, RequestNotifications } from './permissions/RequestPermissions';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://08757a6e7744a5cd6a808c9c372f7ec8@o4506839099637760.ingest.us.sentry.io/4506839106060288',
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
 
 // await checkLocalNetworkAccess();
 // requestLocalNetworkAccess();
@@ -301,4 +310,4 @@ const App = () => {
 
 const styles = StyleSheet.create({});
 
-export default App;
+export default Sentry.wrap(App);

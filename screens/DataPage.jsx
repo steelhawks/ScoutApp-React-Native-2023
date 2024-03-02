@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
+import * as Sentry from '@sentry/react-native';
 
 const DataPage = ({serverIp, navigation, setServerIp}) => {
     const [ip, setIp] = useState(serverIp);
