@@ -10,14 +10,6 @@ const Teleop = () => {
     const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
 
-    const handleTeleopIssuesQueries = (isSelected, id) => {
-        const updatedIssues = isSelected
-            ? [...dict.telopIssues, id]  // add to array if selected
-            : dict.telopIssues.filter(issueId => issueId !== id);  // remove from array if deselected
-    
-        setDict('telopIssues', updatedIssues);
-    };
-
     const tele_scoring_queries = [
         <Query
             title="Speaker Notes Scored"
@@ -68,44 +60,6 @@ const Teleop = () => {
                 />
             }
         />,
-        <Query
-            title="Dropped Note"
-            item={
-                <Counter
-                    onChange={value => setDict('droppedNotes', value)}
-                />
-            }
-        />,
-    ];
-
-    const tele_received_queries = [
-        <Query
-            title="Note Received from Human Player"
-            item={
-                <Counter
-                    onChange={value =>
-                        setDict('telopNotesReceivedFromHumanPlayer', value)
-                    }
-                />
-            }
-        />,
-        <Query
-            title="Note Received from Ground"
-            item={
-                <Counter
-                    onChange={value =>
-                        setDict('telopNotesReceivedFromGround', value)
-                    }
-                />
-            }
-        />,
-    ];
-
-    const teleop_issues_queries = [
-        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'NOT_MOVING')}/>} />,
-        <Query title="Lost Connect" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')}/>} />,,
-        <Query title="FMS Issues" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'FMS_ISSUES')}/>} />,,,
-        <Query title="Disabled" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'DISABLED')} />} />,
     ];
 
     return (
@@ -125,16 +79,6 @@ const Teleop = () => {
                 title={'Teleop Missed'}
                 queries={tele_missed_queries}
                 style={[styles.patternSectionStyle]}
-            />
-            <Section
-                title={'Teleop Received'}
-                queries={tele_received_queries}
-                style={styles.sectionStyle}
-            />
-            <Section
-                title={'Teleop Issues'}
-                queries={teleop_issues_queries}
-                style={styles.sectionStyle}
             />
         </ScrollView>
     );

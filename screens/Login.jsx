@@ -21,8 +21,11 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNFS from 'react-native-fs';
+import fs from 'react-native-fs';
 import * as Sentry from '@sentry/react-native';
+import { fetchServerType } from '../authentication/request_server_type';
+
+const SERVER_IP = '173.52.84.162'; // prod server 173.52.84.162
 
 const Login = ({
     user,
@@ -31,10 +34,11 @@ const Login = ({
     setEventName,
     appVersion,
     setTeamData,
+    setServerType,
 }) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
-    const [Ip, setIp] = useState('173.52.84.162'); // prod server 173.52.84.162
+    const [Ip, setIp] = useState(SERVER_IP); 
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 
@@ -73,11 +77,11 @@ const Login = ({
     const handleLogin = async () => {
         setIsLoading(true);
 
-        if (Ip === null) {
-            Alert.alert('Please enter a server IP address');
-            setIsLoading(false);
-            return;
-        }
+        // if (Ip === null) {
+        //     Alert.alert('Please enter a server IP address');
+        //     setIsLoading(false);
+        //     return;
+        // }
 
         if (Ip === '101') {
             console.log('Logging in with offline mode');
@@ -106,14 +110,22 @@ const Login = ({
                 appVersion,
             );
 
+            if (!userData) {
+                Alert.alert('App Version Mismatch', 'Please update the app');
+                return;
+            }
+
             const eventName = await fetchEventNameFromServer(Ip);
-            await AsyncStorage.setItem('eventName', eventName.name);
+            // await AsyncStorage.setItem('eventName', eventName.name);
             setEventName(eventName.name);
 
             // team data request
             const allTeamData = await fetchTeamDataFromServer(Ip);
-            await AsyncStorage.setItem('teamData', JSON.stringify(allTeamData));
             setTeamData(allTeamData);
+
+            // server type request
+            const serverType = await fetchServerType(Ip);
+            setServerType(serverType.server_type);
 
             if (userData && userData.length > 0) {
                 const user = userData[0];
@@ -127,7 +139,7 @@ const Login = ({
         } catch (error) {
             Alert.alert('Error connecting to the server', error);
             console.error('Error connecting to the server', error);
-            setIp('173.52.84.162');
+            setIp(SERVER_IP);
         } finally {
             setIsLoading(false);
         }
@@ -135,8 +147,16 @@ const Login = ({
 
     const handleOfflineLogin = async () => {
         try {
-            const teamData = await AsyncStorage.getItem('teamData');
-            const eventName = await AsyncStorage.getItem('eventName');
+            const path = fs.DocumentDirectoryPath + '/data/teamData.json';
+            const content = await fs.readFile(path, 'utf8');
+            const teamData = JSON.parse(content);
+            setTeamData(teamData);
+
+            const eventPath = fs.DocumentDirectoryPath + '/data/eventName.json';
+            const eventContent = await fs.readFile(eventPath, 'utf8');
+            const eventName = JSON.parse(eventContent);
+            setEventName(eventName.name);
+
             const user = {
                 id: 1,
                 name: 'Offine User',
@@ -144,11 +164,10 @@ const Login = ({
                 password: '1234',
                 username: 'Offline User',
             };
-
             setUser(user);
-            setEventName(eventName);
-            setTeamData(JSON.parse(teamData));
+            
             setServerIp('101');
+            setServerType('offline');
         } catch (error) {
             Alert.alert(
                 'Error with retreiving offline data',

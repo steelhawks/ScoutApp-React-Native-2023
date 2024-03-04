@@ -7,9 +7,9 @@ import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import * as Sentry from '@sentry/react-native';
-import Prematch from './Scouting/Prematch';
 import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';
+import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
 import {useDictStore} from '../contexts/dict';
 
@@ -101,7 +101,7 @@ const ScoutingPage = ({
                     },
                 },
                 {text: 'OK', onPress: () => setMatchCreated(false)},
-            ]);
+            ]);            
         } catch (error) {
             console.error('Error saving data to file:', error.message);
         }
@@ -125,17 +125,17 @@ const ScoutingPage = ({
         ]);
     };
 
-    const PrematchNavigate = props => {
-        return <Prematch {...props} backConfirm={backConfirm} />;
-    };
-
     const AutonNavigate = props => {
-        return <Auton />;
+        return <Auton {...props} backConfirm={backConfirm} />;
     };
 
     const TeleopNavigate = props => {
         return <Teleop />;
     };
+
+    const TeleopReceivedNavigate = props => {
+        return <TeleopReceived />
+    }
 
     const EndgameNavigate = props => {
         return <Endgame {...props} endMatch={endMatch} />;
@@ -152,9 +152,9 @@ const ScoutingPage = ({
                             backgroundColor: 'black',
                         },
                     }}>
-                    <Tab.Screen name="Pre-Match">{PrematchNavigate}</Tab.Screen>
                     <Tab.Screen name="Auton">{AutonNavigate}</Tab.Screen>
-                    <Tab.Screen name="Teleop">{TeleopNavigate}</Tab.Screen>
+                    <Tab.Screen name="Teleop Scoring">{TeleopNavigate}</Tab.Screen>
+                    <Tab.Screen name="Teleop Received">{TeleopReceivedNavigate}</Tab.Screen>
                     <Tab.Screen name="Endgame">{EndgameNavigate}</Tab.Screen>
                 </Tab.Navigator>
             </View>

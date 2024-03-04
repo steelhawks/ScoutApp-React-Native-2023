@@ -5,7 +5,8 @@ import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
 import Counter from '../../components/inputs/Counter';
-import { useDictStore } from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict';
+import { SafeAreaView } from 'react-native';
 
 const Endgame = ({endMatch}) => {
     const setDict = useDictStore(state => state.setDict);
@@ -42,19 +43,21 @@ const Endgame = ({endMatch}) => {
     ];
 
     const endgame_queries = [
-        <Query
-            title="Position"
-            item={
-                <RadioGroup
-                    buttons={['Parked', 'Onstage', 'Spotlight']}
-                    onChange={value => setDict('endGame', value)}
-                />
-            }
-        />,
-        <Query
-            title="Trap"
-            item={<Counter onChange={value => setDict('trap', value)} />}
-        />,
+        <SafeAreaView>
+            <Query
+                title="Position"
+                item={
+                    <RadioGroup
+                        buttons={['Parked', 'Onstage', 'Spotlight', 'N/A']}
+                        onChange={value => setDict('endGame', value)}
+                    />
+                }
+            />
+            <Query
+                title="Trap"
+                item={<Counter onChange={value => setDict('trap', value)} />}
+            />
+        </SafeAreaView>,
     ];
 
     return (

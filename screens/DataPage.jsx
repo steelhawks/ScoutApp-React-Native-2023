@@ -18,11 +18,63 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     const [ip, setIp] = useState(serverIp);
 
     // zustand hooks
-    const dict = useDictStore(state => state.dict);
-    const setDict = useDictStore(state => state.setDict);
+    // const dict = useDictStore(state => state.dict);
+    // const setDict = useDictStore(state => state.setDict);
 
-    const pitDict = usePitDict(state => state.dict);
-    const setPitDict = usePitDict(state => state.setDict);
+    const [dict, setDict] = useState({
+        eventName: '',
+        scouterName: '',
+        teamNumber: '',
+        matchNumber: '',
+        matchType: '', // qualification, practice, or elimination
+        driveStation: '',
+        alliance: '', // red or blue
+        preloaded: null, // true or false
+        robotLeft: null, // true or false
+        autonSpeakerNotesScored: 0,
+        autonAmpNotesScored: 0,
+        autonMissed: 0,
+        autonNotesReceived: 0,
+        droppedNotes: 0,
+        autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
+        telopSpeakerNotesScored: 0,
+        telopAmpNotesScored: 0,
+        telopAmplifiedSpeakerNotes: 0,
+        telopSpeakerNotesMissed: 0,
+        telopAmpNotesMissed: 0,
+        telopNotesReceivedFromHumanPlayer: 0,
+        telopNotesReceivedFromGround: 0,
+        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        trap: 0,
+        fouls: 0,
+        techFouls: 0,
+        yellowCards: 0,
+        redCards: 0,
+        telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
+        didTeamPlayDefense: null, // YES, NO, Default: null
+        timeOfCreation: '',
+    });
+
+    const [pitDict, setPitDict] = useState({
+        eventName: '',
+        scouterName: '',
+        teamNumber: '',
+        matchNumber: 'PIT',
+        dimensions: '',
+        weight: '',
+        drivetrain: '',
+        intake: '',
+        vision: '',
+        auton: '',
+        robotExcel: '',
+        trapScorer: '',
+        timeOfCreation: '',
+    });
+
+
+
+    // const pitDict = usePitDict(state => state.dict);
+    // const setPitDict = usePitDict(state => state.setDict);
 
     const [isPitScouting, setIsPitScouting] = useState(false);
 
@@ -66,15 +118,16 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     const handleJsonSelection = async selectedJson => {
         try {
             const path = fs.DocumentDirectoryPath + '/' + selectedJson;
+            console.log('Path to file', path);
             const content = await fs.readFile(path, 'utf8');
 
             // parses the JSON content and updates the dictionary
             const jsonData = JSON.parse(content);
+            console.log('Match Data', jsonData);
             jsonData.matchNumber === 'PIT'
                 ? (setPitDict(jsonData), setIsPitScouting(true))
                 : (setDict(jsonData), setIsPitScouting(false));
 
-            console.log(pitDict);
             // updates the boolean to false when the selected json is deselected
             setJsonSelected(prev =>
                 prev === selectedJson ? '' : selectedJson,
@@ -90,7 +143,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
             const extension = file.split('.').pop(); // Get the file extension
             const newName = `${file.replace(
                 `.${extension}`,
-                '_synced',
+                '-synced',
             )}.${extension}`;
             const newPath = `${docDir}/${newName}`;
 
@@ -103,30 +156,18 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     };
 
     const handleSync = async () => {
+        if (serverIp === '101') { Alert.alert('Cannot sync while offline', 'Please log out and login when on Wi-Fi.'); return;}
         const response = null;
-
-        if (jsonFiles.length === 0) {
-            Alert.alert('No files to upload', '', [
-                {
-                    text: 'Create a Match',
-                    onPress: () => {
-                        navigation.navigate('New Match');
-                    },
-                },
-                {text: 'OK'},
-            ]);
-            return;
-        }
 
         for (const index in jsonFiles) {
             const json = jsonFiles[index];
+            if (json.endsWith('-synced.json')) {
+                continue;
+            }
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
 
-            if (json.endsWith('_synced.json')) {
-                continue;
-            }
             if (!(await syncToServer(jsonData))) {
                 Alert.alert('Error syncing files to server');
                 return;
@@ -190,7 +231,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
     };
 
     const handleSwipeDelete = async file => {
-        if (!file.endsWith('_synced.json')) {
+        if (!file.endsWith('-synced.json')) {
             Alert.alert(
                 'You have not synced this file. Are you sure you want to delete?',
                 'This cannot be recovered',
@@ -356,6 +397,8 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         <Text style={styles.valueText}>
             Event Name: {pitDict.eventName}
             {'\n'}
+            Team Number: {pitDict.teamNumber}
+            {'\n'}
             Scouter Name: {pitDict.scouterName}
             {'\n'}
             Dimensions: {pitDict.dimensions}
@@ -385,7 +428,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         const teamNumber = fileNameParts[1];
 
         let matchNumberPart = fileNameParts[2].split('.')[0];
-        matchNumberPart = matchNumberPart.replace('_synced', '');
+        matchNumberPart = matchNumberPart.replace('-synced', '');
 
         return `Team ${teamNumber}, Match ${matchNumberPart}`;
     };
@@ -428,7 +471,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                                     style={styles.filesButton}
                                     underlayColor="transparent"
                                     name={
-                                        file.endsWith('_synced.json')
+                                        file.endsWith('-synced.json')
                                             ? 'check'
                                             : 'download-cloud'
                                     }
@@ -438,13 +481,13 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                                 <Icon
                                     paddingLeft={RFValue(10)}
                                     name={
-                                        file.endsWith('_synced.json')
+                                        file.endsWith('-synced.json')
                                             ? 'check-circle'
                                             : 'upload-cloud'
                                     }
                                     size={RFValue(30)}
                                     color={
-                                        file.endsWith('_synced.json')
+                                        file.endsWith('-synced.json')
                                             ? 'lightgreen'
                                             : 'white'
                                     }

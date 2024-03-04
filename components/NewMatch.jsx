@@ -19,6 +19,7 @@ import DropdownComponent from './inputs/Dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import CounterInput from 'react-native-counter-input';
 import * as Sentry from '@sentry/react-native';
+import { useDictStore, usePitDict} from '../contexts/dict';
 
 const NewMatch = ({
     teamData,
@@ -31,6 +32,8 @@ const NewMatch = ({
     scoutingType,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
+    const resetDict = useDictStore(state => state.resetDict);
+    const resetPitDict = usePitDict(state => state.resetDict);
 
     const [teamNumberLocal, setTeamNumberLocal] = useState(null);
     const [matchNumberLocal, setMatchNumberLocal] = useState(null);
@@ -47,6 +50,8 @@ const NewMatch = ({
     };
 
     const handleStartScouting = async () => {
+        resetDict(); // resets dict to default so match data doesnt overlap
+        resetPitDict();
         if (scoutingType === 'Match Scouting') {
             if (checkFilledOut()) {
                 setIsLoading(true);
@@ -63,7 +68,7 @@ const NewMatch = ({
                 Alert.alert('Please fill out all fields.');
             }
         } else if (scoutingType === 'Pit Scouting') {
-            if (teamNumberLocal !== 0) {
+            if (teamNumberLocal !== null) {
                 setIsLoading(true);
                 setTimeout(async () => {
                     setTeamNumber(teamNumberLocal);

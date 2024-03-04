@@ -206,8 +206,8 @@ const PitScoutingPage = ({
 
     const scoring_excel_query = [
         <Query title="What does the robot excel in?"/>,
-        <Query title="AMP" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'NOT_MOVING')} />} />,
-        <Query title="Speaker" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'STOPPED')} />} />,
+        <Query title="AMP" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'AMP')} />} />,
+        <Query title="Speaker" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'SPEAKER')} />} />,
     ];
 
     const scoring_queries = [

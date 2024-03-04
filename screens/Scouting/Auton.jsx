@@ -6,10 +6,25 @@ import RadioGroup from '../../components/inputs/RadioGroup';
 import Counter from '../../components/inputs/Counter';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useDictStore} from '../../contexts/dict';
+import Button from '../../components/inputs/Button';
 
-const Auton = () => {
+const Auton = ({backConfirm}) => {
     const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
+
+    const prematch_queries = [
+        <Query
+            title="Preloaded?"
+            item={
+                <RadioGroup
+                    buttons={['Yes', 'No']}
+                    onChange={(selectedItem) => {
+                        setDict('preloaded', selectedItem);
+                    }}
+                />
+            }
+        />,
+    ];
 
     const auton_queries = [
         <Query
@@ -70,6 +85,12 @@ const Auton = () => {
 
     return (
         <ScrollView>
+            <Button onPress={backConfirm} label="Cancel" />
+            <Section
+                title={'Pre-Match'}
+                queries={prematch_queries}
+                style={styles.sectionStyle}
+            />
             <Section
                 title={'Auton'}
                 queries={auton_queries}

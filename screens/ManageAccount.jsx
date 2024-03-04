@@ -20,6 +20,7 @@ const ManageAccount = ({
     eventName,
     serverIp,
     navigation,
+    serverType,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
@@ -71,7 +72,8 @@ const ManageAccount = ({
                         Username: {user.username} {'\n'}
                         OSIS: {user.osis} {'\n'}
                         Event: {eventName} {'\n'}
-                        App Version: {appVersion}
+                        App Version: {appVersion} {'\n'}
+                        Server Type: {serverType} 
                     </Text>
                 </View>
                 <AnimationLoader isLoading={isLoading} />
