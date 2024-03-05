@@ -14,7 +14,7 @@ import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
 import * as Sentry from '@sentry/react-native';
 
-const DataPage = ({serverIp, navigation, setServerIp}) => {
+const DataPage = ({serverIp, navigation, matchCreated}) => {
     const [ip, setIp] = useState(serverIp);
 
     // zustand hooks
@@ -230,6 +230,18 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         }
     };
 
+    const forceSync = async file => {
+        const path = fs.DocumentDirectoryPath + '/' + file;
+        const content = await fs.readFile(path, 'utf8');
+        const jsonData = JSON.parse(content);
+
+        if (await syncToServer(jsonData)) {
+            Alert.alert('File forcefully synced.');
+        } else {
+            Alert.alert('File failed to sync.');
+        }
+    }
+
     const handleSwipeDelete = async file => {
         if (!file.endsWith('-synced.json')) {
             Alert.alert(
@@ -433,7 +445,7 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
         return `Team ${teamNumber}, Match ${matchNumberPart}`;
     };
 
-    const empty_page = [<EmptyPage navigation={navigation} />];
+    const empty_page = [<EmptyPage navigation={navigation} matchCreated={matchCreated} />];
 
     const data_page = [
         <>
@@ -458,6 +470,15 @@ const DataPage = ({serverIp, navigation, setServerIp}) => {
                             <Swipeable
                                 overshootFriction={20}
                                 key={file}
+                                renderLeftActions={() => (
+                                    <TouchableOpacity
+                                        style={styles.swipeSyncButton}
+                                        onPress={() => forceSync(file)}>
+                                        <Text style={styles.swipeDeleteText}>
+                                            Sync
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                                 renderRightActions={() => (
                                     <TouchableOpacity
                                         style={styles.swipeDeleteButton}
@@ -646,6 +667,16 @@ const styles = StyleSheet.create({
     },
     swipeDeleteButton: {
         backgroundColor: '#e74c3c',
+        padding: RFValue(14),
+        borderRadius: RFValue(8),
+        width: '50%',
+        alignSelf: 'center',
+        marginTop: RFValue(10),
+        marginBottom: RFValue(-19),
+        elevation: 5,
+    },
+    swipeSyncButton: {
+        backgroundColor: 'lightblue',
         padding: RFValue(14),
         borderRadius: RFValue(8),
         width: '50%',

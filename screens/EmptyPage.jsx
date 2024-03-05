@@ -1,4 +1,3 @@
-// Copy this when you want to make a new screen page
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -11,7 +10,7 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
-const EmptyPage = ({navigation}) => {
+const EmptyPage = ({navigation, matchCreated}) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
@@ -26,7 +25,7 @@ const EmptyPage = ({navigation}) => {
                 <View style={{flexDirection: 'row', paddingTop: RFValue(80)}}>
                     <Button
                         label="Create Match"
-                        onPress={() => navigation.navigate('New Match')}
+                        onPress={() => matchCreated ? navigation.navigate('Scouting') : navigation.navigate('New Match')  }
                     />
                 </View>
             </SafeAreaView>

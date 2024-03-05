@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Image,
     Keyboard,
+    Platform,
 } from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/request_login';
 import {fetchTeamDataFromServer} from '../authentication/request_team_data';
@@ -23,22 +24,24 @@ import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fs from 'react-native-fs';
 import * as Sentry from '@sentry/react-native';
-import { fetchServerType } from '../authentication/request_server_type';
+import {fetchServerType} from '../authentication/request_server_type';
+import Prompt from "react-native-prompt-crossplatform";
+import RNFS from "react-native-fs";
 
 const SERVER_IP = '173.52.84.162'; // prod server 173.52.84.162
 
 const Login = ({
-    user,
-    setUser,
-    setServerIp,
-    setEventName,
-    appVersion,
-    setTeamData,
-    setServerType,
-}) => {
-    const [username, setUsername] = useState('');
+                   user,
+                   setUser,
+                   setServerIp,
+                   setEventName,
+                   appVersion,
+                   setTeamData,
+                   setServerType,
+               }) => {
+    const [username, setUsername] = useState(null);
     const [osis, setOsis] = useState('');
-    const [Ip, setIp] = useState(SERVER_IP); 
+    const [Ip, setIp] = useState(SERVER_IP);
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 
@@ -75,6 +78,7 @@ const Login = ({
     }, []);
 
     const handleLogin = async () => {
+        console.log(RNFS.DocumentDirectoryPath);
         setIsLoading(true);
 
         // if (Ip === null) {
@@ -157,20 +161,46 @@ const Login = ({
             const eventName = JSON.parse(eventContent);
             setEventName(eventName.name);
 
+            const offlineUserName = await new Promise((resolve, reject) => {
+                if (Platform.OS === 'ios') {
+                    Alert.prompt(
+                        'Offline Mode',
+                        'Please enter your name:',
+                        (userName) => resolve(userName),
+                        'plain-text',
+                        '',
+                        'default',
+                    )
+                } else {
+                    if (username === null) {
+                        Alert.alert('Offline Mode', 'Please enter your NAME in the username section.', [
+                            {
+                                text: 'Ok',
+                            },
+                        ]);
+                        setUsername(null);
+                        return;
+                    }
+
+                    resolve(username);
+                }
+            });
+
             const user = {
                 id: 1,
-                name: 'Offine User',
+                name: offlineUserName,
                 osis: '1234',
                 password: '1234',
                 username: 'Offline User',
             };
             setUser(user);
-            
+
             setServerIp('101');
             setServerType('offline');
         } catch (error) {
+            setIsLoading(false);
             Alert.alert(
-                'Error with retreiving offline data',
+                'Error with retrieving offline data',
                 'Please connect to a server as soon as possible to sync.',
                 error,
             );
@@ -189,7 +219,7 @@ const Login = ({
                     <View style={styles.secondContainer}>
                         <View style={styles.imageContainer}>
                             <Image
-                                source={require('../assets/scout24-icon.jpeg')}
+                                source={require('../assets/steelhawks.png')}
                                 style={styles.image}
                             />
                         </View>
@@ -219,9 +249,6 @@ const Login = ({
                         style={styles.input}
                         placeholderTextColor={'white'}
                         placeholder="Local Server IP"
-                        // onTextInput={
-                        //     text => setIp(text)
-                        // }
                         onChangeText={text => setIp(text)}
                         keyboardType={'url'}
                     />
@@ -260,7 +287,7 @@ const Login = ({
                     </Text>
                 </AvoidKeyboardContainer>
             </View>
-            <AnimationLoader isLoading={isLoading} />
+            <AnimationLoader isLoading={isLoading}/>
         </SafeAreaView>
     );
 };
@@ -280,9 +307,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         paddingHorizontal: RFValue(16),
         borderRadius: RFValue(16),
-        paddingTop: RFValue(25),
+        paddingTop: RFValue(10),
         alignItems: 'center',
-        justifyContent: 'center',
         shadowColor: '#000',
         // shadowOffset: {
         //     width: 0,
@@ -291,7 +317,6 @@ const styles = StyleSheet.create({
         // shadowOpacity: 0.2,
         // shadowRadius: 3,
         // elevation: 3,
-        paddingTop: RFValue(10),
         paddingBottom: RFValue(15),
         width: '90%',
         alignSelf: 'center',

@@ -37,7 +37,7 @@ const App = () => {
     const [eventName, setEventName] = useState(null);
     const [serverType, setServerType] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v0.9a');
+    const [appVersion] = useState('v1.0');
 
     const [teamData, setTeamData] = useState(null);
 
@@ -133,6 +133,7 @@ const App = () => {
         return (
             <DataPage
                 {...props}
+                matchCreated={matchCreated}
                 serverIp={serverIp}
                 setUser={setUser}
                 setServerIp={setServerIp}

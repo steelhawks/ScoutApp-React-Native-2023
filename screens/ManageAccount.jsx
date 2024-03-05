@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     },
     title: {
         position: 'absolute',
-        paddingBottom: RFValue(450),
+        paddingBottom: RFValue(525),
         fontSize: 36,
         fontWeight: 'bold',
         marginBottom: RFValue(20),
