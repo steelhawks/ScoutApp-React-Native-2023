@@ -8,6 +8,7 @@ import {
     Image,
     Keyboard,
     Platform,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import {fetchUserCredentialsFromServer} from '../authentication/request_login';
 import {fetchTeamDataFromServer} from '../authentication/request_team_data';
@@ -25,20 +26,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import fs from 'react-native-fs';
 import * as Sentry from '@sentry/react-native';
 import {fetchServerType} from '../authentication/request_server_type';
-import Prompt from "react-native-prompt-crossplatform";
-import RNFS from "react-native-fs";
+import Prompt from 'react-native-prompt-crossplatform';
+import RNFS from 'react-native-fs';
 
 const SERVER_IP = '173.52.84.162'; // prod server 173.52.84.162
 
 const Login = ({
-                   user,
-                   setUser,
-                   setServerIp,
-                   setEventName,
-                   appVersion,
-                   setTeamData,
-                   setServerType,
-               }) => {
+    user,
+    setUser,
+    setServerIp,
+    setEventName,
+    appVersion,
+    setTeamData,
+    setServerType,
+}) => {
     const [username, setUsername] = useState(null);
     const [osis, setOsis] = useState('');
     const [Ip, setIp] = useState(SERVER_IP);
@@ -48,9 +49,9 @@ const Login = ({
     useEffect(() => {
         const tryAutoLogin = async () => {
             try {
-                const savedIp = await AsyncStorage.getItem('serverIp');
-                const savedUsername = await AsyncStorage.getItem('username');
-                const savedOsis = await AsyncStorage.getItem('osis');
+                // const save   dIp = await AsyncStorage.getItem('serverIp');
+                // const savedUsername = await AsyncStorage.getItem('username');
+                // const savedOsis = await AsyncStorage.getItem('osis');
 
                 // if (savedIp && savedUsername && savedOsis) {
                 //     // authenticate with the server using the saved credentials
@@ -94,16 +95,16 @@ const Login = ({
         }
 
         // save the IP address to AsyncStorage
-        try {
-            await AsyncStorage.setItem('serverIp', Ip);
-        } catch (error) {
-            console.error('Error saving IP address:', error);
-        }
+        // try {
+        //     await AsyncStorage.setItem('serverIp', Ip);
+        // } catch (error) {
+        //     console.error('Error saving IP address:', error);
+        // }
 
-        if (stayRemembered) {
-            await AsyncStorage.setItem('username', username);
-            await AsyncStorage.setItem('osis', osis);
-        }
+        // if (stayRemembered) {
+        //     await AsyncStorage.setItem('username', username);
+        //     await AsyncStorage.setItem('osis', osis);
+        // }
 
         try {
             // login info request
@@ -166,18 +167,22 @@ const Login = ({
                     Alert.prompt(
                         'Offline Mode',
                         'Please enter your name:',
-                        (userName) => resolve(userName),
+                        userName => resolve(userName),
                         'plain-text',
                         '',
                         'default',
-                    )
+                    );
                 } else {
                     if (username === null) {
-                        Alert.alert('Offline Mode', 'Please enter your NAME in the username section.', [
-                            {
-                                text: 'Ok',
-                            },
-                        ]);
+                        Alert.alert(
+                            'Offline Mode',
+                            'Please enter your NAME in the username section.',
+                            [
+                                {
+                                    text: 'Ok',
+                                },
+                            ],
+                        );
                         setUsername(null);
                         return;
                     }
@@ -213,6 +218,7 @@ const Login = ({
     };
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
                 <AvoidKeyboardContainer>
@@ -224,7 +230,7 @@ const Login = ({
                             />
                         </View>
                     </View>
-
+                
                     <Text style={styles.title}>Hello</Text>
 
                     <TextInput
@@ -244,7 +250,6 @@ const Login = ({
                         value={osis}
                         keyboardType="numeric"
                     />
-                    {/* turned off for apple deployment */}
                     <TextInput
                         style={styles.input}
                         placeholderTextColor={'white'}
@@ -287,8 +292,10 @@ const Login = ({
                     </Text>
                 </AvoidKeyboardContainer>
             </View>
-            <AnimationLoader isLoading={isLoading}/>
+            
+            <AnimationLoader isLoading={isLoading} />
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 };
 

@@ -60,7 +60,7 @@ const NewMatch = ({
                     setMatchNumber(matchNumberLocal);
                     setMatchType(matchTypeLocal);
                     setDriveStation(driveStationLocal);
-
+                    
                     setMatchCreated(true);
                     setIsLoading(false);
                 }, 1);

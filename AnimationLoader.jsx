@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import LottieView from 'lottie-react-native';
+
+const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 
 // ENUM WITH ALL THE ANIMATION FILES
 const animationSources = {
@@ -23,7 +25,7 @@ const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_
     return (
         isLoading ? (
             <View style={[StyleSheet.absoluteFillObject, styles.container]}>
-                <LottieView
+                <AnimatedLottieView
                     source={animationSource}
                     autoPlay
                     loop={loop}

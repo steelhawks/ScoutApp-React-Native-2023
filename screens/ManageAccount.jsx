@@ -26,8 +26,8 @@ const ManageAccount = ({
     const [showSettings, setShowSettings] = useState(false);
 
     const logOut = async () => {
-        await AsyncStorage.removeItem('username');
-        await AsyncStorage.removeItem('osis');
+        // await AsyncStorage.removeItem('username');
+        // await AsyncStorage.removeItem('osis');
         setUser(null);
         setIsLoading(false);
     };

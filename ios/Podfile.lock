@@ -4,6 +4,8 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (5.3.1):
     - ExpoModulesCore
+  - EXCamera (13.4.4):
+    - ExpoModulesCore
   - EXConstants (14.4.2):
     - ExpoModulesCore
   - EXFileSystem (15.4.5):
@@ -402,6 +404,9 @@ PODS:
   - react-native-blur (4.4.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - react-native-image-picker (7.1.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - react-native-local-authentication (1.2.5):
     - React
   - react-native-network-info (5.2.1):
@@ -581,6 +586,10 @@ PODS:
     - SentryPrivate (= 8.17.1)
   - SentryPrivate (8.17.1)
   - SocketRocket (0.6.1)
+  - VisionCamera (3.9.1):
+    - React
+    - React-callinvoker
+    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -589,6 +598,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXCamera (from `../node_modules/expo-camera/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
@@ -641,6 +651,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-local-authentication (from `../node_modules/rn-local-authentication`)
   - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
@@ -673,6 +684,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
+  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -702,6 +714,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../node_modules/expo-application/ios"
+  EXCamera:
+    :path: "../node_modules/expo-camera/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXFileSystem:
@@ -758,6 +772,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-local-authentication:
     :path: "../node_modules/rn-local-authentication"
   react-native-network-info:
@@ -822,6 +838,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSentry:
     :path: "../node_modules/@sentry/react-native"
+  VisionCamera:
+    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -830,6 +848,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
+  EXCamera: 6e6e79bf01a2b8190268d93297d8e79a843d5ede
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
   EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
@@ -870,6 +889,7 @@ SPEC CHECKSUMS:
   React-jsinspector: de0198127395fec3058140a20c045167f761bb16
   React-logger: dc3a2b174d79c2da635059212747d8d929b54e06
   react-native-blur: 69ecfe61d81b32ee7baae10f5d17aeb4e2594b10
+  react-native-image-picker: 5e076db26cd81660cfb6db5bcf517cfa12054d45
   react-native-local-authentication: b32196286d1c522aecf1c3510c34e5adaf23021e
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-orientation-locker: 4409c5b12b65f942e75449872b4f078b6f27af81
@@ -905,6 +925,7 @@ SPEC CHECKSUMS:
   Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
   SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  VisionCamera: 52f98e7628f9deea3e311c3b6d4870bb44445e05
   Yoga: d0003f849d2b5224c072cef6568b540d8bb15cd3
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

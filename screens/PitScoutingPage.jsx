@@ -12,6 +12,7 @@ import CustomTextInput from '../components/inputs/CustomTextInput';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import {usePitDict} from '../contexts/dict';
+import CameraView from './CameraView';
 
 const PitScoutingPage = ({
     setMatchCreated,
@@ -198,16 +199,30 @@ const PitScoutingPage = ({
 
     const handleExcelQuery = (isSelected, id) => {
         const updatedIssues = isSelected
-            ? [...dict.robotExcel, id]  // add to array if selected
-            : dict.robotExcel.filter(issueId => issueId !== id);  // remove from array if deselected
-    
+            ? [...dict.robotExcel, id] // add to array if selected
+            : dict.robotExcel.filter(issueId => issueId !== id); // remove from array if deselected
+
         setDict('robotExcel', updatedIssues);
     };
 
     const scoring_excel_query = [
-        <Query title="What does the robot excel in?"/>,
-        <Query title="AMP" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'AMP')} />} />,
-        <Query title="Speaker" item={<BouncyCheckbox onPress={(selected) => handleExcelQuery(selected, 'SPEAKER')} />} />,
+        <Query title="What does the robot excel in?" />,
+        <Query
+            title="AMP"
+            item={
+                <BouncyCheckbox
+                    onPress={selected => handleExcelQuery(selected, 'AMP')}
+                />
+            }
+        />,
+        <Query
+            title="Speaker"
+            item={
+                <BouncyCheckbox
+                    onPress={selected => handleExcelQuery(selected, 'SPEAKER')}
+                />
+            }
+        />,
     ];
 
     const scoring_queries = [
@@ -241,11 +256,12 @@ const PitScoutingPage = ({
             queries={scoring_queries}
             style={[styles.sectionStyle, styles.patternSectionStyle]}
         />,
-        <Section 
+        <Section
             title="Scoring Excel"
             queries={scoring_excel_query}
             style={styles.sectionStyle}
         />,
+        <Section title="Camera" queries={[<CameraView />]} />,
     ];
 
     return (
@@ -254,9 +270,7 @@ const PitScoutingPage = ({
                 <View style={styles.container}>
                     <ScrollView style={{flex: 1}}>
                         <Button onPress={backConfirm} label="Cancel" />
-                        <Form
-                            sections={form_sections}
-                        />
+                        <Form sections={form_sections} />
                         <Button onPress={endGame} label="Submit" />
                     </ScrollView>
                 </View>

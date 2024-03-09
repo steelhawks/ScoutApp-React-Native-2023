@@ -101,5 +101,7 @@
 	<string>Used to connect to server</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Used to connect to server during offline competitions</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to upload Pit Scouting images</string>
 </dict>
 </plist>
