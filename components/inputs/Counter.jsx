@@ -1,15 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import CounterInput from 'react-native-counter-input';
-import {useContext} from 'react';
-import { UserContext } from '../..';
-
-import {
-    StyleSheet,
-} from 'react-native';
 
 const Counter = props => {
-    const updateDict = useContext(UserContext);
-
     return (
         <CounterInput
             min={0}
@@ -22,7 +14,5 @@ const Counter = props => {
         />
     );
 };
-
-const styles = StyleSheet.create({});
 
 export default Counter;

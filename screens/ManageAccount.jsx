@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView, Linking} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
-import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DeviceInfo from 'react-native-device-info';
+// import AsyncStorage from '@react-native-asy`nc-storage/async-storage';
+// import DeviceInfo from 'react-native-device-info';`
 import Icon from 'react-native-vector-icons/Feather';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
@@ -60,20 +59,41 @@ const ManageAccount = ({
             <View style={styles.container}>
                 <Text style={styles.title}>Manage Account</Text>
                 <View style={styles.centerContent}>
-                    <Button
-                        label="Log Out"
-                        onPress={() => {
-                            setIsLoading(true);
-                            logOut();
+                    <Icon.Button
+                        padding={RFValue(8)}
+                        borderRadius={5}
+                        name="log-out"
+                        size={RFValue(25)}
+                        color="white"
+                        alignSelf="center"
+                        backgroundColor="rgba(136, 3, 21, 1)"
+                        underlayColor="transparent"
+                        // fontWeight="bold"
+                        // fontSize="20"
+                        style={{
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                            backgroundColor: 'transparent',
+                            borderColor: 'transparent',
+                            zIndex: 1,
                         }}
-                    />
+                        onPress={logOut}>
+                        <Text
+                            style={{
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                color: 'white',
+                            }}>
+                            Log Out
+                        </Text>
+                    </Icon.Button>
                     <Text style={styles.welcomeText}>
                         Hello {user.name} {'\n'}
                         Username: {user.username} {'\n'}
                         OSIS: {user.osis} {'\n'}
                         Event: {eventName} {'\n'}
                         App Version: {appVersion} {'\n'}
-                        Server Type: {serverType} 
+                        Server Type: {serverType}
                     </Text>
                 </View>
                 <AnimationLoader isLoading={isLoading} />

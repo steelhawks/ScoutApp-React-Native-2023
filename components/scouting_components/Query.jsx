@@ -1,7 +1,7 @@
-import { View, Text } from 'react-native';
+import {View} from 'react-native';
 import React from 'react';
 import Heading from './Heading';
-import { useDictStore } from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict';
 
 const Query = props => {
     const dict = useDictStore(state => state.dict);

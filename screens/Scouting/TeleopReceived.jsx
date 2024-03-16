@@ -4,7 +4,7 @@ import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import Counter from '../../components/inputs/Counter';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { useDictStore } from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict';
 
 const TeleopReceived = () => {
     const dict = useDictStore(state => state.dict);
@@ -12,9 +12,8 @@ const TeleopReceived = () => {
 
     const handleTeleopIssuesQueries = (isSelected, id) => {
         const updatedIssues = isSelected
-            ? [...dict.telopIssues, id]  // add to array if selected
-            : dict.telopIssues.filter(issueId => issueId !== id);  // remove from array if deselected
-    
+            ? [...dict.telopIssues, id] // add to array if selected
+            : dict.telopIssues.filter(issueId => issueId !== id); // remove from array if deselected
         setDict('telopIssues', updatedIssues);
     };
 
@@ -40,20 +39,58 @@ const TeleopReceived = () => {
             }
         />,
         <Query
+            title="Ferry Notes"
+            item={<Counter onChange={value => setDict('ferryNotes', value)} />}
+        />,
+        <Query
             title="Dropped Notes"
             item={
-                <Counter
-                    onChange={value => setDict('droppedNotes', value)}
-                />
+                <Counter onChange={value => setDict('droppedNotes', value)} />
             }
         />,
     ];
 
     const teleop_issues_queries = [
-        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'NOT_MOVING')}/>} />,
-        <Query title="Lost Connection" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')}/>} />,,
-        <Query title="FMS Issues" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'FMS_ISSUES')}/>} />,,,
-        <Query title="Disabled" item={<BouncyCheckbox onPress={(selected) => handleTeleopIssuesQueries(selected, 'DISABLED')} />} />,
+        <Query
+            title="Not Moving"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleTeleopIssuesQueries(selected, 'NOT_MOVING')
+                    }
+                />
+            }
+        />,
+        <Query
+            title="Lost Connection"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')
+                    }
+                />
+            }
+        />,
+        <Query
+            title="FMS Issues"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleTeleopIssuesQueries(selected, 'FMS_ISSUES')
+                    }
+                />
+            }
+        />,
+        <Query
+            title="Disabled"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleTeleopIssuesQueries(selected, 'DISABLED')
+                    }
+                />
+            }
+        />,
     ];
 
     return (

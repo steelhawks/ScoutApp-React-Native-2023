@@ -1,15 +1,33 @@
-import {StyleSheet, ScrollView} from 'react-native';
-import React from 'react';
+import {StyleSheet, ScrollView, Alert} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
 import Counter from '../../components/inputs/Counter';
 import {useDictStore} from '../../contexts/dict';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 
 const Endgame = ({endMatch}) => {
+    // const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
+    // const [requiredQueriesCompleted, setRequiredQueriesCompleted] = useState(false);
+
+    // // Define the required queries for Auton
+    // const requiredQueries = ['didTeamPlayDefense'];
+
+    // // Validation function to check if all required queries are completed
+    // const validateQueries = () => {
+    //     // Check if all required queries have values
+    //     const allQueriesCompleted = requiredQueries.every(query => {
+    //         return dict[query] !== null && dict[query] !== '';
+    //     });
+    //     setRequiredQueriesCompleted(allQueriesCompleted);
+    // };
+
+    // useEffect(() => {
+    //     validateQueries();
+    // }, [dict]);
 
     const penalties_queries = [
         <Query
@@ -77,7 +95,7 @@ const Endgame = ({endMatch}) => {
                 queries={penalties_queries}
                 style={[styles.sectionStyle, styles.patternSectionStyle]}
             />
-            <Button onPress={() => endMatch()} label="End Match" />
+            <Button onPress={endMatch} label="End Match" />
         </ScrollView>
     );
 };

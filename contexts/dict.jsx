@@ -24,7 +24,8 @@ export const useDictStore = create(set => ({
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
         telopNotesReceivedFromGround: 0,
-        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+        ferryNotes: 0,
+        endGame: null, // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
         fouls: 0,
         techFouls: 0,
@@ -61,7 +62,8 @@ export const useDictStore = create(set => ({
                 telopAmpNotesMissed: 0,
                 telopNotesReceivedFromHumanPlayer: 0,
                 telopNotesReceivedFromGround: 0,
-                endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
+                ferryNotes: 0,
+                endGame: null, // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
                 trap: 0,
                 fouls: 0,
                 techFouls: 0,

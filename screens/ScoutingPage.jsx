@@ -1,12 +1,13 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {StyleSheet, View, Alert} from 'react-native';
-import React, {useState, useEffect, useCallback, createContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AnimationLoader from '../AnimationLoader';
 import fs from 'react-native-fs';
 import {useBackHandler} from '@react-native-community/hooks';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import * as Sentry from '@sentry/react-native';
 import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
@@ -25,7 +26,6 @@ const ScoutingPage = ({
 }) => {
     const Tab = createMaterialTopTabNavigator();
 
-    const [isLoading, setIsLoading] = useState(false);
     const [isDone, setIsDone] = useState(false);
     const [readyToPlaySuccessAnimation, setReadyToPlaySuccessAnimation] =
         useState(false);
@@ -57,25 +57,97 @@ const ScoutingPage = ({
         );
     }, []);
 
-    const endMatch = () => {
-        setReadyToPlaySuccessAnimation(true);
-        setIsLoading(true);
-        setIsDone(true);
+    const [requiredQueriesCompleted, setRequiredQueriesCompleted] =
+        useState(false);
 
-        setDict('eventName', eventName);
-        setDict('scouterName', user.name);
-        setDict('teamNumber', teamNumber);
-        setDict('matchNumber', matchNumber);
-        setDict('matchType', matchType); // qualification, practice, or elimination
-        setDict('driveStation', driveStation);
-        setDict('alliance', driveStation < 4 ? 'RED' : 'BLUE'); // red or blue
-        setDict('timeOfCreation', currentDate);
+    const [missingQueries, setMissingQueries] = useState([]);
+
+    // define the required fields here
+    // MAKE SURE THAT THEY ARE NULL IN THE DICT AS IT ONLY CHECKS
+    // IF THE VALUE IS NULL!!!!!
+    const requiredQueries = [
+        'preloaded',
+        'robotLeft',
+        'endGame',
+        'didTeamPlayDefense',
+    ];
+
+    // validation function to check if all required queries are completed
+    // const validateQueries = () => {
+    //     // check if all required queries have values
+    //     const allQueriesCompleted = requiredQueries.every(query => {
+    //         return dict[query] !== null && dict[query] !== '';
+    //     });
+    //     setRequiredQueriesCompleted(allQueriesCompleted);
+    // };
+
+    const validateQueries = () => {
+        // initialize an array to store the names of missing queries
+        const missingQueriesArray = [];
+        // check each required query
+        requiredQueries.forEach(query => {
+            // check if the value is null or an empty string
+            if (dict[query] === null || dict[query] === '') {
+                // if the value is missing, add the query name to the array
+                missingQueriesArray.push(query);
+            }
+        });
+        // set the missingQueries state with the array of missing query names
+        setMissingQueries(missingQueriesArray);
+        // check if all required queries are completed
+        const allQueriesCompleted = missingQueriesArray.length === 0;
+        setRequiredQueriesCompleted(allQueriesCompleted);
+    };
+
+    useEffect(() => {
+        validateQueries();
+    }, [dict]);
+
+    const endMatch = () => {
+        if (requiredQueriesCompleted) {
+            setReadyToPlaySuccessAnimation(true);
+            setIsDone(true);
+
+            setDict('eventName', eventName);
+            setDict('scouterName', user.name);
+            setDict('teamNumber', teamNumber);
+            setDict('matchNumber', matchNumber);
+            setDict('matchType', matchType); // qualification, practice, or elimination
+            setDict('driveStation', driveStation);
+            setDict('alliance', driveStation < 4 ? 'RED' : 'BLUE'); // red or blue
+            setDict('timeOfCreation', currentDate);
+        } else {
+            console.log(missingQueries);
+            Alert.alert(
+                'Please complete all required fields',
+                `${getFormattedMissingQueries()}`,
+            );
+        }
+    };
+
+    const getFormattedMissingQueries = () => {
+        // Capitalize the first letter of each word in each query
+        const formattedQueries = missingQueries.map(query => {
+            // Split the query name into words
+            const words = query.split(/(?=[A-Z])/);
+            // Capitalize the first letter of each word and join them without spaces
+            const formattedQuery = words
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join('');
+            return formattedQuery;
+        });
+
+        // Join the formatted queries with commas and "and" for the last query
+        const formattedList = formattedQueries
+            .join(', ')
+            .replace(/,([^,]*)$/, ' and$1');
+
+        return `You are missing ${formattedList}.`;
     };
 
     useEffect(() => {
         if (isDone) {
             saveToJson(dict);
-            setIsLoading(false);
             setIsDone(false);
         }
     }, [isDone, dict]);
@@ -101,7 +173,7 @@ const ScoutingPage = ({
                     },
                 },
                 {text: 'OK', onPress: () => setMatchCreated(false)},
-            ]);            
+            ]);
         } catch (error) {
             console.error('Error saving data to file:', error.message);
         }
@@ -129,13 +201,13 @@ const ScoutingPage = ({
         return <Auton {...props} backConfirm={backConfirm} />;
     };
 
-    const TeleopNavigate = props => {
+    const TeleopNavigate = () => {
         return <Teleop />;
     };
 
     const TeleopReceivedNavigate = props => {
-        return <TeleopReceived />
-    }
+        return <TeleopReceived />;
+    };
 
     const EndgameNavigate = props => {
         return <Endgame {...props} endMatch={endMatch} />;
@@ -153,8 +225,12 @@ const ScoutingPage = ({
                         },
                     }}>
                     <Tab.Screen name="Auton">{AutonNavigate}</Tab.Screen>
-                    <Tab.Screen name="Teleop Scoring">{TeleopNavigate}</Tab.Screen>
-                    <Tab.Screen name="Teleop Received">{TeleopReceivedNavigate}</Tab.Screen>
+                    <Tab.Screen name="Teleop Scoring">
+                        {TeleopNavigate}
+                    </Tab.Screen>
+                    <Tab.Screen name="Teleop Received">
+                        {TeleopReceivedNavigate}
+                    </Tab.Screen>
                     <Tab.Screen name="Endgame">{EndgameNavigate}</Tab.Screen>
                 </Tab.Navigator>
             </View>

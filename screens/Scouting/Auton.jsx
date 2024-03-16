@@ -7,6 +7,7 @@ import Counter from '../../components/inputs/Counter';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useDictStore} from '../../contexts/dict';
 import Button from '../../components/inputs/Button';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Auton = ({backConfirm}) => {
     const dict = useDictStore(state => state.dict);
@@ -18,7 +19,7 @@ const Auton = ({backConfirm}) => {
             item={
                 <RadioGroup
                     buttons={['Yes', 'No']}
-                    onChange={(selectedItem) => {
+                    onChange={selectedItem => {
                         setDict('preloaded', selectedItem);
                     }}
                 />
@@ -70,17 +71,44 @@ const Auton = ({backConfirm}) => {
 
     const handleAutonIssuesQueries = (isSelected, id) => {
         const updatedIssues = isSelected
-            ? [...dict.autonIssues, id]  // add to array if selected
-            : dict.autonIssues.filter(issueId => issueId !== id);  // remove from array if deselected
-    
+            ? [...dict.autonIssues, id] // add to array if selected
+            : dict.autonIssues.filter(issueId => issueId !== id); // remove from array if deselected
+
         setDict('autonIssues', updatedIssues);
     };
 
     const auton_issues_queries = [
         // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        <Query title="Not Moving" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'NOT_MOVING')} />} />,
-        <Query title="Stopped" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'STOPPED')} />} />,
-        <Query title="Out of Control" item={<BouncyCheckbox onPress={(selected) => handleAutonIssuesQueries(selected, 'OUT_OF_CONTROL')}/>} />,
+        <Query
+            title="Not Moving"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleAutonIssuesQueries(selected, 'NOT_MOVING')
+                    }
+                />
+            }
+        />,
+        <Query
+            title="Stopped"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleAutonIssuesQueries(selected, 'STOPPED')
+                    }
+                />
+            }
+        />,
+        <Query
+            title="Out of Control"
+            item={
+                <BouncyCheckbox
+                    onPress={selected =>
+                        handleAutonIssuesQueries(selected, 'OUT_OF_CONTROL')
+                    }
+                />
+            }
+        />,
     ];
 
     return (
@@ -96,7 +124,7 @@ const Auton = ({backConfirm}) => {
                 queries={auton_queries}
                 style={[styles.patternSectionStyle]}
             />
-            <Section 
+            <Section
                 title={'Auton Issues'}
                 queries={auton_issues_queries}
                 style={[styles.sectionStyle]}

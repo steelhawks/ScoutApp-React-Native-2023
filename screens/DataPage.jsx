@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
@@ -9,14 +9,11 @@ import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDictStore, usePitDict} from '../contexts/dict';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
-import * as Sentry from '@sentry/react-native';
 
 const DataPage = ({serverIp, navigation, matchCreated}) => {
-    const [ip, setIp] = useState(serverIp);
-
     // zustand hooks
     // const dict = useDictStore(state => state.dict);
     // const setDict = useDictStore(state => state.setDict);
@@ -44,6 +41,7 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
         telopNotesReceivedFromGround: 0,
+        ferryNotes: 0,
         endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
         trap: 0,
         fouls: 0,
@@ -70,8 +68,6 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         trapScorer: '',
         timeOfCreation: '',
     });
-
-
 
     // const pitDict = usePitDict(state => state.dict);
     // const setPitDict = usePitDict(state => state.setDict);
@@ -100,13 +96,12 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
     const [jsonFiles, setJsonFiles] = useState([]);
     const [jsonSelected, setJsonSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successfullySyncedWithServer, setSuccessfullySyncedWithServer] =
-        useState(false);
 
     useEffect(() => {
         // Fetch and set the list of JSON files in the directory
         fs.readdir(docDir)
             .then(files => {
+                // eslint-disable-next-line no-shadow
                 const jsonFiles = files.filter(file => file.endsWith('.json'));
                 setJsonFiles(jsonFiles);
             })
@@ -155,13 +150,26 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         }
     };
 
+    const handleSyncDebug = async () => {
+        // console.log('JSON Files', jsonFiles);
+        for (const json of jsonFiles) {
+            console.log('JSON Name', json);
+        }
+    };
+
     const handleSync = async () => {
-        if (serverIp === '101') { Alert.alert('Cannot sync while offline', 'Please log out and login when on Wi-Fi.'); return;}
+        if (serverIp === '101') {
+            Alert.alert(
+                'Cannot sync while offline',
+                'Please log out and login when on Wi-Fi.',
+            );
+            return;
+        }
         const response = null;
 
-        for (const index in jsonFiles) {
-            const json = jsonFiles[index];
+        for (const json of jsonFiles) {
             if (json.endsWith('-synced.json')) {
+                console.log(`Found file of ${json} that is already synced`);
                 continue;
             }
             const path = fs.DocumentDirectoryPath + '/' + json;
@@ -173,9 +181,8 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                 return;
             }
 
-            addSyncedSuffix(json);
+            await addSyncedSuffix(json);
         }
-
         // After successful syncing, set the refresh flag to trigger a re-render
         setRefreshFlag(prev => !prev);
 
@@ -191,7 +198,6 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
         if (response) {
             setIsLoading(false);
-            setSuccessfullySyncedWithServer(true);
         }
     };
 
@@ -200,7 +206,7 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
         try {
             setJsonSelected(false);
-            const serverEndpoint = `http://${ip}:8080/upload`;
+            const serverEndpoint = `http://${serverIp}:8080/upload`;
 
             const response = await fetch(serverEndpoint, {
                 method: 'POST',
@@ -216,6 +222,15 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                 console.log('Data successfully synced to server.');
                 // if post request is successful continue loop
                 return true;
+            } else if (!response.ok) {
+                console.log(
+                    `File ${data} failed to sync due to the server response not being code 200.`,
+                );
+                Alert.alert(
+                    'Non-Code 200 Received from Server',
+                    'Failed to sync file due to server not returning an OK code.',
+                );
+                return false;
             }
         } catch (error) {
             Alert.alert('Error syncing to server: ' + error, '', [
@@ -237,10 +252,12 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
         if (await syncToServer(jsonData)) {
             Alert.alert('File forcefully synced.');
+            await addSyncedSuffix(file);
+            setRefreshFlag(prev => !prev);
         } else {
             Alert.alert('File failed to sync.');
         }
-    }
+    };
 
     const handleSwipeDelete = async file => {
         if (!file.endsWith('-synced.json')) {
@@ -286,7 +303,7 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
     const handleDelete = async file => {
         try {
-            selectedJson = null;
+            // selectedJson = null;
             const filePath = fs.DocumentDirectoryPath + '/' + file;
             await fs.unlink(filePath);
 
@@ -324,7 +341,7 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
     const handleDeleteAll = async () => {
         try {
-            selectedJson = null;
+            // selectedJson = null;
             for (const index in jsonFiles) {
                 const json = jsonFiles[index];
                 const path = fs.DocumentDirectoryPath + '/' + json;
@@ -383,6 +400,8 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
             {'\n'}
             Telop Notes Received From Ground:{' '}
             {dict.telopNotesReceivedFromGround}
+            {'\n'}
+            Ferry Notes: {dict.ferryNotes}
             {'\n'}
             End Game: {dict.endGame}
             {'\n'}
@@ -445,7 +464,40 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         return `Team ${teamNumber}, Match ${matchNumberPart}`;
     };
 
-    const empty_page = [<EmptyPage navigation={navigation} matchCreated={matchCreated} />];
+    // DOESNT WORK FIX LATER
+    // this allows the formatter to handle both pit scouting and match scouting names
+    // ex when this code works correctly it fixes the pit scouting names looking like this:
+    // Team: SCOUTING, Match: FarhanJamil
+    // const getFormattedFileName = file => {
+    //     const fileNameParts = file.split('-');
+
+    //     let teamNumber;
+    //     let matchNumberPart;
+
+    //     // checking if the file name starts with "PIT-SCOUTING"
+    //     if (fileNameParts[0] === 'PIT' && fileNameParts[1] === 'SCOUTING') {
+    //         // if it does, then the team number is the 4th element
+    //         teamNumber = fileNameParts[3];
+
+    //         // the match number part will be the 4th element, excluding the file extension
+    //         matchNumberPart = fileNameParts[4].split('.')[0];
+    //     } else {
+    //         // if the file name doesn't start with "PIT-SCOUTING"
+    //         // then the team number is the 2nd element
+    //         teamNumber = fileNameParts[1];
+
+    //         // the match number part will be the 3rd element, excluding the file extension
+    //         matchNumberPart = fileNameParts[2].split('.')[0];
+    //     }
+    //     // remove any unnecessary part from the match number
+    //     matchNumberPart = matchNumberPart.replace('-synced', '');
+
+    //     return `Team ${teamNumber}, Match ${matchNumberPart}`;
+    // };
+
+    const empty_page = [
+        <EmptyPage navigation={navigation} matchCreated={matchCreated} />,
+    ];
 
     const data_page = [
         <>
@@ -453,16 +505,23 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                 <Text style={styles.title}>Previous Matches</Text>
                 <View style={styles.centerContent}>
                     <View
+                        // eslint-disable-next-line react-native/no-inline-styles
                         style={[styles.centerContent, {flexDirection: 'row'}]}>
                         <Button label="Sync to Server" onPress={handleSync} />
                         <Icon.Button
+                            paddingLeft={RFValue(10)}
                             name="trash"
+                            size={RFValue(25)}
+                            color="white"
+                            alignSelf="center"
                             backgroundColor="transparent"
+                            underlayColor="transparent"
+                            style={{
+                                backgroundColor: 'transparent',
+                                borderColor: 'transparent',
+                                zIndex: 1,
+                            }}
                             onPress={confirmDeleteAll}
-                            size={RFValue(20)}
-                            borderRadius={10}
-                            iconStyle={styles.iconStyle}
-                            style={styles.squareButton}
                         />
                     </View>
                     <View>
@@ -480,25 +539,19 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                                     </TouchableOpacity>
                                 )}
                                 renderRightActions={() => (
-                                    <TouchableOpacity
-                                        style={styles.swipeDeleteButton}
-                                        onPress={() => handleSwipeDelete(file)}>
-                                        <Text style={styles.swipeDeleteText}>
-                                            Delete
-                                        </Text>
-                                    </TouchableOpacity>
+                                    <>
+                                        <TouchableOpacity
+                                            style={styles.swipeDeleteButton}
+                                            onPress={() =>
+                                                handleSwipeDelete(file)
+                                            }>
+                                            <Text
+                                                style={styles.swipeDeleteText}>
+                                                Delete
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
                                 )}>
-                                {/* <Icon.Button
-                                    style={styles.filesButton}
-                                    underlayColor="transparent"
-                                    name={
-                                        file.endsWith('-synced.json')
-                                            ? 'check'
-                                            : 'download-cloud'
-                                    }
-                                    onPress={() => handleJsonSelection(file)}>
-                                    <Text style={styles.filesText}>{file}</Text>
-                                </Icon.Button> */}
                                 <Icon
                                     paddingLeft={RFValue(10)}
                                     name={
@@ -548,16 +601,6 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                 </View>
             </ScrollView>
             <AnimationLoader isLoading={isLoading} />
-            {/* {successfullySyncedWithServer ? (
-                <AnimationLoader
-                    isLoading={successfullySyncedWithServer}
-                    animationKey="SUCCESS_01"
-                    loop={false}
-                    onAnimationComplete={() =>
-                        setSuccessfullySyncedWithServer(false)
-                    }
-                />
-            ) : null} */}
         </>,
     ];
 
@@ -568,7 +611,7 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
                     flex: 1,
                     paddingBottom: RFValue(100),
                 }}>
-                {jsonFiles.length != 0 ? data_page : empty_page}
+                {jsonFiles.length !== 0 ? data_page : empty_page}
             </SafeAreaView>
         </GestureHandlerRootView>
     );
@@ -631,7 +674,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 5,
-        borderRadius: RFValue(8),
         backgroundColor: '#121212',
     },
     filesText: {

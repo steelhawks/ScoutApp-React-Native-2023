@@ -10,29 +10,27 @@ import {
     Platform,
     TouchableWithoutFeedback,
 } from 'react-native';
-import {fetchUserCredentialsFromServer} from '../authentication/request_login';
-import {fetchTeamDataFromServer} from '../authentication/request_team_data';
-import {fetchEventNameFromServer} from '../authentication/request_event_name';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
-import SafeAreaContainer from '../components/SafeAreaContainer';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
 import DeviceInfo from 'react-native-device-info';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import fs from 'react-native-fs';
-import * as Sentry from '@sentry/react-native';
-import {fetchServerType} from '../authentication/request_server_type';
-import Prompt from 'react-native-prompt-crossplatform';
 import RNFS from 'react-native-fs';
+import Icon from 'react-native-vector-icons/Feather';
+import {
+    fetchUserCredentialsFromServer,
+    fetchServerType,
+    fetchTeamDataFromServer,
+    fetchEventNameFromServer,
+} from '../authentication/request_login';
+
 
 const SERVER_IP = '173.52.84.162'; // prod server 173.52.84.162
 
 const Login = ({
-    user,
     setUser,
     setServerIp,
     setEventName,
@@ -49,10 +47,8 @@ const Login = ({
     useEffect(() => {
         const tryAutoLogin = async () => {
             try {
-                // const save   dIp = await AsyncStorage.getItem('serverIp');
                 // const savedUsername = await AsyncStorage.getItem('username');
                 // const savedOsis = await AsyncStorage.getItem('osis');
-
                 // if (savedIp && savedUsername && savedOsis) {
                 //     // authenticate with the server using the saved credentials
                 //     const userData = await fetchUserCredentialsFromServer(
@@ -61,7 +57,6 @@ const Login = ({
                 //         savedOsis,
                 //         appVersion,
                 //     );
-
                 //     if (userData && userData.length > 0) {
                 //         const user = userData[0];
                 //         setUser(user);
@@ -219,87 +214,153 @@ const Login = ({
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <SafeAreaView style={styles.container}>
-            <View style={styles.container}>
-                <AvoidKeyboardContainer>
-                    <View style={styles.secondContainer}>
-                        <View style={styles.imageContainer}>
-                            <Image
-                                source={require('../assets/steelhawks.png')}
-                                style={styles.image}
-                            />
+            <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
+                    <AvoidKeyboardContainer>
+                        <View style={styles.secondContainer}>
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={require('../assets/steelhawks.png')}
+                                    style={styles.image}
+                                />
+                            </View>
                         </View>
-                    </View>
-                
-                    <Text style={styles.title}>Hello</Text>
-
-                    <TextInput
-                        style={styles.input}
-                        placeholderTextColor={'white'}
-                        placeholder="Username"
-                        onChangeText={text => setUsername(text)}
-                        value={username}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholderTextColor={'white'}
-                        placeholder="OSIS"
-                        onChangeText={text => setOsis(text)}
-                        value={osis}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholderTextColor={'white'}
-                        placeholder="Local Server IP"
-                        onChangeText={text => setIp(text)}
-                        keyboardType={'url'}
-                    />
-
-                    <Button
-                        label="Login"
-                        onPress={() => {
-                            setIsLoading(true);
-                            handleLogin();
-                        }}
-                    />
-                    {!isTablet() && (
-                        <BouncyCheckbox
-                            size={20}
-                            paddingTop={10}
-                            alignSelf={'center'}
-                            alignItems={'center'}
-                            text={'Remember me'}
-                            textAlign={'center'}
-                            unfillColor="black"
-                            fillColor="rgba(136, 3, 21, 1)"
-                            onPress={stayRemembered => {
-                                setStayRemembered(stayRemembered);
-                            }}
-                            textStyle={{
-                                paddingRight: 10,
-                                color: 'white',
-                                textDecorationLine: 'none',
-                                fontWeight: 'bold',
-                            }}
+                        <Text style={styles.title}>Hello</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholderTextColor={'white'}
+                            placeholder="Username"
+                            onChangeText={text => setUsername(text)}
+                            value={username}
+                            autoCapitalize="none"
+                            keyboardType="email-address"
                         />
-                    )}
-                    <Text style={styles.footer}>
-                        App Version: {appVersion} Build:{' '}
-                        {DeviceInfo.getBuildNumber()}
-                    </Text>
-                </AvoidKeyboardContainer>
-            </View>
-            
-            <AnimationLoader isLoading={isLoading} />
-        </SafeAreaView>
+                        <TextInput
+                            style={styles.input}
+                            placeholderTextColor={'white'}
+                            placeholder="OSIS"
+                            onChangeText={text => setOsis(text)}
+                            value={osis}
+                            keyboardType="numeric"
+                        />
+                        {/* <TextInput
+                            style={styles.input}
+                            placeholderTextColor={'white'}
+                            placeholder="Local Server IP"
+                            onChangeText={text => setIp(text)}
+                            keyboardType={'url'}
+                        /> */}
+                        {/* <Button
+                            label="Login"
+                            onPress={() => {
+                                setIsLoading(true);
+                                handleLogin();
+                            }}
+                        /> */}
+                        <Icon.Button
+                            padding={RFValue(8)}
+                            borderRadius={5}
+                            name="log-in"
+                            size={RFValue(25)}
+                            color="white"
+                            alignSelf="center"
+                            backgroundColor="rgba(136, 3, 21, 1)"
+                            underlayColor="transparent"
+                            // fontWeight="bold"
+                            // fontSize="20"
+                            style={styles.iconButton}
+                            onPress={handleLogin}>
+                            <Text
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    color: 'white',
+                                }}>
+                                Log In
+                            </Text>
+                        </Icon.Button>
+
+                        {/* <View style={{flex: 1, flexDirection: 'row'}}>
+                            <Button
+                                label="Login"
+                                onPress={() => {
+                                    setIsLoading(true);
+                                    handleLogin();
+                                }}
+                            />
+                            <Icon.Button
+                                // padding={RFValue(8)}
+                                // borderRadius={5}
+                                name="wifi-off"
+                                size={RFValue(25)}
+                                color="white"
+                                alignSelf="center"
+                                backgroundColor="rgba(136, 3, 21, 1)"
+                                underlayColor="transparent"
+                                style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    backgroundColor: 'transparent',
+                                    borderColor: 'transparent',
+                                    zIndex: 1,
+                                }}
+                                onPress={() =>
+                                    console.log('Logging in Offline')
+                                }>
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                        fontSize: 20,
+                                        color: 'white',
+                                    }}>
+                                    Offline Mode
+                                </Text>
+                            </Icon.Button>
+                        </View> */}
+                        {!isTablet() && (
+                            <BouncyCheckbox
+                                size={20}
+                                paddingTop={10}
+                                alignSelf={'center'}
+                                alignItems={'center'}
+                                text={'Remember me'}
+                                textAlign={'center'}
+                                unfillColor="black"
+                                fillColor="rgba(136, 3, 21, 1)"
+                                onPress={isChecked => {
+                                    setStayRemembered(isChecked);
+                                }}
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                textStyle={{
+                                    paddingRight: 10,
+                                    color: 'white',
+                                    textDecorationLine: 'none',
+                                    fontWeight: 'bold',
+                                }}
+                            />
+                        )}
+                        <Text style={styles.footer}>
+                            App Version: {appVersion} Build:{' '}
+                            {DeviceInfo.getBuildNumber()}
+                        </Text>
+                    </AvoidKeyboardContainer>
+                </View>
+
+                <AnimationLoader isLoading={isLoading} />
+            </SafeAreaView>
         </TouchableWithoutFeedback>
     );
 };
 
 const styles = StyleSheet.create({
+    iconButton: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        zIndex: 1,
+    },
     imageContainer: {
         alignItems: 'center',
     },

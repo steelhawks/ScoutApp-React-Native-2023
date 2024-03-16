@@ -7,9 +7,7 @@ import {
     Dimensions,
     Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import AnimationLoader from '../AnimationLoader';
-import CustomTextInput from './inputs/CustomTextInput';
 import Button from './inputs/Button';
 import DriveStationUI from './inputs/DriveStationUI';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -18,8 +16,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import DropdownComponent from './inputs/Dropdown';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import CounterInput from 'react-native-counter-input';
-import * as Sentry from '@sentry/react-native';
-import { useDictStore, usePitDict} from '../contexts/dict';
+import {useDictStore, usePitDict} from '../contexts/dict';
+import Icon from 'react-native-vector-icons/Feather';
 
 const NewMatch = ({
     teamData,
@@ -60,7 +58,6 @@ const NewMatch = ({
                     setMatchNumber(matchNumberLocal);
                     setMatchType(matchTypeLocal);
                     setDriveStation(driveStationLocal);
-                    
                     setMatchCreated(true);
                     setIsLoading(false);
                 }, 1);
@@ -132,7 +129,7 @@ const NewMatch = ({
             </Text>
             <DriveStationUI
                 updateDict={(key, value) => setDriveStationLocal(value)}
-            /> 
+            />
         </>,
     ];
 
@@ -166,10 +163,42 @@ const NewMatch = ({
                                         }}>
                                         Select Match Type
                                     </Text>
-                                    <Button
+                                    {/* <Button
                                         label={scoutingType}
                                         onPress={() => handleScoutSelect()}
-                                    />
+                                    /> */}
+                                    <Icon.Button
+                                        padding={RFValue(8)}
+                                        borderRadius={5}
+                                        name={
+                                            scoutingType === 'Match Scouting'
+                                                ? 'play'
+                                                : 'tag'
+                                        }
+                                        size={RFValue(25)}
+                                        color="white"
+                                        alignSelf="center"
+                                        backgroundColor="rgba(136, 3, 21, 1)"
+                                        underlayColor="transparent"
+                                        // fontWeight="bold"
+                                        // fontSize="20"
+                                        style={{
+                                            fontWeight: 'bold',
+                                            fontSize: 20,
+                                            backgroundColor: 'transparent',
+                                            borderColor: 'transparent',
+                                            zIndex: 1,
+                                        }}
+                                        onPress={handleScoutSelect}>
+                                        <Text
+                                            style={{
+                                                fontWeight: 'bold',
+                                                fontSize: 20,
+                                                color: 'white',
+                                            }}>
+                                            {scoutingType}
+                                        </Text>
+                                    </Icon.Button>
 
                                     <DropdownComponent
                                         data={testTeamData}

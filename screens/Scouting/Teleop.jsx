@@ -1,13 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import Counter from '../../components/inputs/Counter';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { useDictStore } from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict';
 
 const Teleop = () => {
-    const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
 
     const tele_scoring_queries = [
