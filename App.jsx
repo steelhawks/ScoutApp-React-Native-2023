@@ -1,12 +1,13 @@
-import {useEffect, useState} from 'react';
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react/no-unstable-nested-components */
+import {useState} from 'react';
 import Login from './screens/Login';
 import ScoutingPage from './screens/ScoutingPage';
 import DataPage from './screens/DataPage';
 import ManageAccount from './screens/ManageAccount';
-import Tutorial from './screens/Tutorial';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+// import Tutorial from './screens/Tutorial';
 import {NavigationContainer} from '@react-navigation/native';
-import {StyleSheet, Alert, StatusBar} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
 import {NewMatch} from '.';
 import PitScoutingPage from './screens/PitScoutingPage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -15,15 +16,18 @@ import {BlurView} from '@react-native-community/blur';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import {checkLocalNetworkAccess, requestLocalNetworkAccess} from 'react-native-local-network-permission';
-import { RequestDefaultPermissions, RequestNotifications } from './permissions/RequestPermissions';
+import {
+    RequestDefaultPermissions,
+    RequestNotifications,
+} from './permissions/RequestPermissions';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
-  dsn: 'https://08757a6e7744a5cd6a808c9c372f7ec8@o4506839099637760.ingest.us.sentry.io/4506839106060288',
+    dsn: 'https://08757a6e7744a5cd6a808c9c372f7ec8@o4506839099637760.ingest.us.sentry.io/4506839106060288',
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
 });
 
 // await checkLocalNetworkAccess();
@@ -33,11 +37,10 @@ const Tab = createBottomTabNavigator(); // new
 
 const App = () => {
     const [user, setUser] = useState(null);
-    const [serverIp, setServerIp] = useState('');
     const [eventName, setEventName] = useState(null);
-    const [serverType, setServerType] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
-    const [appVersion] = useState('v1.0');
+    const [offlineMode, setOfflineMode] = useState(false);
+    const [appVersion] = useState('v1.3');
 
     const [teamData, setTeamData] = useState(null);
 
@@ -77,6 +80,7 @@ const App = () => {
                 matchNumber={matchNumber}
                 matchType={matchType}
                 driveStation={driveStation}
+                offlineMode={offlineMode}
             />
         );
     };
@@ -85,7 +89,6 @@ const App = () => {
         return (
             <PitScoutingPage
                 {...props}
-                serverIp={serverIp}
                 user={user}
                 eventName={eventName}
                 setMatchCreated={setMatchCreated}
@@ -101,9 +104,8 @@ const App = () => {
                 setUser={setUser}
                 user={user}
                 appVersion={appVersion}
+                setEventName={setEventName}
                 eventName={eventName}
-                serverIp={serverIp}
-                serverType={serverType}
             />
         );
     };
@@ -116,32 +118,31 @@ const App = () => {
                 {...props}
                 user={user}
                 setEventName={setEventName}
-                setServerIp={setServerIp}
                 setTeamData={setTeamData}
                 setUser={setUser}
                 appVersion={appVersion}
-                setServerType={setServerType}
+                setOfflineMode={setOfflineMode}
             />
         );
     };
 
-    const HelpPageNavigate = props => {
-        return <Tutorial />;
-    };
+    // const HelpPageNavigate = props => {
+    //     return <Tutorial />;
+    // };
 
     const DataPageNavigate = props => {
         return (
             <DataPage
                 {...props}
                 matchCreated={matchCreated}
-                serverIp={serverIp}
                 setUser={setUser}
-                setServerIp={setServerIp}
+                offlineMode={offlineMode}
             />
         );
     };
 
     return (
+        // eslint-disable-next-line react-native/no-inline-styles
         <SafeAreaView style={{flex: 1}}>
             <StatusBar translucent backgroundColor="transparent" />
             <NavigationContainer
@@ -189,6 +190,7 @@ const App = () => {
                             tabBarBackground: () => (
                                 <BlurView
                                     intensity={80}
+                                    // eslint-disable-next-line react-native/no-inline-styles
                                     style={{
                                         ...StyleSheet.absoluteFillObject,
                                         borderTopLeftRadius: RFValue(20),
@@ -311,7 +313,5 @@ const App = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({});
 
 export default Sentry.wrap(App);

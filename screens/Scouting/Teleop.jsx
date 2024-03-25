@@ -3,7 +3,7 @@ import {StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
-import Counter from '../../components/inputs/Counter';
+import CounterBox from '../../components/inputs/CounterBox';
 import {useDictStore} from '../../contexts/dict';
 
 const Teleop = () => {
@@ -13,7 +13,7 @@ const Teleop = () => {
         <Query
             title="Speaker Notes Scored"
             item={
-                <Counter
+                <CounterBox
                     onChange={value =>
                         setDict('telopSpeakerNotesScored', value)
                     }
@@ -23,18 +23,8 @@ const Teleop = () => {
         <Query
             title="Amp Notes Scored"
             item={
-                <Counter
+                <CounterBox
                     onChange={value => setDict('telopAmpNotesScored', value)}
-                />
-            }
-        />,
-        <Query
-            title="Amplified Speaker Notes Scored"
-            item={
-                <Counter
-                    onChange={value =>
-                        setDict('telopAmplifiedSpeakerNotes', value)
-                    }
                 />
             }
         />,
@@ -44,7 +34,7 @@ const Teleop = () => {
         <Query
             title="Speaker Notes Missed"
             item={
-                <Counter
+                <CounterBox
                     onChange={value =>
                         setDict('telopSpeakerNotesMissed', value)
                     }
@@ -54,7 +44,7 @@ const Teleop = () => {
         <Query
             title="Amp Notes Missed"
             item={
-                <Counter
+                <CounterBox
                     onChange={value => setDict('telopAmpNotesMissed', value)}
                 />
             }

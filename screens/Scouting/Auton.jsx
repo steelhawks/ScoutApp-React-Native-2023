@@ -3,11 +3,10 @@ import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
-import Counter from '../../components/inputs/Counter';
+import CounterBox from '../../components/inputs/CounterBox';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useDictStore} from '../../contexts/dict';
 import Button from '../../components/inputs/Button';
-import Icon from 'react-native-vector-icons/Feather';
 
 const Auton = ({backConfirm}) => {
     const dict = useDictStore(state => state.dict);
@@ -40,7 +39,7 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Speaker Notes Scored"
             item={
-                <Counter
+                <CounterBox
                     onChange={value =>
                         setDict('autonSpeakerNotesScored', value)
                     }
@@ -50,7 +49,7 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Amp Notes Scored"
             item={
-                <Counter
+                <CounterBox
                     onChange={value => setDict('autonAmpNotesScored', value)}
                 />
             }
@@ -58,14 +57,16 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Notes Received"
             item={
-                <Counter
+                <CounterBox
                     onChange={value => setDict('autonNotesReceived', value)}
                 />
             }
         />,
         <Query
             title="Auton Notes Missed"
-            item={<Counter onChange={value => setDict('autonMissed', value)} />}
+            item={
+                <CounterBox onChange={value => setDict('autonMissed', value)} />
+            }
         />,
     ];
 

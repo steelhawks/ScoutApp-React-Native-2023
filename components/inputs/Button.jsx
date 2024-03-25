@@ -1,5 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {useState} from 'react';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 
 const Button = props => {
@@ -19,7 +19,7 @@ const Button = props => {
     });
 
     return (
-        <TouchableOpacity onPress={props.onPress} style={{margin: '5%'}} >
+        <TouchableOpacity onPress={props.onPress} style={{margin: '5%'}}>
             <View style={[styles.button, props.style]}>
                 <Text style={styles.buttonText}>{props.label}</Text>
             </View>

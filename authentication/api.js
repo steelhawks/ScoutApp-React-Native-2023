@@ -3,15 +3,17 @@ import RNFS from 'react-native-fs';
 const teamDataSaveFilePath = RNFS.DocumentDirectoryPath + '/data/teamData.json';
 const eventNameSaveFilePath =
     RNFS.DocumentDirectoryPath + '/data/eventName.json';
+const formDataSaveFilePath = RNFS.DocumentDirectoryPath + '/data/formData.json';
 
+const SERVER_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+// const SERVER_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 export const fetchUserCredentialsFromServer = async (
-    serverIp,
     username,
     osis,
     appVersion,
 ) => {
     try {
-        const response = await fetch(`http://${serverIp}:8080/login`, {
+        const response = await fetch(`${SERVER_ENDPOINT}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,30 +36,10 @@ export const fetchUserCredentialsFromServer = async (
     }
 };
 
-export const fetchServerType = async serverIp => {
-    try {
-        const serverTypeResponse = await fetch(
-            `http://${serverIp}:8080/api/get_server_type`,
-        );
-
-        if (serverTypeResponse.ok) {
-            const serverType = await serverTypeResponse.json();
-            return serverType;
-        } else {
-            console.error(
-                'Error fetching server type:',
-                serverTypeResponse.status,
-            );
-        }
-    } catch (error) {
-        throw new Error(`Error requesting server type: ${error}`);
-    }
-};
-
-export const fetchTeamDataFromServer = async serverIp => {
+export const fetchTeamDataFromServer = async () => {
     try {
         const teamDataResponse = await fetch(
-            `http://${serverIp}:8080/get_team_data`,
+            `${SERVER_ENDPOINT}/get_team_data`,
         );
 
         if (teamDataResponse.ok) {
@@ -69,7 +51,6 @@ export const fetchTeamDataFromServer = async serverIp => {
                 console.log('Located at', RNFS.DocumentDirectoryPath);
             } catch (mkdirError) {
                 console.error('Error creating directory:', mkdirError);
-                // Handle the error as needed
             }
 
             // save teamData to a JSON file
@@ -100,7 +81,6 @@ export const fetchTeamDataFromServer = async serverIp => {
                 return parsedData;
             } catch (readError) {
                 console.error('Error reading saved team data:', readError);
-                // Handle the error as needed
             }
         }
     } catch (error) {
@@ -108,9 +88,9 @@ export const fetchTeamDataFromServer = async serverIp => {
     }
 };
 
-export const fetchEventNameFromServer = async serverIp => {
+export const fetchEventNameFromServer = async () => {
     try {
-        const response = await fetch(`http://${serverIp}:8080/api/competition`);
+        const response = await fetch(`${SERVER_ENDPOINT}/api/competition`);
 
         if (response.ok) {
             const eventName = await response.json();
@@ -121,7 +101,6 @@ export const fetchEventNameFromServer = async serverIp => {
                 console.log('Located at', RNFS.DocumentDirectoryPath);
             } catch (mkdirError) {
                 console.error('Error creating directory:', mkdirError);
-                // Handle the error as needed
             }
 
             // save eventName to a JSON file
@@ -145,4 +124,55 @@ export const fetchEventNameFromServer = async serverIp => {
             `Error requesting event name from the server: ${error}`,
         );
     }
+};
+
+export const fetchFormsFromServer = async () => {
+    try {
+        const response = await fetch(`${SERVER_ENDPOINT}/api/forms`);
+
+        if (response.ok) {
+            const forms = await response.json();
+
+            // ensure the directory exists
+            try {
+                await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/data');
+                console.log('Located at', RNFS.DocumentDirectoryPath);
+            } catch (mkdirError) {
+                console.error('Error creating directory:', mkdirError);
+            }
+
+            // save forms to a JSON file
+            try {
+                await RNFS.writeFile(
+                    formDataSaveFilePath,
+                    JSON.stringify(forms, null, 2),
+                    'utf8',
+                );
+                console.log('Form data saved successfully.');
+            } catch (writeError) {
+                console.error('Error writing event name to file:', writeError);
+            }
+
+            return forms;
+        } else {
+            throw new Error(`Server not reachable. Status: ${response.status}`);
+        }
+    } catch (error) {
+        throw new Error(
+            `Error requesting event name from the server: ${error}`,
+        );
+    }
+};
+
+export const uploadDataToServer = async data => {
+    const response = await fetch(`${SERVER_ENDPOINT}/upload`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    // if (response.ok) return true;
+    // else return false;
 };

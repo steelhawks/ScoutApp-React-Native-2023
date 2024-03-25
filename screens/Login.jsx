@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
     View,
     TextInput,
@@ -22,79 +22,34 @@ import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/Feather';
 import {
     fetchUserCredentialsFromServer,
-    fetchServerType,
     fetchTeamDataFromServer,
     fetchEventNameFromServer,
-} from '../authentication/request_login';
-
-
-const SERVER_IP = '173.52.84.162'; // prod server 173.52.84.162
+} from '../authentication/api';
+import CounterBox from '../components/inputs/CounterBox';
 
 const Login = ({
     setUser,
-    setServerIp,
     setEventName,
     appVersion,
     setTeamData,
-    setServerType,
+    setOfflineMode,
 }) => {
     const [username, setUsername] = useState(null);
     const [osis, setOsis] = useState('');
-    const [Ip, setIp] = useState(SERVER_IP);
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
-
-    useEffect(() => {
-        const tryAutoLogin = async () => {
-            try {
-                // const savedUsername = await AsyncStorage.getItem('username');
-                // const savedOsis = await AsyncStorage.getItem('osis');
-                // if (savedIp && savedUsername && savedOsis) {
-                //     // authenticate with the server using the saved credentials
-                //     const userData = await fetchUserCredentialsFromServer(
-                //         savedIp,
-                //         savedUsername,
-                //         savedOsis,
-                //         appVersion,
-                //     );
-                //     if (userData && userData.length > 0) {
-                //         const user = userData[0];
-                //         setUser(user);
-                //         setEventName(user.competition_name);
-                //         setServerIp(savedIp);
-                //         setTeamData(await fetchTeamDataFromServer(savedIp));
-                //     }
-                // }
-            } catch (error) {
-                console.error('Error during auto-login:', error);
-            }
-        };
-
-        tryAutoLogin();
-    }, []);
 
     const handleLogin = async () => {
         console.log(RNFS.DocumentDirectoryPath);
         setIsLoading(true);
+        setOfflineMode(false);
 
-        // if (Ip === null) {
-        //     Alert.alert('Please enter a server IP address');
-        //     setIsLoading(false);
-        //     return;
-        // }
-
-        if (Ip === '101') {
+        if (osis === '101') {
             console.log('Logging in with offline mode');
+            setOfflineMode(true);
             handleOfflineLogin();
             return;
         }
-
-        // save the IP address to AsyncStorage
-        // try {
-        //     await AsyncStorage.setItem('serverIp', Ip);
-        // } catch (error) {
-        //     console.error('Error saving IP address:', error);
-        // }
 
         // if (stayRemembered) {
         //     await AsyncStorage.setItem('username', username);
@@ -104,7 +59,6 @@ const Login = ({
         try {
             // login info request
             const userData = await fetchUserCredentialsFromServer(
-                Ip,
                 username,
                 osis,
                 appVersion,
@@ -115,23 +69,17 @@ const Login = ({
                 return;
             }
 
-            const eventName = await fetchEventNameFromServer(Ip);
-            // await AsyncStorage.setItem('eventName', eventName.name);
+            const eventName = await fetchEventNameFromServer();
             setEventName(eventName.name);
 
             // team data request
-            const allTeamData = await fetchTeamDataFromServer(Ip);
+            const allTeamData = await fetchTeamDataFromServer();
             setTeamData(allTeamData);
 
-            // server type request
-            const serverType = await fetchServerType(Ip);
-            setServerType(serverType.server_type);
-
-            if (userData && userData.length > 0) {
-                const user = userData[0];
+            if (userData.authenticated !== false) {
+                const user = userData;
                 console.log(user);
                 setUser(user);
-                setServerIp(Ip);
             } else {
                 console.error('Incorrect username or password');
                 Alert.alert('Incorrect username or password');
@@ -139,7 +87,6 @@ const Login = ({
         } catch (error) {
             Alert.alert('Error connecting to the server', error);
             console.error('Error connecting to the server', error);
-            setIp(SERVER_IP);
         } finally {
             setIsLoading(false);
         }
@@ -194,9 +141,6 @@ const Login = ({
                 username: 'Offline User',
             };
             setUser(user);
-
-            setServerIp('101');
-            setServerType('offline');
         } catch (error) {
             setIsLoading(false);
             Alert.alert(
@@ -243,20 +187,6 @@ const Login = ({
                             value={osis}
                             keyboardType="numeric"
                         />
-                        {/* <TextInput
-                            style={styles.input}
-                            placeholderTextColor={'white'}
-                            placeholder="Local Server IP"
-                            onChangeText={text => setIp(text)}
-                            keyboardType={'url'}
-                        /> */}
-                        {/* <Button
-                            label="Login"
-                            onPress={() => {
-                                setIsLoading(true);
-                                handleLogin();
-                            }}
-                        /> */}
                         <Icon.Button
                             padding={RFValue(8)}
                             borderRadius={5}
@@ -280,45 +210,8 @@ const Login = ({
                                 Log In
                             </Text>
                         </Icon.Button>
-
-                        {/* <View style={{flex: 1, flexDirection: 'row'}}>
-                            <Button
-                                label="Login"
-                                onPress={() => {
-                                    setIsLoading(true);
-                                    handleLogin();
-                                }}
-                            />
-                            <Icon.Button
-                                // padding={RFValue(8)}
-                                // borderRadius={5}
-                                name="wifi-off"
-                                size={RFValue(25)}
-                                color="white"
-                                alignSelf="center"
-                                backgroundColor="rgba(136, 3, 21, 1)"
-                                underlayColor="transparent"
-                                style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 20,
-                                    backgroundColor: 'transparent',
-                                    borderColor: 'transparent',
-                                    zIndex: 1,
-                                }}
-                                onPress={() =>
-                                    console.log('Logging in Offline')
-                                }>
-                                <Text
-                                    style={{
-                                        fontWeight: 'bold',
-                                        fontSize: 20,
-                                        color: 'white',
-                                    }}>
-                                    Offline Mode
-                                </Text>
-                            </Icon.Button>
-                        </View> */}
-                        {!isTablet() && (
+                        {/* Remember Me Button */}
+                        {/* {!isTablet() && (
                             <BouncyCheckbox
                                 size={20}
                                 paddingTop={10}
@@ -339,7 +232,7 @@ const Login = ({
                                     fontWeight: 'bold',
                                 }}
                             />
-                        )}
+                        )} */}
                         <Text style={styles.footer}>
                             App Version: {appVersion} Build:{' '}
                             {DeviceInfo.getBuildNumber()}

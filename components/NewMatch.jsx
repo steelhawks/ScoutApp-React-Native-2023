@@ -1,12 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {
-    ScrollView,
-    Text,
-    View,
-    StyleSheet,
-    Dimensions,
-    Alert,
-} from 'react-native';
+import React, {useState} from 'react';
+import {ScrollView, Text, View, StyleSheet, Alert} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from './inputs/Button';
 import DriveStationUI from './inputs/DriveStationUI';
@@ -18,6 +11,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import CounterInput from 'react-native-counter-input';
 import {useDictStore, usePitDict} from '../contexts/dict';
 import Icon from 'react-native-vector-icons/Feather';
+import CounterBox from './inputs/CounterBox';
 
 const NewMatch = ({
     teamData,
@@ -86,7 +80,7 @@ const NewMatch = ({
         {label: 'Finals', value: 'FINALS'},
     ];
 
-    const testTeamData = teamData.team_data.map(item => ({
+    const receivedTeamData = teamData.team_data.map(item => ({
         label: `${item.nickname} : ${item.team_number}`,
         value: item.team_number,
     }));
@@ -102,11 +96,19 @@ const NewMatch = ({
                 }}>
                 Enter Match Number:
             </Text>
-            <CounterInput
+            {/* <CounterInput
                 defaultValue={1}
                 min={1}
                 horizontal={true}
                 reverseCounterButtons={true}
+                onChange={counter => {
+                    setMatchNumberLocal(counter);
+                }}
+            /> */}
+            <CounterBox
+                initial={1}
+                min={1}
+                max={1000}
                 onChange={counter => {
                     setMatchNumberLocal(counter);
                 }}
@@ -201,7 +203,7 @@ const NewMatch = ({
                                     </Icon.Button>
 
                                     <DropdownComponent
-                                        data={testTeamData}
+                                        data={receivedTeamData}
                                         placeholder={'Select Team Number'}
                                         onValueChange={value =>
                                             setTeamNumberLocal(value)
@@ -228,8 +230,6 @@ const NewMatch = ({
     );
 };
 
-const {width} = Dimensions.get('window');
-
 const styles = StyleSheet.create({
     avoidTabBar: {
         flex: 1,
@@ -237,14 +237,6 @@ const styles = StyleSheet.create({
         paddingTop: RFValue(10),
         paddingBottom: RFValue(40),
     },
-    // container: {
-    //     backgroundColor: '#121212',
-    //     padding: 20,
-    //     color: 'transparent',
-    //     borderTopLeftRadius: RFValue(10),
-    //     borderTopRightRadius: RFValue(10),
-    //     flex: 1,
-    // },
     container: {
         flex: 1,
         alignItems: 'center',

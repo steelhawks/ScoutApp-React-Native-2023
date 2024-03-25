@@ -4,47 +4,30 @@ import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
-import Counter from '../../components/inputs/Counter';
+import CounterBox from '../../components/inputs/CounterBox';
 import {useDictStore} from '../../contexts/dict';
 import {SafeAreaView} from 'react-native';
 
 const Endgame = ({endMatch}) => {
     // const dict = useDictStore(state => state.dict);
     const setDict = useDictStore(state => state.setDict);
-    // const [requiredQueriesCompleted, setRequiredQueriesCompleted] = useState(false);
-
-    // // Define the required queries for Auton
-    // const requiredQueries = ['didTeamPlayDefense'];
-
-    // // Validation function to check if all required queries are completed
-    // const validateQueries = () => {
-    //     // Check if all required queries have values
-    //     const allQueriesCompleted = requiredQueries.every(query => {
-    //         return dict[query] !== null && dict[query] !== '';
-    //     });
-    //     setRequiredQueriesCompleted(allQueriesCompleted);
-    // };
-
-    // useEffect(() => {
-    //     validateQueries();
-    // }, [dict]);
 
     const penalties_queries = [
         <Query
             title="Fouls"
-            item={<Counter onChange={value => setDict('fouls', value)} />}
+            item={<CounterBox onChange={value => setDict('fouls', value)} />}
         />,
         <Query
             title="Tech Fouls"
-            item={<Counter onChange={value => setDict('techFouls', value)} />}
+            item={<CounterBox onChange={value => setDict('techFouls', value)} />}
         />,
         <Query
             title="Yellow Cards"
-            item={<Counter onChange={value => setDict('yellowCards', value)} />}
+            item={<CounterBox onChange={value => setDict('yellowCards', value)} />}
         />,
         <Query
             title="Red Cards"
-            item={<Counter onChange={value => setDict('redCards', value)} />}
+            item={<CounterBox onChange={value => setDict('redCards', value)} />}
         />,
     ];
 
@@ -66,14 +49,14 @@ const Endgame = ({endMatch}) => {
                 title="Position"
                 item={
                     <RadioGroup
-                        buttons={['Parked', 'Onstage', 'Spotlight', 'N/A']}
+                        buttons={['Parked', 'Onstage', 'Spotlight']}
                         onChange={value => setDict('endGame', value)}
                     />
                 }
             />
             <Query
                 title="Trap"
-                item={<Counter onChange={value => setDict('trap', value)} />}
+                item={<CounterBox onChange={value => setDict('trap', value)} />}
             />
         </SafeAreaView>,
     ];

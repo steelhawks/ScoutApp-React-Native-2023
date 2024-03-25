@@ -13,6 +13,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import {usePitDict} from '../contexts/dict';
 import CameraView from './CameraView';
+// import * as ImagePicker from 'expo-image'
 
 const PitScoutingPage = ({
     setMatchCreated,
@@ -20,7 +21,6 @@ const PitScoutingPage = ({
     eventName,
     user,
     navigation,
-    serverIp,
 }) => {
     const dict = usePitDict(state => state.dict);
     const setDict = usePitDict(state => state.setDict);
@@ -84,6 +84,7 @@ const PitScoutingPage = ({
             setIsLoading(false);
             setIsDone(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDone, dict]);
 
     const saveToJson = async data => {
@@ -121,7 +122,7 @@ const PitScoutingPage = ({
 
     const general_queries = [
         <Query
-            title="Dimensions (length x width w/ bumpers"
+            title="Dimensions (length x width w/ bumpers)"
             item={
                 <CustomTextInput
                     label="Dimensions (length x width w/ bumpers)"
@@ -261,7 +262,7 @@ const PitScoutingPage = ({
             queries={scoring_excel_query}
             style={styles.sectionStyle}
         />,
-        <Section title="Camera" queries={[<CameraView />]} />,
+        // <Section title="Camera" queries={[<CameraView />]} />,
     ];
 
     return (

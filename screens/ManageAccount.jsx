@@ -1,10 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // import AsyncStorage from '@react-native-asy`nc-storage/async-storage';
-// import DeviceInfo from 'react-native-device-info';`
 import Icon from 'react-native-vector-icons/Feather';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
@@ -12,15 +12,7 @@ import SettingsPage from './SettingsPage';
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
-const ManageAccount = ({
-    setUser,
-    user,
-    appVersion,
-    eventName,
-    serverIp,
-    navigation,
-    serverType,
-}) => {
+const ManageAccount = ({setUser, user, appVersion, eventName}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
 
@@ -41,6 +33,7 @@ const ManageAccount = ({
                 });
             } else if (Platform.OS === 'android') {
                 return InAppBrowser.open(STEEL_HAWKS_URL, {
+                    // animated: false,
                     modalEnabled: true,
                     showTitle: true,
                 });
@@ -68,8 +61,6 @@ const ManageAccount = ({
                         alignSelf="center"
                         backgroundColor="rgba(136, 3, 21, 1)"
                         underlayColor="transparent"
-                        // fontWeight="bold"
-                        // fontSize="20"
                         style={{
                             fontWeight: 'bold',
                             fontSize: 20,
@@ -93,7 +84,6 @@ const ManageAccount = ({
                         OSIS: {user.osis} {'\n'}
                         Event: {eventName} {'\n'}
                         App Version: {appVersion} {'\n'}
-                        Server Type: {serverType}
                     </Text>
                 </View>
                 <AnimationLoader isLoading={isLoading} />
@@ -129,7 +119,7 @@ const ManageAccount = ({
                     borderWidth: 0,
                     position: 'absolute',
                     alignSelf: 'flex-end',
-                    bottom: RFValue(110), // Adjust this value as needed
+                    bottom: RFValue(110),
                 }}>
                 <Icon.Button
                     name="settings"

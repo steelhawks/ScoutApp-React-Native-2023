@@ -13,6 +13,7 @@ import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
 import {useDictStore} from '../contexts/dict';
+import {fetchEventNameFromServer} from '../authentication/api';
 
 const ScoutingPage = ({
     user,
@@ -23,6 +24,7 @@ const ScoutingPage = ({
     matchNumber,
     matchType,
     driveStation,
+    offlineMode,
 }) => {
     const Tab = createMaterialTopTabNavigator();
 
@@ -65,12 +67,7 @@ const ScoutingPage = ({
     // define the required fields here
     // MAKE SURE THAT THEY ARE NULL IN THE DICT AS IT ONLY CHECKS
     // IF THE VALUE IS NULL!!!!!
-    const requiredQueries = [
-        'preloaded',
-        'robotLeft',
-        'endGame',
-        'didTeamPlayDefense',
-    ];
+    const requiredQueries = ['preloaded', 'robotLeft', 'didTeamPlayDefense'];
 
     // validation function to check if all required queries are completed
     // const validateQueries = () => {
@@ -103,11 +100,15 @@ const ScoutingPage = ({
         validateQueries();
     }, [dict]);
 
-    const endMatch = () => {
+    const endMatch = async () => {
         if (requiredQueriesCompleted) {
             setReadyToPlaySuccessAnimation(true);
             setIsDone(true);
 
+            // broken (this reqs from server before adding event name to file)
+            // offlineMode
+            //     ? setDict('eventName', eventName)
+            //     : setDict('eventName', await fetchEventNameFromServer());
             setDict('eventName', eventName);
             setDict('scouterName', user.name);
             setDict('teamNumber', teamNumber);

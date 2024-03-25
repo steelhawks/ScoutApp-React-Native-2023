@@ -19,7 +19,6 @@ export const useDictStore = create(set => ({
         autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
         telopSpeakerNotesScored: 0,
         telopAmpNotesScored: 0,
-        telopAmplifiedSpeakerNotes: 0,
         telopSpeakerNotesMissed: 0,
         telopAmpNotesMissed: 0,
         telopNotesReceivedFromHumanPlayer: 0,
@@ -57,7 +56,6 @@ export const useDictStore = create(set => ({
                 autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
                 telopSpeakerNotesScored: 0,
                 telopAmpNotesScored: 0,
-                telopAmplifiedSpeakerNotes: 0,
                 telopSpeakerNotesMissed: 0,
                 telopAmpNotesMissed: 0,
                 telopNotesReceivedFromHumanPlayer: 0,

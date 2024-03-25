@@ -2,7 +2,7 @@ import {StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
-import Counter from '../../components/inputs/Counter';
+import CounterBox from '../../components/inputs/CounterBox';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {useDictStore} from '../../contexts/dict';
 
@@ -21,7 +21,7 @@ const TeleopReceived = () => {
         <Query
             title="Note Received from Human Player"
             item={
-                <Counter
+                <CounterBox
                     onChange={value =>
                         setDict('telopNotesReceivedFromHumanPlayer', value)
                     }
@@ -31,7 +31,7 @@ const TeleopReceived = () => {
         <Query
             title="Note Received from Ground"
             item={
-                <Counter
+                <CounterBox
                     onChange={value =>
                         setDict('telopNotesReceivedFromGround', value)
                     }
@@ -40,12 +40,12 @@ const TeleopReceived = () => {
         />,
         <Query
             title="Ferry Notes"
-            item={<Counter onChange={value => setDict('ferryNotes', value)} />}
+            item={<CounterBox onChange={value => setDict('ferryNotes', value)} />}
         />,
         <Query
             title="Dropped Notes"
             item={
-                <Counter onChange={value => setDict('droppedNotes', value)} />
+                <CounterBox onChange={value => setDict('droppedNotes', value)} />
             }
         />,
     ];
@@ -67,16 +67,6 @@ const TeleopReceived = () => {
                 <BouncyCheckbox
                     onPress={selected =>
                         handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')
-                    }
-                />
-            }
-        />,
-        <Query
-            title="FMS Issues"
-            item={
-                <BouncyCheckbox
-                    onPress={selected =>
-                        handleTeleopIssuesQueries(selected, 'FMS_ISSUES')
                     }
                 />
             }

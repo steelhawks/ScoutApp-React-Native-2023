@@ -16,6 +16,7 @@
 		6E385883D2968F9B0221B96B /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E616885BECB08961CD67AECA /* ExpoModulesProvider.swift */; };
 		7699B88040F8A987B510C191 /* libPods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		BB1348AC2BAF14A100B5E201 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB1348AB2BAF14A100B5E201 /* GoogleService-Info.plist */; };
 		BB5B92112B7B377100D1BEA7 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */; };
 		BB5B92122B7B377100D1BEA7 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */; };
 		BB5B92132B7B377100D1BEA7 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5B92002B7B377100D1BEA7 /* Feather.ttf */; };
@@ -65,6 +66,7 @@
 		7246BDF607797D0AE96DA6BA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReactNative_ScoutApp2023/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; path = "Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; sourceTree = "<group>"; };
+		BB1348AB2BAF14A100B5E201 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/firebase/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		BB5B92002B7B377100D1BEA7 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				BB1348AB2BAF14A100B5E201 /* GoogleService-Info.plist */,
 				BB5B91FD2B7B377100D1BEA7 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* ReactNative_ScoutApp2023 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -361,6 +364,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				BB5B92172B7B377100D1BEA7 /* MaterialCommunityIcons.ttf in Resources */,
 				BB5B92202B7B377100D1BEA7 /* FontAwesome6_Solid.ttf in Resources */,
+				BB1348AC2BAF14A100B5E201 /* GoogleService-Info.plist in Resources */,
 				BB5B92142B7B377100D1BEA7 /* FontAwesome6_Regular.ttf in Resources */,
 				BB5B92232B7B377100D1BEA7 /* MaterialIcons.ttf in Resources */,
 			);
@@ -679,7 +683,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -718,7 +722,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

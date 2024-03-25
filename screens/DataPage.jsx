@@ -12,8 +12,12 @@ import Icon from 'react-native-vector-icons/Feather';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
+import {uploadDataToServer} from '../authentication/api';
 
-const DataPage = ({serverIp, navigation, matchCreated}) => {
+const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+// const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
+
+const DataPage = ({offlineMode, navigation, matchCreated}) => {
     // zustand hooks
     // const dict = useDictStore(state => state.dict);
     // const setDict = useDictStore(state => state.setDict);
@@ -150,15 +154,8 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         }
     };
 
-    const handleSyncDebug = async () => {
-        // console.log('JSON Files', jsonFiles);
-        for (const json of jsonFiles) {
-            console.log('JSON Name', json);
-        }
-    };
-
     const handleSync = async () => {
-        if (serverIp === '101') {
+        if (offlineMode) {
             Alert.alert(
                 'Cannot sync while offline',
                 'Please log out and login when on Wi-Fi.',
@@ -206,17 +203,15 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
 
         try {
             setJsonSelected(false);
-            const serverEndpoint = `http://${serverIp}:8080/upload`;
+            // const response = uploadDataToServer(data);
 
-            const response = await fetch(serverEndpoint, {
+            const response = await fetch(`${UPLOAD_ENDPOINT}/upload`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
             });
-
-            console.log('Server Response:', response);
 
             if (response.ok) {
                 console.log('Data successfully synced to server.');
@@ -250,6 +245,28 @@ const DataPage = ({serverIp, navigation, matchCreated}) => {
         const content = await fs.readFile(path, 'utf8');
         const jsonData = JSON.parse(content);
 
+        if (file.endsWith('-synced.json')) {
+            await new Promise(resolve => {
+                Alert.alert(
+                    'Are you sure, this is already synced on Airtable?',
+                    'This will create a duplicate, please tell an admin before you do this.',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                            onPress: () => {
+                                return;
+                            },
+                        },
+                        {
+                            text: 'Continue Anyways',
+                            style: 'destructive',
+                            onPress: () => resolve(),
+                        },
+                    ],
+                );
+            });
+        }
         if (await syncToServer(jsonData)) {
             Alert.alert('File forcefully synced.');
             await addSyncedSuffix(file);
