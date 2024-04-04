@@ -5,9 +5,9 @@ export const useDictStore = create(set => ({
         eventName: '',
         scouterName: '',
         teamNumber: '',
-        matchNumber: '',
+        matchNumber: 0,
         matchType: '', // qualification, practice, or elimination
-        driveStation: '',
+        driveStation: null,
         alliance: '', // red or blue
         preloaded: null, // true or false
         robotLeft: null, // true or false
@@ -34,17 +34,18 @@ export const useDictStore = create(set => ({
         didTeamPlayDefense: null, // YES, NO, Default: null
         timeOfCreation: '',
     },
-    setDict: (key, value) =>
-        set(state => ({dict: {...state.dict, [key]: value}})),
+    setDict: (key: any, value: any) =>
+        set((state: { dict: any; }) => ({dict: {...state.dict, [key]: value}})),
     resetDict: () =>
         set({
             dict: {
                 eventName: '',
                 scouterName: '',
                 teamNumber: '',
+                // matchNumber: state => state.dict.matchNumber,
                 matchNumber: '',
                 matchType: '', // qualification, practice, or elimination
-                driveStation: '',
+                driveStation: null,
                 alliance: '', // red or blue
                 preloaded: null, // true or false
                 robotLeft: null, // true or false
@@ -90,8 +91,8 @@ export const usePitDict = create(set => ({
         trapScorer: '',
         timeOfCreation: '',
     },
-    setDict: (key, value) =>
-        set(state => ({dict: {...state.dict, [key]: value}})),
+    setDict: (key: any, value: any) =>
+        set((state: { dict: any; }) => ({dict: {...state.dict, [key]: value}})),
     resetDict: () =>
         set({
             dict: {

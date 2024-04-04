@@ -9,7 +9,9 @@ import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Tutorial = ({props}) => {
+interface TutorialProps {}
+
+const Tutorial: React.FC<TutorialProps> = () => {
     const [tutorialStarted, setTutorialStarted] = useState(false);
 
     const tutorialSetup = () => {
@@ -104,7 +106,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 5,
-        borderRadius: RFValue(8),
         backgroundColor: '#121212',
     },
     filesText: {

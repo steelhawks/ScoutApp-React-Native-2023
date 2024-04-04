@@ -14,7 +14,7 @@ import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+// import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import fs from 'react-native-fs';
@@ -25,7 +25,6 @@ import {
     fetchTeamDataFromServer,
     fetchEventNameFromServer,
 } from '../authentication/api';
-import CounterBox from '../components/inputs/CounterBox';
 
 const Login = ({
     setUser,
@@ -196,8 +195,6 @@ const Login = ({
                             alignSelf="center"
                             backgroundColor="rgba(136, 3, 21, 1)"
                             underlayColor="transparent"
-                            // fontWeight="bold"
-                            // fontSize="20"
                             style={styles.iconButton}
                             onPress={handleLogin}>
                             <Text

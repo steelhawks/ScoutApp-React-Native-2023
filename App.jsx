@@ -40,31 +40,24 @@ const App = () => {
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
-    const [appVersion] = useState('v1.3');
+    const [appVersion] = useState('v1.4');
 
     const [teamData, setTeamData] = useState(null);
 
     // NewMatch VARS
-    const [teamNumber, setTeamNumber] = useState(0);
-    const [matchNumber, setMatchNumber] = useState(0);
-    const [matchType, setMatchType] = useState('EMPTY'); // COMP, QUAL, Default: EMPTY
-    const [driveStation, setDriveStation] = useState(0);
     const [scoutingType, setScoutingType] = useState('Match Scouting'); // either pit scout or match scout
 
     const NewMatchNavigate = props => {
-        // request notification access
         RequestNotifications();
         return (
             <NewMatch
                 {...props}
                 teamData={teamData}
                 setMatchCreated={setMatchCreated}
-                setTeamNumber={setTeamNumber}
-                setMatchNumber={setMatchNumber}
-                setMatchType={setMatchType}
-                setDriveStation={setDriveStation}
                 setScoutingType={setScoutingType}
                 scoutingType={scoutingType}
+                eventName={eventName}
+                user={user}
             />
         );
     };
@@ -76,10 +69,6 @@ const App = () => {
                 user={user}
                 eventName={eventName}
                 setMatchCreated={setMatchCreated}
-                teamNumber={teamNumber}
-                matchNumber={matchNumber}
-                matchType={matchType}
-                driveStation={driveStation}
                 offlineMode={offlineMode}
             />
         );
@@ -92,7 +81,6 @@ const App = () => {
                 user={user}
                 eventName={eventName}
                 setMatchCreated={setMatchCreated}
-                teamNumber={teamNumber}
             />
         );
     };

@@ -1,7 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const Heading = props => {
+interface HeadingProps {
+    title: string;
+    sectionHeading?: boolean;
+}
+
+const Heading: React.FC<HeadingProps> = props => {
     return (
         <Text
             style={

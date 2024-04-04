@@ -1,37 +1,68 @@
-import React, {useState} from 'react';
+// TODO
+// ONCHANGE API CHANGER
+
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
-// import CounterInput from 'react-native-counter-input';
 import Button from './Button';
 import Icon from 'react-native-vector-icons/Feather';
 import {RFValue} from 'react-native-responsive-fontsize';
+import NumericInputModal from '../NumericInputModal';
+
+// use later for typescript migration
+// interface CounterBoxProps {
+//     initial?: string | number;
+//     min?: number;
+//     max?: number;
+//     onChange: (value: number) => void;
+// }
 
 const CounterBox = props => {
-    // props
-    // min for minimum
-    // max for maximum
-    // inital for inital value
-
-    // TODO
-    // make some cool shaking animation happen when max is reached
-
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(parseInt(props.initial || 0, 10));
+    const [modalVisible, setModalVisible] = useState(false);
 
     const decrement = () => {
-        value !== props.min ? setValue(value - 1) : null;
-        props.onChange(value);
+        setValue(prevValue => {
+            const newValue =
+                prevValue > (props.min || 0) ? prevValue - 1 : prevValue;
+            props.onChange(newValue);
+            return newValue;
+        });
     };
 
     const increment = () => {
-        value !== props.max ? setValue(value + 1) : null;
-        props.onChange(value);
+        setValue(prevValue => {
+            const newValue =
+                prevValue < (props.max || 10) ? prevValue + 1 : prevValue;
+            props.onChange(newValue);
+            return newValue;
+        });
     };
 
-    // const handleInputValue = () => {
-    //     Alert.prompt('Enter Value', inputValue => {
-    //         console.log(inputValue);
-    //         setValue(inputValue);
-    //     });
-    // };
+    const handleSubmit = inputValue => {
+        if (
+            inputValue !== null &&
+            inputValue !== '' &&
+            inputValue !== undefined
+        ) {
+            const newValue = parseInt(inputValue, 10);
+            if (!isNaN(newValue)) {
+                if (newValue > (props.min || 0) && newValue < (props.max || 10)) {
+                    setValue(newValue);
+                    props.onChange(newValue);
+                } else {
+                    if (newValue < (props.min || 0)) {
+                        Alert.alert('Value cannot be below the minimum');
+                    } else {
+                        Alert.alert('Value cannot exceed the maximum');
+                    }
+                }
+            } else {
+                Alert.alert('Please enter a number');
+            }
+        } else {
+            Alert.alert('Please enter a valid number');
+        }
+    };
 
     return (
         <View style={styles.counterStyling}>
@@ -49,7 +80,13 @@ const CounterBox = props => {
                 />
             </View>
 
-            <Button onPress={() => null} label={value} />
+            <Button onPress={() => setModalVisible(true)} label={value} />
+
+            <NumericInputModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onSubmit={handleSubmit}
+            />
 
             <View style={styles.counterStyling}>
                 <Icon.Button

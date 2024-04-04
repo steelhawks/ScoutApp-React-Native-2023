@@ -15,13 +15,7 @@ import {usePitDict} from '../contexts/dict';
 import CameraView from './CameraView';
 // import * as ImagePicker from 'expo-image'
 
-const PitScoutingPage = ({
-    setMatchCreated,
-    teamNumber,
-    eventName,
-    user,
-    navigation,
-}) => {
+const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
     const dict = usePitDict(state => state.dict);
     const setDict = usePitDict(state => state.setDict);
 
@@ -32,12 +26,12 @@ const PitScoutingPage = ({
         useState(false);
 
     useEffect(() => {
-        var date = new Date().getDate(); //Current Date
-        var month = new Date().getMonth() + 1; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        var hours = new Date().getHours(); //Current Hours
-        var min = new Date().getMinutes(); //Current Minutes
-        var sec = new Date().getSeconds(); //Current Seconds
+        var date = new Date().getDate();
+        var month = new Date().getMonth() + 1;
+        var year = new Date().getFullYear();
+        var hours = new Date().getHours();
+        var min = new Date().getMinutes();
+        var sec = new Date().getSeconds();
         setCurrentDate(
             date +
                 '/' +
@@ -71,10 +65,6 @@ const PitScoutingPage = ({
         setIsLoading(true);
 
         setIsDone(true);
-
-        setDict('eventName', eventName);
-        setDict('scouterName', user.name);
-        setDict('teamNumber', teamNumber);
         setDict('timeOfCreation', currentDate);
     };
 

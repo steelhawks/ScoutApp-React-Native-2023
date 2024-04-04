@@ -13,19 +13,9 @@ import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
 import {useDictStore} from '../contexts/dict';
-import {fetchEventNameFromServer} from '../authentication/api';
+// import {fetchEventNameFromServer} from '../authentication/api';
 
-const ScoutingPage = ({
-    user,
-    navigation,
-    eventName,
-    setMatchCreated,
-    teamNumber,
-    matchNumber,
-    matchType,
-    driveStation,
-    offlineMode,
-}) => {
+const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
     const Tab = createMaterialTopTabNavigator();
 
     const [isDone, setIsDone] = useState(false);
@@ -104,18 +94,6 @@ const ScoutingPage = ({
         if (requiredQueriesCompleted) {
             setReadyToPlaySuccessAnimation(true);
             setIsDone(true);
-
-            // broken (this reqs from server before adding event name to file)
-            // offlineMode
-            //     ? setDict('eventName', eventName)
-            //     : setDict('eventName', await fetchEventNameFromServer());
-            setDict('eventName', eventName);
-            setDict('scouterName', user.name);
-            setDict('teamNumber', teamNumber);
-            setDict('matchNumber', matchNumber);
-            setDict('matchType', matchType); // qualification, practice, or elimination
-            setDict('driveStation', driveStation);
-            setDict('alliance', driveStation < 4 ? 'RED' : 'BLUE'); // red or blue
             setDict('timeOfCreation', currentDate);
         } else {
             console.log(missingQueries);

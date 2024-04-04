@@ -8,9 +8,9 @@ const formDataSaveFilePath = RNFS.DocumentDirectoryPath + '/data/formData.json';
 const SERVER_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
 // const SERVER_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 export const fetchUserCredentialsFromServer = async (
-    username,
-    osis,
-    appVersion,
+    username: string,
+    osis: string,
+    appVersion: any,
 ) => {
     try {
         const response = await fetch(`${SERVER_ENDPOINT}/login`, {
@@ -164,7 +164,8 @@ export const fetchFormsFromServer = async () => {
     }
 };
 
-export const uploadDataToServer = async data => {
+export const uploadDataToServer = async (data: any)  => { // fix to find type later
+    console.log(typeof data);
     const response = await fetch(`${SERVER_ENDPOINT}/upload`, {
         method: 'POST',
         headers: {
@@ -173,6 +174,5 @@ export const uploadDataToServer = async data => {
         body: JSON.stringify(data),
     });
 
-    // if (response.ok) return true;
-    // else return false;
+    return response.ok;
 };

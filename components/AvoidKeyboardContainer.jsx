@@ -1,4 +1,4 @@
-import {SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, StyleSheet} from 'react-native';
+import {SafeAreaView, KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
 const AvoidKeyboardContainer = ({children}) => {
     return (

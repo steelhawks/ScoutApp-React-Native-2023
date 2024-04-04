@@ -2,10 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { RFValue } from 'react-native-responsive-fontsize';
 
-const DropdownComponent = ({ data, placeholder, onValueChange, searchable = false }) => {
-    const [value, setValue] = useState(null);
+const DropdownComponent = ({
+    initialValue,
+    data,
+    placeholder,
+    onValueChange,
+    searchable = false,
+}) => {
+    const [value, setValue] = useState(initialValue);
     useEffect(() => {
         // Call onValueChange with the current selected value
         if (value !== null) {

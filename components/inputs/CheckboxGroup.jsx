@@ -9,7 +9,7 @@ const CheckboxGroup = props => {
 
     return (
         <View>
-        	{/* Create checkboxes by mapping out the array provided  */}
+            {/* Create checkboxes by mapping out the array provided  */}
             {new_opts.map(checkboxValue => (
                 <Checkbox label={checkboxValue} />
             ))}

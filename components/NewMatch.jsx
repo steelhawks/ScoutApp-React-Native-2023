@@ -6,38 +6,40 @@ import DriveStationUI from './inputs/DriveStationUI';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from './AvoidKeyboardContainer';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import DropdownComponent from './inputs/Dropdown';
+import DropdownComponent from './inputs/DropdownComponent';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import CounterInput from 'react-native-counter-input';
 import {useDictStore, usePitDict} from '../contexts/dict';
 import Icon from 'react-native-vector-icons/Feather';
 import CounterBox from './inputs/CounterBox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NewMatch = ({
     teamData,
     setMatchCreated,
-    setTeamNumber,
-    setMatchNumber,
-    setMatchType,
-    setDriveStation,
     setScoutingType,
     scoutingType,
+    eventName,
+    user,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const resetDict = useDictStore(state => state.resetDict);
     const resetPitDict = usePitDict(state => state.resetDict);
 
-    const [teamNumberLocal, setTeamNumberLocal] = useState(null);
-    const [matchNumberLocal, setMatchNumberLocal] = useState(null);
-    const [matchTypeLocal, setMatchTypeLocal] = useState(null);
-    const [driveStationLocal, setDriveStationLocal] = useState(null);
+    const dict = useDictStore(state => state.dict);
+    const setDict = useDictStore(state => state.setDict);
+    const setPitDict = usePitDict(state => state.setDict);
+
+    const [teamNumber, setTeamNumber] = useState(null);
+    const [matchNumber, setMatchNumber] = useState(null);
+    const [matchType, setMatchType] = useState('PRACTICE');
+    const [driveStation, setDriveStation] = useState(null);
 
     const checkFilledOut = () => {
         return (
-            teamNumberLocal !== null &&
-            matchNumberLocal !== null &&
-            matchTypeLocal !== null &&
-            driveStationLocal !== null
+            teamNumber !== null &&
+            matchNumber !== null &&
+            matchType !== null &&
+            driveStation !== null
         );
     };
 
@@ -48,10 +50,13 @@ const NewMatch = ({
             if (checkFilledOut()) {
                 setIsLoading(true);
                 setTimeout(async () => {
-                    setTeamNumber(teamNumberLocal);
-                    setMatchNumber(matchNumberLocal);
-                    setMatchType(matchTypeLocal);
-                    setDriveStation(driveStationLocal);
+                    setDict('scouterName', user.name);
+                    setDict('eventName', eventName);
+                    setDict('teamNumber', teamNumber);
+                    setDict('matchNumber', matchNumber);
+                    setDict('matchType', matchType);
+                    setDict('driveStation', driveStation);
+                    setDict('alliance', driveStation < 4 ? 'RED' : 'BLUE'); // red or blue
                     setMatchCreated(true);
                     setIsLoading(false);
                 }, 1);
@@ -59,10 +64,12 @@ const NewMatch = ({
                 Alert.alert('Please fill out all fields.');
             }
         } else if (scoutingType === 'Pit Scouting') {
-            if (teamNumberLocal !== null) {
+            if (teamNumber !== null) {
                 setIsLoading(true);
                 setTimeout(async () => {
-                    setTeamNumber(teamNumberLocal);
+                    setPitDict('eventName', eventName);
+                    setPitDict('scouterName', user.name);
+                    setPitDict('teamNumber', teamNumber);
 
                     setMatchCreated(true);
                     setIsLoading(false);
@@ -96,28 +103,23 @@ const NewMatch = ({
                 }}>
                 Enter Match Number:
             </Text>
-            {/* <CounterInput
-                defaultValue={1}
-                min={1}
-                horizontal={true}
-                reverseCounterButtons={true}
-                onChange={counter => {
-                    setMatchNumberLocal(counter);
-                }}
-            /> */}
             <CounterBox
                 initial={1}
                 min={1}
                 max={1000}
                 onChange={counter => {
-                    setMatchNumberLocal(counter);
+                    setMatchNumber(counter);
+                    // setDict('matchNumber', matchNumber);
+                    console.log(counter);
                 }}
             />
 
             <DropdownComponent
+                value={matchType}
                 data={matchTypeData}
                 placeholder={'Select Match Type'}
-                onValueChange={value => setMatchTypeLocal(value)}
+                // onValueChange={value => setDict('matchType', value)}
+                onValueChange={value => setMatchType(value)}
             />
 
             <Text
@@ -130,7 +132,8 @@ const NewMatch = ({
                 Select Drive Station
             </Text>
             <DriveStationUI
-                updateDict={(key, value) => setDriveStationLocal(value)}
+                onChange={value => setDriveStation(value)}
+                // onChange={value => setDriveStation(value)}
             />
         </>,
     ];
@@ -165,10 +168,6 @@ const NewMatch = ({
                                         }}>
                                         Select Match Type
                                     </Text>
-                                    {/* <Button
-                                        label={scoutingType}
-                                        onPress={() => handleScoutSelect()}
-                                    /> */}
                                     <Icon.Button
                                         padding={RFValue(8)}
                                         borderRadius={5}
@@ -203,10 +202,11 @@ const NewMatch = ({
                                     </Icon.Button>
 
                                     <DropdownComponent
+                                        initialValue={'PRACTICE'}
                                         data={receivedTeamData}
                                         placeholder={'Select Team Number'}
                                         onValueChange={value =>
-                                            setTeamNumberLocal(value)
+                                            setTeamNumber(value)
                                         }
                                         searchable={true}
                                     />

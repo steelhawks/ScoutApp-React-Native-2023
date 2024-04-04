@@ -9,20 +9,14 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import fs from 'react-native-fs';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import DeviceInfo from 'react-native-device-info';
 
-const SettingsPage = ({setShowSettings, showSettings, appVersion}) => {
+const YourPageName = () => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={styles.title}>Settings</Text>
-                    <Text style={styles.infoText}>
-                        Scout 24 {appVersion} {'\n'}
-                        Build: {DeviceInfo.getBuildNumber()}
-                    </Text>
+                    <Text style={styles.title}>Your Title Text</Text>
                 </ScrollView>
-                <Button onPress={() => setShowSettings(!showSettings)} label="Go Back" />
 
                 {/* This is optional and for a loading screen */}
                 {/* <AnimationLoader
@@ -89,7 +83,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 5,
-        borderRadius: RFValue(8),
         backgroundColor: '#121212',
     },
     filesText: {
@@ -142,4 +135,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SettingsPage;
+export default YourPageName;

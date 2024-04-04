@@ -12,6 +12,14 @@ import SettingsPage from './SettingsPage';
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
+// use for typescript migration 
+// interface ManageAccountProps {
+//     setUser: (user: any) => void;
+//     user: any;
+//     appVersion: string;
+//     eventName: string;
+// }
+
 const ManageAccount = ({setUser, user, appVersion, eventName}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
