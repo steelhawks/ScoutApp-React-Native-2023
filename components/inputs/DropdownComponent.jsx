@@ -10,7 +10,7 @@ const DropdownComponent = ({
     onValueChange,
     searchable = false,
 }) => {
-    const [value, setValue] = useState(initialValue);
+    const [value, setValue] = useState(initialValue || null);
     useEffect(() => {
         // Call onValueChange with the current selected value
         if (value !== null) {

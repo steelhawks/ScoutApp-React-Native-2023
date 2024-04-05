@@ -31,7 +31,7 @@ const NewMatch = ({
 
     const [teamNumber, setTeamNumber] = useState(null);
     const [matchNumber, setMatchNumber] = useState(null);
-    const [matchType, setMatchType] = useState('PRACTICE');
+    const [matchType, setMatchType] = useState(null);
     const [driveStation, setDriveStation] = useState(null);
 
     const checkFilledOut = () => {
@@ -104,7 +104,7 @@ const NewMatch = ({
                 Enter Match Number:
             </Text>
             <CounterBox
-                initial={1}
+                initial={dict.matchNumber + 1 || 1}
                 min={1}
                 max={1000}
                 onChange={counter => {
@@ -132,6 +132,7 @@ const NewMatch = ({
                 Select Drive Station
             </Text>
             <DriveStationUI
+                initialValue={dict.driveStation || null}
                 onChange={value => setDriveStation(value)}
                 // onChange={value => setDriveStation(value)}
             />
@@ -202,7 +203,6 @@ const NewMatch = ({
                                     </Icon.Button>
 
                                     <DropdownComponent
-                                        initialValue={'PRACTICE'}
                                         data={receivedTeamData}
                                         placeholder={'Select Team Number'}
                                         onValueChange={value =>

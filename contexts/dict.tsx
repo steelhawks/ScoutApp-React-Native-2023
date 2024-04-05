@@ -5,7 +5,7 @@ export const useDictStore = create(set => ({
         eventName: '',
         scouterName: '',
         teamNumber: '',
-        matchNumber: 0,
+        matchNumber: null,
         matchType: '', // qualification, practice, or elimination
         driveStation: null,
         alliance: '', // red or blue
@@ -42,10 +42,9 @@ export const useDictStore = create(set => ({
                 eventName: '',
                 scouterName: '',
                 teamNumber: '',
-                // matchNumber: state => state.dict.matchNumber,
-                matchNumber: '',
+                matchNumber: (state: { dict: { matchNumber: any; }; }) => state.dict.matchNumber || null,
                 matchType: '', // qualification, practice, or elimination
-                driveStation: null,
+                driveStation: (state: { dict: { driveStation: any; }; }) => state.dict.driveStation || null,
                 alliance: '', // red or blue
                 preloaded: null, // true or false
                 robotLeft: null, // true or false

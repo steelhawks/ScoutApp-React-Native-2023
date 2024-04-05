@@ -1,19 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import Button from './Button';
 
 interface DriveStationUIProps {
+    initialValue?: number;
     onChange: (value: number) => void;
 }
 
 const DriveStationUI: React.FC<DriveStationUIProps> = props => {
-    const [selectedButton, setSelectedButton] = useState(0);
+    const [selectedButton, setSelectedButton] = useState(props.initialValue || 0);
 
     const handleButtonPress = (buttonNumber: number, color: string) => {
         setSelectedButton(buttonNumber);
         console.log(`Selected Button: ${color} ${buttonNumber}`);
-        props.onChange(buttonNumber);
     };
+
+    useEffect(() => {
+        props.onChange(selectedButton);
+    }, [selectedButton]);
 
     return (
         <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>

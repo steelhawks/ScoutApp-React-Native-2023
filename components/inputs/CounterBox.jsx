@@ -1,6 +1,3 @@
-// TODO
-// ONCHANGE API CHANGER
-
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Alert} from 'react-native';
 import Button from './Button';
@@ -16,15 +13,26 @@ import NumericInputModal from '../NumericInputModal';
 //     onChange: (value: number) => void;
 // }
 
+// BUG
+// the check for the modal value changer has a +1 or -1 error
+// so if max is 50, it will only let u set it to 49
+
+const MAX_LOCAL = 50;
+const MIN_LOCAL = 0;
+
 const CounterBox = props => {
-    const [value, setValue] = useState(parseInt(props.initial || 0, 10));
+    const [value, setValue] = useState(parseInt(props.initial || 0));
+
+    useEffect(() => {
+        props.onChange(value);
+    }, [value]);
+
     const [modalVisible, setModalVisible] = useState(false);
 
     const decrement = () => {
         setValue(prevValue => {
             const newValue =
-                prevValue > (props.min || 0) ? prevValue - 1 : prevValue;
-            props.onChange(newValue);
+                prevValue > (props.min || MIN_LOCAL) ? prevValue - 1 : prevValue;
             return newValue;
         });
     };
@@ -32,35 +40,32 @@ const CounterBox = props => {
     const increment = () => {
         setValue(prevValue => {
             const newValue =
-                prevValue < (props.max || 10) ? prevValue + 1 : prevValue;
-            props.onChange(newValue);
+                prevValue < (props.max || MAX_LOCAL) ? prevValue + 1 : prevValue;
             return newValue;
         });
     };
 
     const handleSubmit = inputValue => {
         if (
+            inputValue === '' &&
             inputValue !== null &&
-            inputValue !== '' &&
             inputValue !== undefined
-        ) {
-            const newValue = parseInt(inputValue, 10);
-            if (!isNaN(newValue)) {
-                if (newValue > (props.min || 0) && newValue < (props.max || 10)) {
-                    setValue(newValue);
-                    props.onChange(newValue);
-                } else {
-                    if (newValue < (props.min || 0)) {
-                        Alert.alert('Value cannot be below the minimum');
-                    } else {
-                        Alert.alert('Value cannot exceed the maximum');
-                    }
-                }
+        )
+            return;
+
+        const newValue = parseInt(inputValue);
+        if (!isNaN(newValue)) {
+            if (newValue > (props.min || MIN_LOCAL) && newValue < (props.max || MAX_LOCAL)) {
+                setValue(newValue);
             } else {
-                Alert.alert('Please enter a number');
+                if (newValue < (props.min || MIN_LOCAL)) {
+                    Alert.alert('Value cannot be below the minimum');
+                } else {
+                    Alert.alert('Value cannot exceed the maximum');
+                }
             }
         } else {
-            Alert.alert('Please enter a valid number');
+            Alert.alert('Please enter a number');
         }
     };
 

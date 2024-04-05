@@ -4,7 +4,7 @@ import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import CounterBox from '../../components/inputs/CounterBox';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Checkbox from '../../components/inputs/Checkbox';
 import {useDictStore} from '../../contexts/dict';
 import Button from '../../components/inputs/Button';
 
@@ -83,7 +83,7 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Not Moving"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleAutonIssuesQueries(selected, 'NOT_MOVING')
                     }
@@ -93,7 +93,7 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Stopped"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleAutonIssuesQueries(selected, 'STOPPED')
                     }
@@ -103,7 +103,7 @@ const Auton = ({backConfirm}) => {
         <Query
             title="Out of Control"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleAutonIssuesQueries(selected, 'OUT_OF_CONTROL')
                     }
