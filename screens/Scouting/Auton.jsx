@@ -5,7 +5,7 @@ import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import CounterBox from '../../components/inputs/CounterBox';
 import Checkbox from '../../components/inputs/Checkbox';
-import {useDictStore} from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict.jsx';
 import Button from '../../components/inputs/Button';
 
 const Auton = ({backConfirm}) => {

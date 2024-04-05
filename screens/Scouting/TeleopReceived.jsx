@@ -3,8 +3,8 @@ import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import CounterBox from '../../components/inputs/CounterBox';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {useDictStore} from '../../contexts/dict';
+import Checkbox from '../../components/inputs/Checkbox';
+import {useDictStore} from '../../contexts/dict.jsx';
 
 const TeleopReceived = () => {
     const dict = useDictStore(state => state.dict);
@@ -54,7 +54,7 @@ const TeleopReceived = () => {
         <Query
             title="Not Moving"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleTeleopIssuesQueries(selected, 'NOT_MOVING')
                     }
@@ -64,7 +64,7 @@ const TeleopReceived = () => {
         <Query
             title="Lost Connection"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleTeleopIssuesQueries(selected, 'LOST_CONNECTION')
                     }
@@ -74,7 +74,7 @@ const TeleopReceived = () => {
         <Query
             title="Disabled"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected =>
                         handleTeleopIssuesQueries(selected, 'DISABLED')
                     }

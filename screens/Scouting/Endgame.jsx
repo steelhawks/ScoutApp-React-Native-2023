@@ -5,7 +5,7 @@ import Query from '../../components/scouting_components/Query';
 import RadioGroup from '../../components/inputs/RadioGroup';
 import Button from '../../components/inputs/Button';
 import CounterBox from '../../components/inputs/CounterBox';
-import {useDictStore} from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict.jsx';
 import {SafeAreaView} from 'react-native';
 
 const Endgame = ({endMatch}) => {

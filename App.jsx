@@ -114,10 +114,6 @@ const App = () => {
         );
     };
 
-    // const HelpPageNavigate = props => {
-    //     return <Tutorial />;
-    // };
-
     const DataPageNavigate = props => {
         return (
             <DataPage

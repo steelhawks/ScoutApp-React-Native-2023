@@ -8,7 +8,7 @@ import AvoidKeyboardContainer from './AvoidKeyboardContainer';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropdownComponent from './inputs/DropdownComponent';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useDictStore, usePitDict} from '../contexts/dict';
+import {useDictStore, usePitDict} from '../contexts/dict.jsx';
 import Icon from 'react-native-vector-icons/Feather';
 import CounterBox from './inputs/CounterBox';
 import AsyncStorage from '@react-native-async-storage/async-storage';

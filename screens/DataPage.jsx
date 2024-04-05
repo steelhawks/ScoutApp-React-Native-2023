@@ -14,8 +14,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import EmptyPage from './EmptyPage';
 import {uploadDataToServer} from '../authentication/api';
 
-const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-// const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
+// const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
     // zustand hooks

@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
 import SettingsPage from './SettingsPage';
-import {useDictStore, usePitDict} from '../contexts/dict';
+import {useDictStore, usePitDict} from '../contexts/dict.jsx';
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
@@ -25,10 +25,10 @@ const ManageAccount = ({setUser, user, appVersion, eventName}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
 
-    // const setDict = useDictStore(state => state.setDict);
-    // const setPitDict = usePitDict(state => state.setDict);
-    // const resetDict = useDictStore(state => state.resetDict);
-    // const resetPitDict = usePitDict(state => state.resetDict);
+    const setDict = useDictStore(state => state.setDict);
+    const setPitDict = usePitDict(state => state.setDict);
+    const resetDict = useDictStore(state => state.resetDict);
+    const resetPitDict = usePitDict(state => state.resetDict);
 
     const logOut = async () => {
         // clean up before logout
@@ -37,14 +37,13 @@ const ManageAccount = ({setUser, user, appVersion, eventName}) => {
         // await AsyncStorage.removeItem('username');
         // await AsyncStorage.removeItem('osis');
 
-        // broken??? why??
         // first clear the reactive variables
-        // setDict('matchNumber', null);
-        // setDict('driveStation', null);
+        setDict('matchNumber', null);
+        setDict('driveStation', null);
 
         // then reset dict
-        // resetDict();
-        // resetPitDict();
+        resetDict();
+        resetPitDict();
 
         // then logout
         setUser(null);

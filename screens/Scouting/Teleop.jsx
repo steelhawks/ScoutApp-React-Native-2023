@@ -4,7 +4,7 @@ import React from 'react';
 import Section from '../../components/scouting_components/Section';
 import Query from '../../components/scouting_components/Query';
 import CounterBox from '../../components/inputs/CounterBox';
-import {useDictStore} from '../../contexts/dict';
+import {useDictStore} from '../../contexts/dict.jsx';
 
 const Teleop = () => {
     const setDict = useDictStore(state => state.setDict);

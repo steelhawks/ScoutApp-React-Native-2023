@@ -12,7 +12,7 @@ import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
-import {useDictStore} from '../contexts/dict';
+import {useDictStore} from '../contexts/dict.jsx';
 // import {fetchEventNameFromServer} from '../authentication/api';
 
 const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {

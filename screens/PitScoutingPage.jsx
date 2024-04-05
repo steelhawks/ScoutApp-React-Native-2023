@@ -9,9 +9,9 @@ import fs from 'react-native-fs';
 import Button from '../components/inputs/Button';
 import {RFValue} from 'react-native-responsive-fontsize';
 import CustomTextInput from '../components/inputs/CustomTextInput';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Checkbox from '../components/inputs/Checkbox';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
-import {usePitDict} from '../contexts/dict';
+import {usePitDict} from '../contexts/dict.jsx';
 import CameraView from './CameraView';
 // import * as ImagePicker from 'expo-image'
 
@@ -201,7 +201,7 @@ const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
         <Query
             title="AMP"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected => handleExcelQuery(selected, 'AMP')}
                 />
             }
@@ -209,7 +209,7 @@ const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
         <Query
             title="Speaker"
             item={
-                <BouncyCheckbox
+                <Checkbox
                     onPress={selected => handleExcelQuery(selected, 'SPEAKER')}
                 />
             }

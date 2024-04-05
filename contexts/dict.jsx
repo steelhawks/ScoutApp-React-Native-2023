@@ -34,17 +34,20 @@ export const useDictStore = create(set => ({
         didTeamPlayDefense: null, // YES, NO, Default: null
         timeOfCreation: '',
     },
-    setDict: (key: any, value: any) =>
-        set((state: { dict: any; }) => ({dict: {...state.dict, [key]: value}})),
+    setDict: (key, value) =>
+        set((state) => ({dict: {...state.dict, [key]: value}})),
     resetDict: () =>
-        set({
+        set((state) => ({
             dict: {
-                eventName: '',
+                eventName: '',  
                 scouterName: '',
                 teamNumber: '',
-                matchNumber: (state: { dict: { matchNumber: any; }; }) => state.dict.matchNumber || null,
+                // matchNumber: (state: { dict: { matchNumber: any; }; }) => state.dict.matchNumber || 1,
+                matchNumber: state.dict.matchNumber !== undefined ? state.dict.matchNumber : 1,
                 matchType: '', // qualification, practice, or elimination
-                driveStation: (state: { dict: { driveStation: any; }; }) => state.dict.driveStation || null,
+                // driveStation: (state: { dict: { driveStation: any; }; }) => state.dict?.driveStation ?? 0,
+                driveStation: state.dict.driveStation !== undefined ? state.dict.driveStation : 0,
+                // driveStation: null,
                 alliance: '', // red or blue
                 preloaded: null, // true or false
                 robotLeft: null, // true or false
@@ -71,7 +74,7 @@ export const useDictStore = create(set => ({
                 didTeamPlayDefense: null, // YES, NO, Default: null
                 timeOfCreation: '',
             },
-        }),
+        })),
 }));
 
 export const usePitDict = create(set => ({
@@ -90,10 +93,10 @@ export const usePitDict = create(set => ({
         trapScorer: '',
         timeOfCreation: '',
     },
-    setDict: (key: any, value: any) =>
-        set((state: { dict: any; }) => ({dict: {...state.dict, [key]: value}})),
+    setDict: (key, value) =>
+        set((state) => ({dict: {...state.dict, [key]: value}})),
     resetDict: () =>
-        set({
+        set((state) => ({
             dict: {
                 eventName: '',
                 scouterName: '',
@@ -109,5 +112,5 @@ export const usePitDict = create(set => ({
                 trapScorer: '',
                 timeOfCreation: '',
             },
-        }),
+        })),
 }));
