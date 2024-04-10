@@ -15,9 +15,10 @@ interface SettingsPageProps {
     setShowSettings: (showSettings: boolean) => void;
     showSettings: boolean;
     appVersion: string;
+    navigation: any;
 }
 
-const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSettings, appVersion}) => {
+const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSettings, appVersion, navigation}) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
@@ -28,7 +29,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                 </ScrollView>
-                <Button onPress={() => setShowSettings(!showSettings)} label="Go Back" />
+                <Button onPress={() => navigation.navigate('ManageAccount')} label="Go Back" />
 
                 {/* This is optional and for a loading screen */}
                 {/* <AnimationLoader

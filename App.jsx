@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/no-unstable-nested-components */
 import {useState} from 'react';

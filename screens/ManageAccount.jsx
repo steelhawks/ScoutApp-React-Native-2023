@@ -10,10 +10,15 @@ import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
 import SettingsPage from './SettingsPage';
 import {useDictStore, usePitDict} from '../contexts/dict.jsx';
+import {createStackNavigator} from '@react-navigation/stack';
+// import {useNavigation} from '@react-navigation/native';
+
+const Stack = createStackNavigator();
+// const navigation = useNavigation();
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
-// use for typescript migration 
+// use for typescript migration
 // interface ManageAccountProps {
 //     setUser: (user: any) => void;
 //     user: any;
@@ -21,7 +26,7 @@ const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 //     eventName: string;
 // }
 
-const ManageAccount = ({setUser, user, appVersion, eventName}) => {
+const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
 
@@ -68,104 +73,120 @@ const ManageAccount = ({setUser, user, appVersion, eventName}) => {
         });
     };
 
-    return showSettings ? (
-        <SettingsPage
-            showSettings={showSettings}
-            setShowSettings={setShowSettings}
-            appVersion={appVersion}
-        />
-    ) : (
-        <SafeAreaView style={styles.avoidTabBar}>
-            <View style={styles.container}>
-                <Text style={styles.title}>Manage Account</Text>
-                <View style={styles.centerContent}>
+    const Settings = () => {
+        return (
+            <SettingsPage
+                navigation={navigation}
+                showSettings={showSettings}
+                setShowSettings={setShowSettings}
+                appVersion={appVersion}
+            />
+        );
+    };
+
+    const ManageAccount = () => {
+        return (
+            <SafeAreaView style={styles.avoidTabBar}>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Manage Account</Text>
+                    <View style={styles.centerContent}>
+                        <Icon.Button
+                            padding={RFValue(8)}
+                            borderRadius={5}
+                            name="log-out"
+                            size={RFValue(25)}
+                            color="white"
+                            alignSelf="center"
+                            backgroundColor="rgba(136, 3, 21, 1)"
+                            underlayColor="transparent"
+                            style={{
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                backgroundColor: 'transparent',
+                                borderColor: 'transparent',
+                                zIndex: 1,
+                            }}
+                            onPress={logOut}>
+                            <Text
+                                style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    color: 'white',
+                                }}>
+                                Log Out
+                            </Text>
+                        </Icon.Button>
+                        <Text style={styles.welcomeText}>
+                            Hello {user.name} {'\n'}
+                            Username: {user.username} {'\n'}
+                            OSIS: {user.osis} {'\n'}
+                            Event: {eventName} {'\n'}
+                            App Version: {appVersion} {'\n'}
+                        </Text>
+                    </View>
+                    <AnimationLoader isLoading={isLoading} />
+                </View>
+                <View
+                    style={{
+                        borderWidth: 0,
+                        position: 'absolute',
+                        alignSelf: 'flex-start',
+                        bottom: RFValue(110), // Adjust this value as needed
+                    }}>
                     <Icon.Button
-                        padding={RFValue(8)}
-                        borderRadius={5}
-                        name="log-out"
+                        paddingLeft={RFValue(10)}
+                        name="globe"
                         size={RFValue(25)}
                         color="white"
                         alignSelf="center"
-                        backgroundColor="rgba(136, 3, 21, 1)"
+                        backgroundColor="transparent"
                         underlayColor="transparent"
                         style={{
-                            fontWeight: 'bold',
-                            fontSize: 20,
                             backgroundColor: 'transparent',
                             borderColor: 'transparent',
                             zIndex: 1,
                         }}
-                        onPress={logOut}>
-                        <Text
-                            style={{
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                color: 'white',
-                            }}>
-                            Log Out
-                        </Text>
-                    </Icon.Button>
-                    <Text style={styles.welcomeText}>
-                        Hello {user.name} {'\n'}
-                        Username: {user.username} {'\n'}
-                        OSIS: {user.osis} {'\n'}
-                        Event: {eventName} {'\n'}
-                        App Version: {appVersion} {'\n'}
-                    </Text>
+                        onPress={() => {
+                            openLinkInBrowserHandler();
+                        }}
+                    />
                 </View>
-                <AnimationLoader isLoading={isLoading} />
-            </View>
-            <View
-                style={{
-                    borderWidth: 0,
-                    position: 'absolute',
-                    alignSelf: 'flex-start',
-                    bottom: RFValue(110), // Adjust this value as needed
-                }}>
-                <Icon.Button
-                    paddingLeft={RFValue(10)}
-                    name="globe"
-                    size={RFValue(25)}
-                    color="white"
-                    alignSelf="center"
-                    backgroundColor="transparent"
-                    underlayColor="transparent"
-                    style={{
-                        backgroundColor: 'transparent',
-                        borderColor: 'transparent',
-                        zIndex: 1,
-                    }}
-                    onPress={() => {
-                        openLinkInBrowserHandler();
-                    }}
-                />
-            </View>
 
-            <View
-                style={{
-                    borderWidth: 0,
-                    position: 'absolute',
-                    alignSelf: 'flex-end',
-                    bottom: RFValue(110),
-                }}>
-                <Icon.Button
-                    name="settings"
-                    size={RFValue(25)}
-                    color="white"
-                    alignSelf="center"
-                    backgroundColor="transparent"
-                    underlayColor="transparent"
+                <View
                     style={{
-                        backgroundColor: 'transparent',
-                        borderColor: 'transparent',
-                        zIndex: 1,
-                    }}
-                    onPress={() => {
-                        setShowSettings(!showSettings);
-                    }}
-                />
-            </View>
-        </SafeAreaView>
+                        borderWidth: 0,
+                        position: 'absolute',
+                        alignSelf: 'flex-end',
+                        bottom: RFValue(110),
+                    }}>
+                    <Icon.Button
+                        name="settings"
+                        size={RFValue(25)}
+                        color="white"
+                        alignSelf="center"
+                        backgroundColor="transparent"
+                        underlayColor="transparent"
+                        style={{
+                            backgroundColor: 'transparent',
+                            borderColor: 'transparent',
+                            zIndex: 1,
+                        }}
+                        onPress={() => {
+                            navigation.navigate('Settings');
+                        }}
+                    />
+                </View>
+            </SafeAreaView>
+        );
+    };
+
+    return (
+        <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen name="ManageAccount" component={ManageAccount} />
+            <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
     );
 };
 

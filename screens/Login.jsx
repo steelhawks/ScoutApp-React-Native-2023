@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     TextInput,
@@ -14,12 +14,14 @@ import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
-// import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 // import LocalAuthentication from 'rn-local-authentication';
+import * as LocalAuthentication from 'expo-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import fs from 'react-native-fs';
 import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     fetchUserCredentialsFromServer,
     fetchTeamDataFromServer,
@@ -38,6 +40,77 @@ const Login = ({
     const [isLoading, setIsLoading] = useState(false);
     const [stayRemembered, setStayRemembered] = useState(false);
 
+    const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            const compatible = await LocalAuthentication.hasHardwareAsync();
+            setIsBiometricSupported(compatible);
+        })();
+    });
+
+    const handleBiometricLogin = async () => {
+        if (!isBiometricSupported) {
+            Alert.alert(
+                'Biometric authentication is not supported on this device',
+            );
+            return;
+        }
+
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (!isEnrolled) {
+            Alert.alert('No biometrics enrolled');
+            return;
+        }
+
+        const auth = await LocalAuthentication.authenticateAsync({
+            promptMessage: 'Authenticate',
+            fallbackTitle: 'Enter Password',
+        });
+
+        if (auth.success) {
+            try {
+                // login info request
+                const userData = await fetchUserCredentialsFromServer(
+                    await JSON.parse(await AsyncStorage.getItem('username')),
+                    await JSON.parse(await AsyncStorage.getItem('osis')),
+                    appVersion,
+                );
+
+                if (!userData) {
+                    Alert.alert(
+                        'App Version Mismatch',
+                        'Please update the app',
+                    );
+                    return;
+                }
+
+                const eventName = await fetchEventNameFromServer();
+                setEventName(eventName.name);
+
+                // team data request
+                const allTeamData = await fetchTeamDataFromServer();
+                setTeamData(allTeamData);
+
+                if (userData.authenticated !== false) {
+                    const user = userData;
+                    console.log(user);
+                    setUser(user);
+                } else {
+                    console.error('Incorrect username or password');
+                    Alert.alert('Incorrect username or password');
+                }
+            } catch (error) {
+                Alert.alert('Error connecting to the server', error);
+                console.error('Error connecting to the server', error);
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            console.log('Authentication failed');
+        }
+    };
+
     const handleLogin = async () => {
         console.log(RNFS.DocumentDirectoryPath);
         setIsLoading(true);
@@ -50,10 +123,10 @@ const Login = ({
             return;
         }
 
-        // if (stayRemembered) {
-        //     await AsyncStorage.setItem('username', username);
-        //     await AsyncStorage.setItem('osis', osis);
-        // }
+        if (stayRemembered) {
+            await AsyncStorage.setItem('username', JSON.stringify(username));
+            await AsyncStorage.setItem('osis', JSON.stringify(osis));
+        }
 
         try {
             // login info request
@@ -207,14 +280,35 @@ const Login = ({
                                 Log In
                             </Text>
                         </Icon.Button>
+                        <Icon.Button
+                            padding={RFValue(8)}
+                            borderRadius={5}
+                            name="log-in"
+                            size={RFValue(25)}
+                            color="white"
+                            alignSelf="center"
+                            backgroundColor="rgba(136, 3, 21, 1)"
+                            underlayColor="transparent"
+                            style={styles.iconButton}
+                            onPress={handleBiometricLogin}>
+                            <Text
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 20,
+                                    color: 'white',
+                                }}>
+                                FACE ID LOGIN
+                            </Text>
+                        </Icon.Button>
                         {/* Remember Me Button */}
-                        {/* {!isTablet() && (
+                        {!isTablet() && (
                             <BouncyCheckbox
                                 size={20}
                                 paddingTop={10}
                                 alignSelf={'center'}
                                 alignItems={'center'}
-                                text={'Remember me'}
+                                text={'Remember Me'}
                                 textAlign={'center'}
                                 unfillColor="black"
                                 fillColor="rgba(136, 3, 21, 1)"
@@ -229,7 +323,7 @@ const Login = ({
                                     fontWeight: 'bold',
                                 }}
                             />
-                        )} */}
+                        )}
                         <Text style={styles.footer}>
                             App Version: {appVersion} Build:{' '}
                             {DeviceInfo.getBuildNumber()}
