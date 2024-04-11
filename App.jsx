@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import {BlurView} from '@react-native-community/blur';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
-// import {checkLocalNetworkAccess, requestLocalNetworkAccess} from 'react-native-local-network-permission';
 import {
     RequestDefaultPermissions,
     RequestNotifications,
@@ -31,9 +30,6 @@ Sentry.init({
     tracesSampleRate: 1.0,
 });
 
-// await checkLocalNetworkAccess();
-// requestLocalNetworkAccess();
-
 const Tab = createBottomTabNavigator(); // new
 
 const App = () => {
@@ -41,7 +37,7 @@ const App = () => {
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
-    const [appVersion] = useState('v1.4');
+    const [appVersion] = useState('v1.5');
 
     const [teamData, setTeamData] = useState(null);
 
@@ -58,6 +54,7 @@ const App = () => {
                 setScoutingType={setScoutingType}
                 scoutingType={scoutingType}
                 eventName={eventName}
+                offlineMode={offlineMode}
                 user={user}
             />
         );

@@ -14,8 +14,6 @@ import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-// import LocalAuthentication from 'rn-local-authentication';
 import * as LocalAuthentication from 'expo-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import fs from 'react-native-fs';
@@ -28,6 +26,7 @@ import {
     fetchEventNameFromServer,
 } from '../authentication/api';
 
+
 const Login = ({
     setUser,
     setEventName,
@@ -35,10 +34,9 @@ const Login = ({
     setTeamData,
     setOfflineMode,
 }) => {
-    const [username, setUsername] = useState(null);
+    const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [stayRemembered, setStayRemembered] = useState(false);
 
     const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
@@ -123,10 +121,8 @@ const Login = ({
             return;
         }
 
-        if (stayRemembered) {
-            await AsyncStorage.setItem('username', JSON.stringify(username));
-            await AsyncStorage.setItem('osis', JSON.stringify(osis));
-        }
+        await AsyncStorage.setItem('username', JSON.stringify(username));
+        await AsyncStorage.setItem('osis', JSON.stringify(osis));
 
         try {
             // login info request
@@ -224,8 +220,18 @@ const Login = ({
         }
     };
 
-    const isTablet = () => {
-        return DeviceInfo.isTablet();
+    const chooseLoginType = async () => {
+        if (
+            isBiometricSupported &&
+            JSON.parse((await AsyncStorage.getItem('biometric')) === 'true') &&
+            username === '' &&
+            osis === ''
+        ) {
+            handleBiometricLogin();
+        } else {
+            JSON.stringify(await AsyncStorage.setItem('biometric', 'false'));
+            handleLogin();
+        }
     };
 
     return (
@@ -269,7 +275,7 @@ const Login = ({
                             backgroundColor="rgba(136, 3, 21, 1)"
                             underlayColor="transparent"
                             style={styles.iconButton}
-                            onPress={handleLogin}>
+                            onPress={chooseLoginType}>
                             <Text
                                 // eslint-disable-next-line react-native/no-inline-styles
                                 style={{
@@ -280,50 +286,6 @@ const Login = ({
                                 Log In
                             </Text>
                         </Icon.Button>
-                        <Icon.Button
-                            padding={RFValue(8)}
-                            borderRadius={5}
-                            name="log-in"
-                            size={RFValue(25)}
-                            color="white"
-                            alignSelf="center"
-                            backgroundColor="rgba(136, 3, 21, 1)"
-                            underlayColor="transparent"
-                            style={styles.iconButton}
-                            onPress={handleBiometricLogin}>
-                            <Text
-                                // eslint-disable-next-line react-native/no-inline-styles
-                                style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 20,
-                                    color: 'white',
-                                }}>
-                                FACE ID LOGIN
-                            </Text>
-                        </Icon.Button>
-                        {/* Remember Me Button */}
-                        {!isTablet() && (
-                            <BouncyCheckbox
-                                size={20}
-                                paddingTop={10}
-                                alignSelf={'center'}
-                                alignItems={'center'}
-                                text={'Remember Me'}
-                                textAlign={'center'}
-                                unfillColor="black"
-                                fillColor="rgba(136, 3, 21, 1)"
-                                onPress={isChecked => {
-                                    setStayRemembered(isChecked);
-                                }}
-                                // eslint-disable-next-line react-native/no-inline-styles
-                                textStyle={{
-                                    paddingRight: 10,
-                                    color: 'white',
-                                    textDecorationLine: 'none',
-                                    fontWeight: 'bold',
-                                }}
-                            />
-                        )}
                         <Text style={styles.footer}>
                             App Version: {appVersion} Build:{' '}
                             {DeviceInfo.getBuildNumber()}

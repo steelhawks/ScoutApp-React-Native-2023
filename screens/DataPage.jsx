@@ -13,14 +13,18 @@ import Icon from 'react-native-vector-icons/Feather';
 // import {useDictStore, usePitDict} from '../contexts/dict';
 import EmptyPage from './EmptyPage';
 import {uploadDataToServer} from '../authentication/api';
+import {createStackNavigator} from '@react-navigation/stack';
+import EditPage from './EditPage';
 
-// const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
+const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+// const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
     // zustand hooks
     // const dict = useDictStore(state => state.dict);
     // const setDict = useDictStore(state => state.setDict);
+
+    const Stack = createStackNavigator();
 
     const [dict, setDict] = useState({
         eventName: '',
@@ -358,7 +362,6 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 
     const handleDeleteAll = async () => {
         try {
-            // selectedJson = null;
             for (const index in jsonFiles) {
                 const json = jsonFiles[index];
                 const path = fs.DocumentDirectoryPath + '/' + json;
@@ -481,40 +484,13 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         return `Team ${teamNumber}, Match ${matchNumberPart}`;
     };
 
-    // DOESNT WORK FIX LATER
-    // this allows the formatter to handle both pit scouting and match scouting names
-    // ex when this code works correctly it fixes the pit scouting names looking like this:
-    // Team: SCOUTING, Match: FarhanJamil
-    // const getFormattedFileName = file => {
-    //     const fileNameParts = file.split('-');
-
-    //     let teamNumber;
-    //     let matchNumberPart;
-
-    //     // checking if the file name starts with "PIT-SCOUTING"
-    //     if (fileNameParts[0] === 'PIT' && fileNameParts[1] === 'SCOUTING') {
-    //         // if it does, then the team number is the 4th element
-    //         teamNumber = fileNameParts[3];
-
-    //         // the match number part will be the 4th element, excluding the file extension
-    //         matchNumberPart = fileNameParts[4].split('.')[0];
-    //     } else {
-    //         // if the file name doesn't start with "PIT-SCOUTING"
-    //         // then the team number is the 2nd element
-    //         teamNumber = fileNameParts[1];
-
-    //         // the match number part will be the 3rd element, excluding the file extension
-    //         matchNumberPart = fileNameParts[2].split('.')[0];
-    //     }
-    //     // remove any unnecessary part from the match number
-    //     matchNumberPart = matchNumberPart.replace('-synced', '');
-
-    //     return `Team ${teamNumber}, Match ${matchNumberPart}`;
-    // };
-
     const empty_page = [
         <EmptyPage navigation={navigation} matchCreated={matchCreated} />,
     ];
+
+    const handleEditFile = file => {
+        navigation.navigate('EditPage');
+    };
 
     const data_page = [
         <>
@@ -547,13 +523,26 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                                 overshootFriction={20}
                                 key={file}
                                 renderLeftActions={() => (
-                                    <TouchableOpacity
-                                        style={styles.swipeSyncButton}
-                                        onPress={() => forceSync(file)}>
-                                        <Text style={styles.swipeDeleteText}>
-                                            Sync
-                                        </Text>
-                                    </TouchableOpacity>
+                                    <>
+                                        {/* <TouchableOpacity
+                                            style={styles.swipeSyncButton}
+                                            onPress={() => forceSync(file)}>
+                                            <Text
+                                                style={styles.swipeDeleteText}>
+                                                Sync
+                                            </Text>
+                                        </TouchableOpacity> */}
+                                        <TouchableOpacity
+                                            style={styles.swipeSyncButton}
+                                            onPress={() =>
+                                                handleEditFile(file)
+                                            }>
+                                            <Text
+                                                style={styles.swipeDeleteText}>
+                                                Edit
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
                                 )}
                                 renderRightActions={() => (
                                     <>
@@ -621,16 +610,31 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         </>,
     ];
 
+    const DataPageNavigate = () => {
+        return (
+            <GestureHandlerRootView style={styles.container}>
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                        paddingBottom: RFValue(100),
+                    }}>
+                    {jsonFiles.length !== 0 ? data_page : empty_page}
+                </SafeAreaView>
+            </GestureHandlerRootView>
+        );
+    };
+
+    const EditPageNavigate = () => {
+        return <EditPage />;
+    };
+
     return (
-        <GestureHandlerRootView style={styles.container}>
-            <SafeAreaView
-                style={{
-                    flex: 1,
-                    paddingBottom: RFValue(100),
-                }}>
-                {jsonFiles.length !== 0 ? data_page : empty_page}
-            </SafeAreaView>
-        </GestureHandlerRootView>
+        <Stack.Navigator
+            initialRouteName="DataPage"
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen name="DataPage">{DataPageNavigate}</Stack.Screen>
+            <Stack.Screen name="EditPage">{EditPageNavigate}</Stack.Screen>
+        </Stack.Navigator>
     );
 };
 

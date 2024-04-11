@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ScrollView, Text, View, StyleSheet, Alert} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from './inputs/Button';
@@ -20,6 +20,7 @@ const NewMatch = ({
     scoutingType,
     eventName,
     user,
+    offlineMode,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const resetDict = useDictStore(state => state.resetDict);
@@ -33,6 +34,25 @@ const NewMatch = ({
     const [matchNumber, setMatchNumber] = useState(null);
     const [matchType, setMatchType] = useState(null);
     const [driveStation, setDriveStation] = useState(null);
+
+    useEffect(async () => {
+        if (JSON.parse(await AsyncStorage.getItem('biometric') === 'false') && !offlineMode) {
+            Alert.alert(
+                'Biometric Authentication',
+                'Would you like to login with biometric authentication?',
+                [
+                    {
+                        text: 'Yes',
+                        onPress: async () => JSON.stringify(await AsyncStorage.setItem('biometric', 'true')),
+                    },
+                    {
+                        text: 'No',
+                        onPress: async () => JSON.stringify(await AsyncStorage.setItem('biometric', 'false')),
+                    },
+                ],
+            );
+        }
+    }, [])
 
     const checkFilledOut = () => {
         return (
