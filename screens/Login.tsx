@@ -17,7 +17,6 @@ import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import * as LocalAuthentication from 'expo-local-authentication';
 import DeviceInfo from 'react-native-device-info';
 import fs from 'react-native-fs';
-import RNFS from 'react-native-fs';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -26,18 +25,22 @@ import {
     fetchEventNameFromServer,
 } from '../authentication/api';
 
-
 const Login = ({
     setUser,
     setEventName,
     appVersion,
     setTeamData,
     setOfflineMode,
+}: {
+    setUser: (user: any) => void;
+    setEventName: (eventName: string) => void;
+    appVersion: string;
+    setTeamData: (teamData: any) => void;
+    setOfflineMode: (offlineMode: boolean) => void;
 }) => {
     const [username, setUsername] = useState('');
     const [osis, setOsis] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
     const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
     useEffect(() => {
@@ -63,15 +66,19 @@ const Login = ({
 
         const auth = await LocalAuthentication.authenticateAsync({
             promptMessage: 'Authenticate',
-            fallbackTitle: 'Enter Password',
         });
+
+        // add security check to delete entry after 5 days
 
         if (auth.success) {
             try {
                 // login info request
+                const username = (await AsyncStorage.getItem('username')) || '';
+                const osis = (await AsyncStorage.getItem('osis')) || '';
+
                 const userData = await fetchUserCredentialsFromServer(
-                    await JSON.parse(await AsyncStorage.getItem('username')),
-                    await JSON.parse(await AsyncStorage.getItem('osis')),
+                    JSON.parse(username),
+                    JSON.parse(osis),
                     appVersion,
                 );
 
@@ -99,7 +106,7 @@ const Login = ({
                     Alert.alert('Incorrect username or password');
                 }
             } catch (error) {
-                Alert.alert('Error connecting to the server', error);
+                Alert.alert('Error connecting to the server', String(error));
                 console.error('Error connecting to the server', error);
             } finally {
                 setIsLoading(false);
@@ -110,7 +117,7 @@ const Login = ({
     };
 
     const handleLogin = async () => {
-        console.log(RNFS.DocumentDirectoryPath);
+        console.log(fs.DocumentDirectoryPath);
         setIsLoading(true);
         setOfflineMode(false);
 
@@ -153,7 +160,7 @@ const Login = ({
                 Alert.alert('Incorrect username or password');
             }
         } catch (error) {
-            Alert.alert('Error connecting to the server', error);
+            Alert.alert('Error connecting to the server', String(error));
             console.error('Error connecting to the server', error);
         } finally {
             setIsLoading(false);
@@ -193,7 +200,7 @@ const Login = ({
                                 },
                             ],
                         );
-                        setUsername(null);
+                        setUsername('');
                         return;
                     }
 
@@ -214,7 +221,7 @@ const Login = ({
             Alert.alert(
                 'Error with retrieving offline data',
                 'Please connect to a server as soon as possible to sync.',
-                error,
+                [{text: String(error)}],
             );
         } finally {
         }
@@ -223,7 +230,7 @@ const Login = ({
     const chooseLoginType = async () => {
         if (
             isBiometricSupported &&
-            JSON.parse((await AsyncStorage.getItem('biometric')) === 'true') &&
+            (await AsyncStorage.getItem('biometric')) === 'true' &&
             username === '' &&
             osis === ''
         ) {
@@ -266,15 +273,13 @@ const Login = ({
                             keyboardType="numeric"
                         />
                         <Icon.Button
-                            padding={RFValue(8)}
                             borderRadius={5}
                             name="log-in"
                             size={RFValue(25)}
                             color="white"
-                            alignSelf="center"
                             backgroundColor="rgba(136, 3, 21, 1)"
                             underlayColor="transparent"
-                            style={styles.iconButton}
+                            style={styles.iconButton} // Remove the array brackets here
                             onPress={chooseLoginType}>
                             <Text
                                 // eslint-disable-next-line react-native/no-inline-styles
@@ -293,7 +298,10 @@ const Login = ({
                     </AvoidKeyboardContainer>
                 </View>
 
-                <AnimationLoader isLoading={isLoading} />
+                <AnimationLoader
+                    isLoading={isLoading}
+                    onAnimationComplete={undefined}
+                />
             </SafeAreaView>
         </TouchableWithoutFeedback>
     );
@@ -301,6 +309,7 @@ const Login = ({
 
 const styles = StyleSheet.create({
     iconButton: {
+        alignSelf: "center",
         fontWeight: 'bold',
         fontSize: 20,
         backgroundColor: 'transparent',

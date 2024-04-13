@@ -1,9 +1,27 @@
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    Alert,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+} from 'react-native';
 import {useDictStore, usePitDict} from '../contexts/dict';
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
-import React from 'react';
+import {RFValue} from 'react-native-responsive-fontsize';
+import AndroidPrompt from '../components/AndroidPrompt';
+import React, {useEffect, useState} from 'react';
+import {useRoute} from '@react-navigation/native';
+import Button from '../components/inputs/Button';
+import fs from 'react-native-fs';
+
+type RouteParams = {
+    file: string;
+};
+
+const docDir = fs.DocumentDirectoryPath;
+const hiddenKeys = ['timeOfCreation'];
 
 const EditPage = () => {
     const dict = useDictStore(state => state.dict);
@@ -12,6 +30,80 @@ const EditPage = () => {
     const pitDict = usePitDict(state => state.pitDict);
     const setPitDict = usePitDict(state => state.setPitDict);
 
+    const route = useRoute(); // use the useRoute hook to get the route object
+    const params = route.params as RouteParams; // cast route.params to the defined type
+    const file = params.file; // access the file parameter from the route.params object
+
+    const [fileValues, setFileValues] = useState<string[]>([]);
+    const [fileKeys, setFileKeys] = useState<string[]>([]);
+    const [isMatchData, setIsMatchData] = useState<boolean>(false);
+
+    useEffect(() => {
+        // Read the file and set the file data
+        const readFile = async () => {
+            try {
+                const path = docDir + '/' + file;
+                console.log('Path to file', path);
+                const content = await fs.readFile(path, 'utf8');
+
+                const jsonData = JSON.parse(content);
+                console.log('JSON Data', Object.values(jsonData));
+                setFileKeys(Object.keys(jsonData));
+                setFileValues(Object.values(jsonData));
+
+                {
+                    jsonData.matchNumber === 'PIT'
+                        ? setIsMatchData(false)
+                        : setIsMatchData(true);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        readFile();
+    }, []);
+
+    const handleFieldEdit = (key: any, data: string, index: number) => {
+        console.log('Field Edit', key, data);
+        if (Platform.OS === 'ios') {
+            Alert.prompt(
+                'Edit Field',
+                'Enter the new value for this field',
+                [
+                    {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: (value?: string | undefined) => {
+                            if (value) {
+                                const newFileValues = [...fileValues]; // Create a new array
+                                newFileValues[index] = value; // Update the value at the specified index
+                                setFileValues(newFileValues); // Set the state with the new array
+                            }
+                        },
+                    },
+                ],
+                'plain-text',
+                data,
+            );
+        } else {
+            <AndroidPrompt
+                visible={true}
+                onClose={() => console.log('Close Pressed')}
+                onSubmit={text => {
+                    console.log('OK Pressed', text);
+                    const newFileValues = fileValues;
+                    newFileValues[index] = text;
+                    setFileValues(newFileValues);
+                }}
+            />;
+        }
+    };
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView
@@ -19,7 +111,40 @@ const EditPage = () => {
                     flex: 1,
                     paddingBottom: RFValue(100),
                 }}>
-                
+                <Text style={styles.title}>Edit Match</Text>
+                <Button
+                    label="Edit Match"
+                    onPress={() => {
+                        console.log(file);
+                    }}
+                />
+                <ScrollView
+                    style={{
+                        width: '100%',
+                        padding: RFValue(16),
+                    }}>
+                    {fileKeys.map((line, index) => {
+                        if (!hiddenKeys.includes(line)) {
+                            return (
+                                <>
+                                    <Text style={styles.title}>{line}</Text>
+                                    <Button
+                                        // index={index}
+                                        label={fileValues[index]}
+                                        onPress={() => {
+                                            handleFieldEdit(
+                                                line,
+                                                fileValues[index],
+                                                index,
+                                            );
+                                        }}
+                                    />
+                                </>
+                            );
+                        }
+                        return null;
+                    })}
+                </ScrollView>
             </SafeAreaView>
         </GestureHandlerRootView>
     );

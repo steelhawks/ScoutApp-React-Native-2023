@@ -70,26 +70,21 @@ PERMISSIONS.IOS.SPEECH_RECOGNITION;
 PERMISSIONS.IOS.STOREKIT;
 
 export const RequestDefaultPermissions = async () => {
-    requestMultiple(
-        [
-            PERMISSIONS.IOS.CAMERA,
-            PERMISSIONS.IOS.FACE_ID,
-            PERMISSIONS.IOS.BLUETOOTH,
-        ],
-        [
-            PERMISSIONS.ANDROID.CAMERA,
-            PERMISSIONS.ANDROID.BLUETOOTH,
-            PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES,
-        ],
-    ).then(statuses => {
+    requestMultiple([
+        PERMISSIONS.IOS.CAMERA,
+        PERMISSIONS.IOS.FACE_ID,
+        PERMISSIONS.ANDROID.CAMERA,
+        PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES,
+    ]).then(statuses => {
         if (Platform.OS === 'ios') {
             console.log('Camera', statuses[PERMISSIONS.IOS.CAMERA]);
             console.log('FaceID', statuses[PERMISSIONS.IOS.FACE_ID]);
-            console.log('BLUETOOTH', statuses[PERMISSIONS.IOS.BLUETOOTH]);
         } else if (Platform.OS === 'android') {
             console.log('CAMERA', statuses[PERMISSIONS.ANDROID.CAMERA]);
-            console.log('BLUETOOTH', statuses[PERMISSIONS.ANDROID.BLUETOOTH]);
-            console.log('Wifi', statuses[PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES])
+            console.log(
+                'Wifi',
+                statuses[PERMISSIONS.ANDROID.NEARBY_WIFI_DEVICES],
+            );
         }
     });
 };

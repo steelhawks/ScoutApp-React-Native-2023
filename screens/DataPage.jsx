@@ -474,6 +474,12 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
     ];
 
     const getFormattedFileName = file => {
+        if (file.startsWith('PIT')) {
+            const fileNameParts = file.split('-');
+            const formattedScouterName = fileNameParts[2].replace(/([A-Z])/g, ' $1'); // remove spaces and break parts divided by - into words
+            return `PIT${formattedScouterName}, Team ${fileNameParts[3].replace('.json', '')}`;
+        }
+
         const fileNameParts = file.split('-');
 
         const teamNumber = fileNameParts[1];
@@ -488,8 +494,8 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         <EmptyPage navigation={navigation} matchCreated={matchCreated} />,
     ];
 
-    const handleEditFile = file => {
-        navigation.navigate('EditPage');
+    const handleEditFile = (file) => {
+        navigation.navigate('EditPage', { file });
     };
 
     const data_page = [

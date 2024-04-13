@@ -10,7 +10,7 @@ import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
-const EmptyPage = ({navigation, matchCreated}) => {
+const EmptyPage = ({navigation, matchCreated}: {navigation: any, matchCreated: boolean}) => {
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
@@ -19,8 +19,7 @@ const EmptyPage = ({navigation, matchCreated}) => {
                     name="file-minus"
                     size={RFValue(100)}
                     color="white"
-                    alignSelf="center"
-                    paddingTop={RFValue(60)}
+                    style={{alignSelf: 'center', paddingTop: RFValue(60)}}
                 />
                 <View style={{flexDirection: 'row', paddingTop: RFValue(80)}}>
                     <Button
@@ -50,7 +49,6 @@ const styles = StyleSheet.create({
         padding: RFValue(16),
         borderTopLeftRadius: RFValue(16),
         borderTopRightRadius: RFValue(16),
-        // paddingBottom: RFValue(120),
     },
     centerContent: {
         borderRadius: RFValue(16),
@@ -75,7 +73,6 @@ const styles = StyleSheet.create({
         marginTop: RFValue(10),
         textAlign: 'center',
         padding: RFValue(16),
-        borderRadius: RFValue(8),
         marginBottom: RFValue(10),
         width: '100%',
         shadowColor: '#000',

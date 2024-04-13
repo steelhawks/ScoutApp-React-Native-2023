@@ -1,13 +1,13 @@
-import {Modal, TextInput, Button, View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
+import {Modal, TextInput, Button, View, StyleSheet} from 'react-native';
 
-interface NumericInputModalProps {
+interface AndroidPromptProps {
     visible: boolean;
     onClose: () => void;
     onSubmit: (inputValue: string) => void;
 }
 
-const NumericInputModal: React.FC<NumericInputModalProps> = ({
+const AndroidPrompt: React.FC<AndroidPromptProps> = ({
     visible,
     onClose,
     onSubmit,
@@ -30,7 +30,7 @@ const NumericInputModal: React.FC<NumericInputModalProps> = ({
                 <View style={styles.modalContent}>
                     <TextInput
                         style={styles.input}
-                        keyboardType="numeric"
+                        keyboardType="default"
                         value={inputValue}
                         onChangeText={setInputValue}
                     />
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NumericInputModal;
+export default AndroidPrompt;
