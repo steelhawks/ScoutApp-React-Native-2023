@@ -1,5 +1,4 @@
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     Alert,
     Platform,
@@ -7,8 +6,8 @@ import {
     ScrollView,
     StyleSheet,
     Text,
+    View,
 } from 'react-native';
-import {useDictStore, usePitDict} from '../contexts/dict';
 import {RFValue} from 'react-native-responsive-fontsize';
 import AndroidPrompt from '../components/AndroidPrompt';
 import React, {useEffect, useState} from 'react';
@@ -24,12 +23,6 @@ const docDir = fs.DocumentDirectoryPath;
 const hiddenKeys = ['timeOfCreation'];
 
 const EditPage = () => {
-    const dict = useDictStore(state => state.dict);
-    const setDict = useDictStore(state => state.setDict);
-
-    const pitDict = usePitDict(state => state.pitDict);
-    const setPitDict = usePitDict(state => state.setPitDict);
-
     const route = useRoute(); // use the useRoute hook to get the route object
     const params = route.params as RouteParams; // cast route.params to the defined type
     const file = params.file; // access the file parameter from the route.params object
@@ -80,9 +73,9 @@ const EditPage = () => {
                         text: 'OK',
                         onPress: (value?: string | undefined) => {
                             if (value) {
-                                const newFileValues = [...fileValues]; // Create a new array
-                                newFileValues[index] = value; // Update the value at the specified index
-                                setFileValues(newFileValues); // Set the state with the new array
+                                const newFileValues = [...fileValues]; // create a new array
+                                newFileValues[index] = value; // update the value at the specified index
+                                setFileValues(newFileValues); // set the state with the new array
                             }
                         },
                     },
@@ -104,6 +97,21 @@ const EditPage = () => {
         }
     };
 
+    const saveChanges = async () => {
+        try {
+            const path = docDir + '/' + file;
+            const data: { [key: string]: string } = {}; // add index signature to the type of the data object
+            fileKeys.forEach((key, index) => {
+                data[key] = fileValues[index];
+            });
+            const jsonData = JSON.stringify(data, null, 2);
+            await fs.writeFile(path, jsonData, 'utf8');
+            console.log('File Updated');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView
@@ -111,39 +119,48 @@ const EditPage = () => {
                     flex: 1,
                     paddingBottom: RFValue(100),
                 }}>
-                <Text style={styles.title}>Edit Match</Text>
-                <Button
-                    label="Edit Match"
-                    onPress={() => {
-                        console.log(file);
-                    }}
-                />
                 <ScrollView
                     style={{
                         width: '100%',
                         padding: RFValue(16),
                     }}>
-                    {fileKeys.map((line, index) => {
-                        if (!hiddenKeys.includes(line)) {
-                            return (
-                                <>
-                                    <Text style={styles.title}>{line}</Text>
-                                    <Button
-                                        // index={index}
-                                        label={fileValues[index]}
-                                        onPress={() => {
-                                            handleFieldEdit(
-                                                line,
-                                                fileValues[index],
-                                                index,
-                                            );
-                                        }}
-                                    />
-                                </>
-                            );
-                        }
-                        return null;
-                    })}
+                    <Text style={styles.title}>Edit Match</Text>
+                    <View style={styles.centerContent}>
+                        <Button
+                            label="Edit Match"
+                            onPress={() => {
+                                console.log(file);
+                            }}
+                        />
+                        {fileKeys.map((line, index) => {
+                            if (!hiddenKeys.includes(line)) {
+                                return (
+                                    <>
+                                        <Text style={styles.text}>{line}</Text>
+                                        <Button
+                                            // index={index}
+                                            label={fileValues[index]}
+                                            onPress={() => {
+                                                handleFieldEdit(
+                                                    line,
+                                                    fileValues[index],
+                                                    index,
+                                                );
+                                            }}
+                                        />
+                                    </>
+                                );
+                            }
+                            return null;
+                        })}
+                        <Button
+                            label="Save Changes"
+                            style={{marginBottom: 100}}
+                            onPress={() => {
+                                saveChanges();
+                            }}
+                        />
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         </GestureHandlerRootView>
@@ -154,6 +171,14 @@ const styles = StyleSheet.create({
     title: {
         paddingTop: RFValue(50),
         fontSize: RFValue(30),
+        fontWeight: 'bold',
+        color: 'white', // White text color for dark mode
+        marginBottom: RFValue(20),
+        textAlign: 'center',
+    },
+    text: {
+        paddingTop: RFValue(50),
+        fontSize: RFValue(20),
         fontWeight: 'bold',
         color: 'white', // White text color for dark mode
         marginBottom: RFValue(20),

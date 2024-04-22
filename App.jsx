@@ -31,13 +31,13 @@ Sentry.init({
 });
 
 const Tab = createBottomTabNavigator(); // new
+const appVersion = 'v1.5';
 
 const App = () => {
     const [user, setUser] = useState(null);
     const [eventName, setEventName] = useState(null);
     const [matchCreated, setMatchCreated] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
-    const [appVersion] = useState('v1.5');
 
     const [teamData, setTeamData] = useState(null);
 

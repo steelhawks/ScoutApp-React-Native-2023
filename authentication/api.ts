@@ -39,7 +39,7 @@ export const fetchUserCredentialsFromServer = async (
 export const fetchTeamDataFromServer = async () => {
     try {
         const teamDataResponse = await fetch(
-            `${SERVER_ENDPOINT}/get_team_data`,
+            `${SERVER_ENDPOINT}/api/get_team_data`,
         );
 
         if (teamDataResponse.ok) {
@@ -174,5 +174,6 @@ export const uploadDataToServer = async (data: any)  => { // fix to find type la
         body: JSON.stringify(data),
     });
 
-    return response.ok;
+    console.log(response);
+    return response;
 };

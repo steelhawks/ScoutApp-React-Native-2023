@@ -18,70 +18,15 @@ import EditPage from './EditPage';
 
 const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
 // const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
+const docDir = fs.DocumentDirectoryPath;
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
-    // zustand hooks
-    // const dict = useDictStore(state => state.dict);
-    // const setDict = useDictStore(state => state.setDict);
-
+    const [jsonFiles, setJsonFiles] = useState([]);
+    const [jsonSelected, setJsonSelected] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [fileValues, setFileValues] = useState([]);
+    const [fileKeys, setFileKeys] = useState([]);
     const Stack = createStackNavigator();
-
-    const [dict, setDict] = useState({
-        eventName: '',
-        scouterName: '',
-        teamNumber: '',
-        matchNumber: '',
-        matchType: '', // qualification, practice, or elimination
-        driveStation: '',
-        alliance: '', // red or blue
-        preloaded: null, // true or false
-        robotLeft: null, // true or false
-        autonSpeakerNotesScored: 0,
-        autonAmpNotesScored: 0,
-        autonMissed: 0,
-        autonNotesReceived: 0,
-        droppedNotes: 0,
-        autonIssues: [], // NOT_MOVING, STOPPED, OUT_OF_CONTROL, Default: EMPTY
-        telopSpeakerNotesScored: 0,
-        telopAmpNotesScored: 0,
-        telopAmplifiedSpeakerNotes: 0,
-        telopSpeakerNotesMissed: 0,
-        telopAmpNotesMissed: 0,
-        telopNotesReceivedFromHumanPlayer: 0,
-        telopNotesReceivedFromGround: 0,
-        ferryNotes: 0,
-        endGame: 'EMPTY', // PARKED, ONSTAGE, SPOTLIGHT, Default: EMPTY
-        trap: 0,
-        fouls: 0,
-        techFouls: 0,
-        yellowCards: 0,
-        redCards: 0,
-        telopIssues: [], // NOT_MOVING, LOST_CONNECTION, FMS_ISSUES, DISABLED, Default: EMPTY
-        didTeamPlayDefense: null, // YES, NO, Default: null
-        timeOfCreation: '',
-    });
-
-    const [pitDict, setPitDict] = useState({
-        eventName: '',
-        scouterName: '',
-        teamNumber: '',
-        matchNumber: 'PIT',
-        dimensions: '',
-        weight: '',
-        drivetrain: '',
-        intake: '',
-        vision: '',
-        auton: '',
-        robotExcel: '',
-        trapScorer: '',
-        timeOfCreation: '',
-    });
-
-    // const pitDict = usePitDict(state => state.dict);
-    // const setPitDict = usePitDict(state => state.setDict);
-
-    const [isPitScouting, setIsPitScouting] = useState(false);
-
     const [refreshFlag, setRefreshFlag] = useState(false); // new state variable
 
     useFocusEffect(
@@ -99,12 +44,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                 });
         }, [docDir]),
     );
-
-    const docDir = fs.DocumentDirectoryPath;
-    const [jsonFiles, setJsonFiles] = useState([]);
-    const [jsonSelected, setJsonSelected] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-
+    
     useEffect(() => {
         // Fetch and set the list of JSON files in the directory
         fs.readdir(docDir)
@@ -126,10 +66,21 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 
             // parses the JSON content and updates the dictionary
             const jsonData = JSON.parse(content);
-            console.log('Match Data', jsonData);
-            jsonData.matchNumber === 'PIT'
-                ? (setPitDict(jsonData), setIsPitScouting(true))
-                : (setDict(jsonData), setIsPitScouting(false));
+            const formattedFileKeys = Object.keys(jsonData).map(key => {
+                const words = key.split(/(?=[A-Z])/);
+                const formattedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+                return formattedWords.join(' ');
+            });
+            setFileKeys(formattedFileKeys);
+            setFileValues(Object.values(jsonData).map(value => {
+                if (value === '' || value === null || (Array.isArray(value) && value.length === 0)) {
+                    return 'N/A';
+                } else if (Array.isArray(value)) {
+                    return value.join(', ');
+                } else {
+                    return value;
+                }
+            }));
 
             // updates the boolean to false when the selected json is deselected
             setJsonSelected(prev =>
@@ -184,7 +135,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 
             await addSyncedSuffix(json);
         }
-        // After successful syncing, set the refresh flag to trigger a re-render
+        // after successful syncing, set the refresh flag to trigger a re-render
         setRefreshFlag(prev => !prev);
 
         Alert.alert('Syncing Successful', '', [
@@ -324,7 +275,6 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 
     const handleDelete = async file => {
         try {
-            // selectedJson = null;
             const filePath = fs.DocumentDirectoryPath + '/' + file;
             await fs.unlink(filePath);
 
@@ -373,104 +323,16 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         }
     };
 
-    const matchScouting = [
-        <Text style={styles.valueText}>
-            Event Name: {dict.eventName}
-            {'\n'}
-            Scouter Name: {dict.scouterName}
-            {'\n'}
-            Team Number: {dict.teamNumber}
-            {'\n'}
-            Match Number: {dict.matchNumber}
-            {'\n'}
-            Match Type: {dict.matchType}
-            {'\n'}
-            Drive Station: {dict.driveStation}
-            {'\n'}
-            Alliance: {dict.alliance}
-            {'\n'}
-            Preloaded: {dict.preloaded}
-            {'\n'}
-            Robot Left: {dict.robotLeft}
-            {'\n'}
-            Auton Speaker Notes Scored: {dict.autonSpeakerNotesScored}
-            {'\n'}
-            Auton Amp Notes Scored: {dict.autonAmpNotesScored}
-            {'\n'}
-            Auton Missed: {dict.autonMissed}
-            {'\n'}
-            Auton Notes Received: {dict.autonNotesReceived}
-            {'\n'}
-            Auton Issues: {dict.autonIssues}
-            {'\n'}
-            Telop Speaker Notes Scored: {dict.telopSpeakerNotesScored}
-            {'\n'}
-            Telop Amp Notes Scored: {dict.telopAmpNotesScored}
-            {'\n'}
-            Telop Amplified Speaker Notes: {dict.telopAmplifiedSpeakerNotes}
-            {'\n'}
-            Telop Speaker Notes Missed: {dict.telopSpeakerNotesMissed}
-            {'\n'}
-            Telop Amp Notes Missed: {dict.telopAmpNotesMissed}
-            {'\n'}
-            Dropped Notes: {dict.droppedNotes}
-            {'\n'}
-            Telop Notes Received From Human Player:{' '}
-            {dict.telopNotesReceivedFromHumanPlayer}
-            {'\n'}
-            Telop Notes Received From Ground:{' '}
-            {dict.telopNotesReceivedFromGround}
-            {'\n'}
-            Ferry Notes: {dict.ferryNotes}
-            {'\n'}
-            End Game: {dict.endGame}
-            {'\n'}
-            Trap: {dict.trap}
-            {'\n'}
-            Fouls Received: {dict.fouls}
-            {'\n'}
-            Tech Fouls Received: {dict.techFouls}
-            {'\n'}
-            Yellow Cards Received: {dict.yellowCards}
-            {'\n'}
-            Red Cards Received: {dict.redCards}
-            {'\n'}
-            Teleop Issues: {dict.telopIssues}
-            {'\n'}
-            Did Team Play Defense: {dict.didTeamPlayDefense}
-            {'\n'}
-            Time of Creation: {dict.timeOfCreation}
-            {'\n'}
-        </Text>,
-    ];
-
-    const pitScouting = [
-        <Text style={styles.valueText}>
-            Event Name: {pitDict.eventName}
-            {'\n'}
-            Team Number: {pitDict.teamNumber}
-            {'\n'}
-            Scouter Name: {pitDict.scouterName}
-            {'\n'}
-            Dimensions: {pitDict.dimensions}
-            {'\n'}
-            Weight: {pitDict.weight}
-            {'\n'}
-            Drivetrain: {pitDict.drivetrain}
-            {'\n'}
-            Intake: {pitDict.intake}
-            {'\n'}
-            Vision: {pitDict.vision}
-            {'\n'}
-            Auton: {pitDict.auton}
-            {'\n'}
-            Robot Excel: {pitDict.robotExcel}
-            {'\n'}
-            Trap Scorer: {pitDict.trapScorer}
-            {'\n'}
-            Time of Creation: {pitDict.timeOfCreation}
-            {'\n'}
-        </Text>,
+    const data = [
+        <>
+            {fileKeys.map((key, index) => (
+                <View key={key} style={styles.valueBox}>
+                    <Text style={styles.valueText}>
+                        {key}: {fileValues[index]}
+                    </Text>
+                </View>
+            ))}
+        </>,
     ];
 
     const getFormattedFileName = file => {
@@ -524,20 +386,12 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                         />
                     </View>
                     <View>
-                        {jsonFiles.map(file => (
+                        {jsonFiles.map((file) => (
                             <Swipeable
                                 overshootFriction={20}
                                 key={file}
                                 renderLeftActions={() => (
                                     <>
-                                        {/* <TouchableOpacity
-                                            style={styles.swipeSyncButton}
-                                            onPress={() => forceSync(file)}>
-                                            <Text
-                                                style={styles.swipeDeleteText}>
-                                                Sync
-                                            </Text>
-                                        </TouchableOpacity> */}
                                         <TouchableOpacity
                                             style={styles.swipeSyncButton}
                                             onPress={() =>
@@ -600,11 +454,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                     </View>
 
                     {jsonSelected ? (
-                        isPitScouting ? (
-                            pitScouting
-                        ) : (
-                            matchScouting
-                        )
+                        data
                     ) : (
                         <Text style={styles.infoText}>
                             Select a JSON file to view the data
@@ -685,7 +535,6 @@ const styles = StyleSheet.create({
         // backgroundColor: 'transparent',
         // borderColor: 'transparent',
         zIndex: 1,
-
         alignSelf: 'center',
         marginTop: RFValue(10),
         textAlign: 'center',
@@ -711,6 +560,7 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#121212',
         padding: RFValue(10),
+        marginTop: 20,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -719,7 +569,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 3,
-        borderRadius: 16,
+        borderRadius: 8,
     },
     valueText: {
         color: 'white',
