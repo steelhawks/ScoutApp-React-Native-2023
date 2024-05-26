@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Alert,
+    Modal,
+} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
@@ -15,20 +22,24 @@ import EmptyPage from './EmptyPage';
 import {uploadDataToServer} from '../authentication/api';
 import {createStackNavigator} from '@react-navigation/stack';
 import EditPage from './EditPage';
+import QRCodeStyled from 'react-native-qrcode-styled';
 
 // const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
 const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 const docDir = fs.DocumentDirectoryPath;
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
-    const [jsonFiles, setJsonFiles] = useState([]);
+    const [continueHandler, setContinueHandler] = useState(null);
     const [jsonSelected, setJsonSelected] = useState(false);
+    const [refreshFlag, setRefreshFlag] = useState(false); // refresh flag to rerender
+    const [showQRCode, setShowQRCode] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileValues, setFileValues] = useState([]);
+    const [qrCodeData, setQRCodeData] = useState('');
+    const [jsonFiles, setJsonFiles] = useState([]);
     const [fileKeys, setFileKeys] = useState([]);
     const Stack = createStackNavigator();
-    const [refreshFlag, setRefreshFlag] = useState(false); // new state variable
-
+    
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
@@ -44,7 +55,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                 });
         }, [docDir]),
     );
-    
+
     useEffect(() => {
         // Fetch and set the list of JSON files in the directory
         fs.readdir(docDir)
@@ -68,19 +79,27 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             const jsonData = JSON.parse(content);
             const formattedFileKeys = Object.keys(jsonData).map(key => {
                 const words = key.split(/(?=[A-Z])/);
-                const formattedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+                const formattedWords = words.map(
+                    word => word.charAt(0).toUpperCase() + word.slice(1),
+                );
                 return formattedWords.join(' ');
             });
             setFileKeys(formattedFileKeys);
-            setFileValues(Object.values(jsonData).map(value => {
-                if (value === '' || value === null || (Array.isArray(value) && value.length === 0)) {
-                    return 'N/A';
-                } else if (Array.isArray(value)) {
-                    return value.join(', ');
-                } else {
-                    return value;
-                }
-            }));
+            setFileValues(
+                Object.values(jsonData).map(value => {
+                    if (
+                        value === '' ||
+                        value === null ||
+                        (Array.isArray(value) && value.length === 0)
+                    ) {
+                        return 'N/A';
+                    } else if (Array.isArray(value)) {
+                        return value.join(', ');
+                    } else {
+                        return value;
+                    }
+                }),
+            );
 
             // updates the boolean to false when the selected json is deselected
             setJsonSelected(prev =>
@@ -109,14 +128,30 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         }
     };
 
+    // todo - in the qr code just have the values so we have a smaller payload to push
+    const syncOffline = data => {
+        return new Promise(resolve => {
+            setQRCodeData(JSON.stringify(data));
+            setShowQRCode(true);
+
+            // modify the continue button's onPress to resolve the promise
+            const handleContinue = () => {
+                setShowQRCode(false);
+                resolve();
+            };
+
+            setContinueHandler(() => handleContinue); // save the handler to a state variable
+        });
+    };
+
     const handleSync = async () => {
-        if (offlineMode) {
-            Alert.alert(
-                'Cannot sync while offline',
-                'Please log out and login when on Wi-Fi.',
-            );
-            return;
-        }
+        // if (offlineMode) {
+        //     Alert.alert(
+        //         'Cannot sync while offline',
+        //         'Please log out and login when on Wi-Fi.',
+        //     );
+        //     return;
+        // }
         const response = null;
 
         for (const json of jsonFiles) {
@@ -124,13 +159,18 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                 console.log(`Found file of ${json} that is already synced`);
                 continue;
             }
+
             const path = fs.DocumentDirectoryPath + '/' + json;
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
 
-            if (!(await syncToServer(jsonData))) {
-                Alert.alert('Error syncing files to server');
-                return;
+            if (!offlineMode) {
+                if (!(await syncToServer(jsonData))) {
+                    Alert.alert('Error syncing files to server');
+                    return;
+                }
+            } else {
+                await syncOffline(jsonData); // wait for the user to press "Continue"
             }
 
             await addSyncedSuffix(json);
@@ -338,8 +378,14 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
     const getFormattedFileName = file => {
         if (file.startsWith('PIT')) {
             const fileNameParts = file.split('-');
-            const formattedScouterName = fileNameParts[2].replace(/([A-Z])/g, ' $1'); // remove spaces and break parts divided by - into words
-            return `PIT${formattedScouterName}, Team ${fileNameParts[3].replace('.json', '')}`;
+            const formattedScouterName = fileNameParts[2].replace(
+                /([A-Z])/g,
+                ' $1',
+            ); // remove spaces and break parts divided by - into words
+            return `PIT${formattedScouterName}, Team ${fileNameParts[3].replace(
+                '.json',
+                '',
+            )}`;
         }
 
         const fileNameParts = file.split('-');
@@ -356,8 +402,8 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         <EmptyPage navigation={navigation} matchCreated={matchCreated} />,
     ];
 
-    const handleEditFile = (file) => {
-        navigation.navigate('EditPage', { file });
+    const handleEditFile = file => {
+        navigation.navigate('EditPage', {file});
     };
 
     const data_page = [
@@ -386,7 +432,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                         />
                     </View>
                     <View>
-                        {jsonFiles.map((file) => (
+                        {jsonFiles.map(file => (
                             <Swipeable
                                 overshootFriction={20}
                                 key={file}
@@ -463,6 +509,22 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                 </View>
             </ScrollView>
             <AnimationLoader isLoading={isLoading} />
+            <Modal visible={showQRCode} animationType="fade" transparent={true}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <QRCodeStyled
+                            data={qrCodeData}
+                            style={styles.svg}
+                            padding={20}
+                            pieceSize={3}
+                        />
+                        <Button
+                            label="Continue"
+                            onPress={continueHandler}
+                        />
+                    </View>
+                </View>
+            </Modal>
         </>,
     ];
 
@@ -495,11 +557,28 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 };
 
 const styles = StyleSheet.create({
+    svg: {
+        backgroundColor: 'white',
+        borderRadius: 16,
+        overflow: 'hidden',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'rgba(30, 30, 30, 1)',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+    },
     title: {
         paddingTop: RFValue(50),
         fontSize: RFValue(30),
         fontWeight: 'bold',
-        color: 'white', // White text color for dark mode
+        color: 'white',
         marginBottom: RFValue(20),
         textAlign: 'center',
     },
