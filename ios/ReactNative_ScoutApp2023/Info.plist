@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Scout 24</string>
+	<string>HawkEye</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -40,8 +40,18 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>Used to take photos during Pit Scouting</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Used to authenticate into the app</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Used to connect to server during offline competitions</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to upload Pit Scouting images</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -86,15 +96,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSCameraUsageDescription</key>
-	<string>Used to take photos during Pit Scouting</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Used to authenticate into the app</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string></string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Used to connect to server during offline competitions</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Used to upload Pit Scouting images</string>
 </dict>
 </plist>

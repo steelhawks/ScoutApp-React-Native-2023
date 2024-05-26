@@ -33,7 +33,7 @@ Sentry.init({
 });
 
 const Tab = createBottomTabNavigator(); // new
-const appVersion = 'v1.5';
+const appVersion = 'v1.6';
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -103,7 +103,7 @@ const App = () => {
         // request permissions
         RequestDefaultPermissions();
 
-        const LoginTest = props => {
+        const LoginPage = props => {
             return (
                 <Login
                     {...props}
@@ -121,7 +121,7 @@ const App = () => {
             <Tab.Navigator>
                 <Tab.Screen
                     name="Login"
-                    component={LoginTest}
+                    component={LoginPage}
                     initialParams={{setUser: setUser}}
                 />
                 <Tab.Screen

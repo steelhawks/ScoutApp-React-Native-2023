@@ -25,7 +25,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Settings</Text>
                     <Text style={styles.infoText}>
-                        Scout 24 {appVersion} {'\n'}
+                        HawkEye {appVersion} {'\n'}
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                 </ScrollView>
