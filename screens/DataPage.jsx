@@ -16,8 +16,8 @@ import {uploadDataToServer} from '../authentication/api';
 import {createStackNavigator} from '@react-navigation/stack';
 import EditPage from './EditPage';
 
-const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-// const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
+// const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+const UPLOAD_ENDPOINT = 'http://127.0.0.1:8080'; // dev
 const docDir = fs.DocumentDirectoryPath;
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {

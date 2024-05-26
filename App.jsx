@@ -3,11 +3,13 @@ import 'react-native-gesture-handler';
 /* eslint-disable react/no-unstable-nested-components */
 import {useState} from 'react';
 import Login from './screens/Login';
+import CreateAccount from './screens/CreateAccount';
 import ScoutingPage from './screens/ScoutingPage';
 import DataPage from './screens/DataPage';
 import ManageAccount from './screens/ManageAccount';
 // import Tutorial from './screens/Tutorial';
 import {NavigationContainer} from '@react-navigation/native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {StyleSheet, StatusBar} from 'react-native';
 import {NewMatch} from '.';
 import PitScoutingPage from './screens/PitScoutingPage';
@@ -97,18 +99,37 @@ const App = () => {
     };
 
     const LoginPageNavigate = props => {
+        const Tab = createMaterialTopTabNavigator();
         // request permissions
         RequestDefaultPermissions();
+
+        const LoginTest = props => {
+            return (
+                <Login
+                    {...props}
+                    user={user}
+                    setEventName={setEventName}
+                    setTeamData={setTeamData}
+                    setUser={setUser}
+                    appVersion={appVersion}
+                    setOfflineMode={setOfflineMode}
+                />
+            );
+        };
+
         return (
-            <Login
-                {...props}
-                user={user}
-                setEventName={setEventName}
-                setTeamData={setTeamData}
-                setUser={setUser}
-                appVersion={appVersion}
-                setOfflineMode={setOfflineMode}
-            />
+            <Tab.Navigator>
+                <Tab.Screen
+                    name="Login"
+                    component={LoginTest}
+                    initialParams={{setUser: setUser}}
+                />
+                <Tab.Screen
+                    name="Create Account"
+                    component={CreateAccount}
+                    initialParams={{setUser: setUser}}
+                />
+            </Tab.Navigator>
         );
     };
 

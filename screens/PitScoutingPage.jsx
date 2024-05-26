@@ -77,6 +77,10 @@ const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDone, dict]);
 
+    useEffect(() => {
+        buildFormFromJson();
+    }, []);
+
     const saveToJson = async data => {
         try {
             const docDir = fs.DocumentDirectoryPath;
@@ -110,150 +114,135 @@ const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
         }
     };
 
-    const general_queries = [
-        <Query
-            title="Dimensions (length x width w/ bumpers)"
-            item={
-                <CustomTextInput
-                    label="Dimensions (length x width w/ bumpers)"
-                    placeholder="Enter dimensions"
-                    onChangeText={text => setDict('dimensions', text)}
-                    value={dict.dimensions}
-                    keyboardType={'text'}
-                />
-            }
-        />,
-        <Query
-            title="Weight (lbs)"
-            item={
-                <CustomTextInput
-                    label="Weight (lbs)"
-                    placeholder="Enter weight"
-                    onChangeText={text => setDict('weight', text)}
-                    value={dict.weight}
-                    keyboardType={'numeric'}
-                />
-            }
-        />,
-        <Query
-            title="Drivetrain Type"
-            item={
-                <CustomTextInput
-                    label="Drivetrain Type"
-                    placeholder="Enter drivetrain type"
-                    onChangeText={text => setDict('drivetrain', text)}
-                    value={dict.drivetrain}
-                    keyboardType={'text'}
-                />
-            }
-        />,
-        <Query
-            title="Intake Mechanism"
-            item={
-                <CustomTextInput
-                    label="Intake Mechanism"
-                    placeholder="Enter intake mechanism"
-                    onChangeText={text => setDict('intake', text)}
-                    value={dict.intake}
-                    keyboardType={'text'}
-                />
-            }
-        />,
-        <Query
-            title="Vision System"
-            item={
-                <CustomTextInput
-                    label="Vision System"
-                    placeholder="Enter vision system"
-                    onChangeText={text => setDict('vision', text)}
-                    value={dict.vision}
-                    keyboardType={'text'}
-                />
-            }
-        />,
-    ];
+    // fix later
+    const [multiQueries, setMultiQueries] = useState([]);
+    const handleMultiCheckboxQuery = (isSelected, key, id) => {
+        setMultiQueries(prevMultiQueries => {
+            const updatedQueries = [...prevMultiQueries];
 
-    const auton_queries = [
-        <Query
-            title="Auton"
-            item={
-                <CustomTextInput
-                    label="Auton Pathing"
-                    placeholder="Enter auton"
-                    onChangeText={text => setDict('auton', text)}
-                    value={dict.auton}
-                    keyboardType={'text'}
-                />
+            if (isSelected) {
+                updatedQueries.push(id);
+            } else {
+                const index = updatedQueries.indexOf(id);
+                if (index !== -1) {
+                    updatedQueries.splice(index, 1);
+                }
             }
-        />,
-    ];
 
-    const handleExcelQuery = (isSelected, id) => {
-        const updatedIssues = isSelected
-            ? [...dict.robotExcel, id] // add to array if selected
-            : dict.robotExcel.filter(issueId => issueId !== id); // remove from array if deselected
+            console.log(updatedQueries);
+            setDict(key, updatedQueries);
+            return updatedQueries;
+        });
 
-        setDict('robotExcel', updatedIssues);
+        // fix later
+        // setDict(key, prevDict => {
+        //     // make a copy of the current dict object
+        //     const updatedDict = {...prevDict};
+
+        //     if (isSelected) {
+        //     // if checkbox is selected, add id to the array
+        //     updatedDict[key].push(id);
+        //     } else {
+        //     // if checkbox is deselected, remove id from the array
+        //     const index = updatedDict[key].indexOf(id);
+        //     if (index !== -1) {
+        //         updatedDict[key].splice(index, 1);
+        //     }
+        //     }
+
+        //     // Return the updated dict object
+        //     console.log(updatedDict[key]);
+        //     return updatedDict;
+        // });
     };
 
-    const scoring_excel_query = [
-        <Query title="What does the robot excel in?" />,
-        <Query
-            title="AMP"
-            item={
-                <Checkbox
-                    onPress={selected => handleExcelQuery(selected, 'AMP')}
-                />
-            }
-        />,
-        <Query
-            title="Speaker"
-            item={
-                <Checkbox
-                    onPress={selected => handleExcelQuery(selected, 'SPEAKER')}
-                />
-            }
-        />,
-    ];
+    const [formSections, setFormSections] = useState([]);
+    const buildFormFromJson = async () => {
+        const docDir = fs.DocumentDirectoryPath + '/data/formData.json';
+        try {
+            const data = await fs.readFile(docDir);
+            const jsonData = JSON.parse(data);
+            const pitForm = jsonData.find(form => form.type === 'pit');
 
-    const scoring_queries = [
-        <Query
-            title="Can your robot score using trap?"
-            item={
-                <CustomTextInput
-                    label="Can your robot score using trap?"
-                    placeholder="Type an explanation"
-                    onChangeText={text => setDict('trapScorer', text)}
-                    value={dict.trapScorer}
-                    keyboardType={'text'}
-                />
-            }
-        />,
-    ];
+            const sections = pitForm.sections.map(section => {
+                const queries = section.queries.map(query => {
+                    if (query.type === 'text') {
+                        return (
+                            <Query
+                                key={query.key}
+                                title={query.title}
+                                item={
+                                    <CustomTextInput
+                                        label={query.title}
+                                        placeholder={query.placeholder}
+                                        onChangeText={text =>
+                                            setDict(query.key, text)
+                                        }
+                                        value={dict[query.key]}
+                                        keyboardType={query.keyboardType}
+                                    />
+                                }
+                            />
+                        );
+                    }
+                    // else if (query.type === 'checkbox') {
+                    //     return (
+                    //         <Query
+                    //             key={query.key}
+                    //             title={query.title}
+                    //             item={
+                    //                 <Checkbox
+                    //                     onPress={selected =>
+                    //                         handleMultipleCheckboxQuery(
+                    //                             selected,
+                    //                             query.key,
+                    //                             query.state,
+                    //                         )
+                    //                     }
+                    //                 />
+                    //             }
+                    //         />
+                    //     );
+                    // }
+                    else if (query.type == 'checkbox-group') {
+                        return query.items.map(item => (
+                            <Query
+                                key={item.key}
+                                title={item.title}
+                                item={
+                                    <Checkbox
+                                        onPress={selected => {
+                                            handleMultiCheckboxQuery(
+                                                selected,
+                                                query.key,
+                                                item.value,
+                                            );
+                                        }}
+                                    />
+                                }
+                            />
+                        ));
+                    }
+                });
 
-    const form_sections = [
-        <Section
-            title="General"
-            queries={general_queries}
-            style={[styles.sectionStyle, styles.patternSectionStyle]}
-        />,
-        <Section
-            title="Auton"
-            queries={auton_queries}
-            style={[styles.sectionStyle]}
-        />,
-        <Section
-            title="Scoring"
-            queries={scoring_queries}
-            style={[styles.sectionStyle, styles.patternSectionStyle]}
-        />,
-        <Section
-            title="Scoring Excel"
-            queries={scoring_excel_query}
-            style={styles.sectionStyle}
-        />,
-        // <Section title="Camera" queries={[<CameraView />]} />,
-    ];
+                return (
+                    <Section
+                        key={section.title}
+                        title={section.title}
+                        queries={queries}
+                        style={[
+                            styles.sectionStyle,
+                            styles.patternSectionStyle,
+                        ]}
+                    />
+                );
+            });
+
+            setFormSections(sections);
+        } catch (error) {
+            console.error('Error reading data from file:', error.message);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.mainView}>
@@ -261,7 +250,7 @@ const PitScoutingPage = ({setMatchCreated, user, navigation}) => {
                 <View style={styles.container}>
                     <ScrollView style={{flex: 1}}>
                         <Button onPress={backConfirm} label="Cancel" />
-                        <Form sections={form_sections} />
+                        <Form sections={formSections} />
                         <Button onPress={endGame} label="Submit" />
                     </ScrollView>
                 </View>
