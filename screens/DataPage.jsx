@@ -39,7 +39,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
     const [jsonFiles, setJsonFiles] = useState([]);
     const [fileKeys, setFileKeys] = useState([]);
     const Stack = createStackNavigator();
-    
+
     useFocusEffect(
         React.useCallback(() => {
             // fetch and set the list of JSON files in the directory
@@ -111,6 +111,8 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
     };
 
     const addSyncedSuffix = async file => {
+        if (file.endsWith('-synced.json')) return;
+
         try {
             const oldPath = `${docDir}/${file}`;
             const extension = file.split('.').pop(); // Get the file extension
@@ -382,6 +384,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                 /([A-Z])/g,
                 ' $1',
             ); // remove spaces and break parts divided by - into words
+            // should remove the name as it doesnt add anythign and makes ui look bloated (check if anything relies on this naming) maybe recordID on server
             return `PIT${formattedScouterName}, Team ${fileNameParts[3].replace(
                 '.json',
                 '',
@@ -396,14 +399,37 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         matchNumberPart = matchNumberPart.replace('-synced', '');
 
         return `Team ${teamNumber}, Match ${matchNumberPart}`;
+
+        // fix later
+        // try {
+        //     // Assuming `fs.DocumentDirectoryPath` is a placeholder, use a real path for local testing
+        //     const path = `${fs.DocumentDirectoryPath}/${file}`;
+
+        //     // Read file content
+        //     const content = fs.readFile(path, 'utf8');
+
+        //     // Parse JSON content
+        //     const jsonData = JSON.parse(content);
+
+        //     console.log(jsonData);
+
+        //     // Format file name based on conditions
+        //     if (file.startsWith('PIT')) {
+        //         return `PIT${jsonData.scouterName}`;
+        //     }
+        // } catch (error) {
+        //     console.error('Error formatting file name:', error);
+        // }
     };
 
     const empty_page = [
         <EmptyPage navigation={navigation} matchCreated={matchCreated} />,
     ];
 
+    const [currentFile, setCurrentFile] = useState('');
     const handleEditFile = file => {
         navigation.navigate('EditPage', {file});
+        setCurrentFile('Editing ' + getFormattedFileName(file));
     };
 
     const data_page = [
@@ -518,10 +544,8 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                             padding={20}
                             pieceSize={3}
                         />
-                        <Button
-                            label="Continue"
-                            onPress={continueHandler}
-                        />
+                        <Button label="Continue" onPress={continueHandler} />
+                        <Text style={styles.filesText}>Show this on exit</Text>
                     </View>
                 </View>
             </Modal>
@@ -543,7 +567,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
     };
 
     const EditPageNavigate = () => {
-        return <EditPage />;
+        return <EditPage navigation={navigation} />;
     };
 
     return (
@@ -551,7 +575,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             initialRouteName="DataPage"
             screenOptions={{headerShown: false}}>
             <Stack.Screen name="DataPage">{DataPageNavigate}</Stack.Screen>
-            <Stack.Screen name="EditPage">{EditPageNavigate}</Stack.Screen>
+            <Stack.Screen name="EditPage" options={{headerShown: true, title: currentFile}}>{EditPageNavigate}</Stack.Screen>
         </Stack.Navigator>
     );
 };
@@ -632,6 +656,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212',
     },
     filesText: {
+        fontWeight: 'bold',
         textAlign: 'center',
         color: 'white',
     },

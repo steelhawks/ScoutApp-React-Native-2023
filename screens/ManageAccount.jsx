@@ -118,8 +118,12 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                         </Icon.Button>
                         <Text style={styles.welcomeText}>
                             Hello {user.name} {'\n'}
-                            Username: {user.username} {'\n'}
-                            OSIS: {user.osis} {'\n'}
+                            {user.username !== 'Offline User' && (
+                                <>
+                                    Username: {user.username} {'\n'}
+                                    OSIS: {user.osis} {'\n'}
+                                </>
+                            )}
                             Event: {eventName} {'\n'}
                             App Version: {appVersion} {'\n'}
                         </Text>
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
     centerContent: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#1e1e1e', // Slightly lighter background for content
+        backgroundColor: '#1e1e1e',
         borderRadius: RFValue(10),
         shadowColor: '#000',
         shadowOffset: {
