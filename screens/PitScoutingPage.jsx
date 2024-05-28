@@ -12,7 +12,7 @@ import CustomTextInput from '../components/inputs/CustomTextInput';
 import Checkbox from '../components/inputs/Checkbox';
 import AvoidKeyboardContainer from '../components/AvoidKeyboardContainer';
 import {usePitDict} from '../contexts/dict.jsx';
-import CameraView from './CameraView';
+import CameraView from '../components/CameraView';
 // import * as ImagePicker from 'expo-image'
 
 const PitScoutingPage = ({setMatchCreated, user, navigation}) => {

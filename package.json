@@ -23,6 +23,7 @@
     "@sentry/react-native": "^5.19.1",
     "axios": "^1.6.7",
     "expo": "^49.0.0",
+    "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
     "expo-local-authentication": "~13.4.1",
     "expo-notifications": "~0.20.1",
@@ -60,7 +61,8 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-vision-camera": "^3.9.1",
     "rn-local-authentication": "^1.2.5",
-    "zustand": "^4.5.1"
+    "zustand": "^4.5.1",
+    "expo-barcode-scanner": "~12.5.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

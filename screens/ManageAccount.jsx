@@ -1,20 +1,17 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Modal, TouchableOpacity} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {SafeAreaView} from 'react-native-safe-area-context';
-// import AsyncStorage from '@react-native-asy`nc-storage/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
 import SettingsPage from './SettingsPage';
 import {useDictStore, usePitDict} from '../contexts/dict.jsx';
 import {createStackNavigator} from '@react-navigation/stack';
-// import {useNavigation} from '@react-navigation/native';
+import {CameraView} from '../components/CameraView';
 
 const Stack = createStackNavigator();
-// const navigation = useNavigation();
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
@@ -179,7 +176,34 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                             navigation.navigate('Settings');
                         }}
                     />
+                    {user.role === 'scouter' ||
+                        (user.role === 'admin' && (
+                            <Icon.Button
+                                name="edit"
+                                size={RFValue(25)}
+                                color="white"
+                                alignSelf="center"
+                                backgroundColor="transparent"
+                                underlayColor="transparent"
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    borderColor: 'transparent',
+                                    zIndex: 1,
+                                }}
+                                onPress={() => {
+                                    navigation.navigate('Scan');
+                                }}
+                            />
+                        ))}
                 </View>
+            </SafeAreaView>
+        );
+    };
+
+    const ScanNavigate = props => {
+        return (
+            <SafeAreaView style={styles.avoidTabBar}>
+                <CameraView {...props} navigation={navigation} />
             </SafeAreaView>
         );
     };
@@ -190,11 +214,32 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
             screenOptions={{headerShown: false}}>
             <Stack.Screen name="ManageAccount" component={ManageAccount} />
             <Stack.Screen name="Settings" component={Settings} />
+            {user.role === 'scouter' ||
+                (user.role === 'admin' && (
+                    <Stack.Screen name="Scan" component={ScanNavigate} />
+                ))}
         </Stack.Navigator>
     );
 };
 
 const styles = StyleSheet.create({
+    text: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: 'white',
+    },
+    modalContainer: {
+        // flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'rgba(30, 30, 30, 1)',
+        padding: 20,
+        borderRadius: 10,
+        elevation: 5,
+    },
     avoidTabBar: {
         flex: 1,
         backgroundColor: '#121212',
