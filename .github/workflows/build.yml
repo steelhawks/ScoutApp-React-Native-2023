@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
@@ -32,9 +33,9 @@ jobs:
       - name: Setup build tool version variable
         shell: bash
         run: |
-            BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
-            echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
-            echo Last build tool version is: $BUILD_TOOL_VERSION
+          BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
+          echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
+          echo Last build tool version is: $BUILD_TOOL_VERSION
       - name: Decode Keystore
         run: echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 --decode > android/app/my-upload-key.keystore
       - name: Build Android Release
@@ -61,12 +62,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-android
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: app-release.apk
       - name: Test artifact download
         run: ls -R
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Read release info from JSON
+        id: read_release_info
+        run: |
+          echo "RELEASE_NAME=$(jq -r '.release_name' release-info.json)" >> $GITHUB_ENV
+          echo "RELEASE_NUMBER=$(jq -r '.release_number' release-info.json)" >> $GITHUB_ENV
+          echo "RELEASE_BODY=$(jq -r '.body' release-info.json)" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -74,11 +87,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          body: |
-            Changes in this release
-                - First Change
-                - Second Change
+          release_name: ${{ env.RELEASE_NAME }}
+          body: ${{ env.RELEASE_BODY }}
           draft: false
           prerelease: false
       - name: Upload release asset
@@ -88,5 +98,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./app-release.apk
-          asset_name: scout24-v${{ github.run_number }}.apk
+          asset_name: scout24-v${{ env.RELEASE_NUMBER }}.apk
           asset_content_type: application/vnd.android.package-archive
