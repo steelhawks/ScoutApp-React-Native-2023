@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
 interface HeadingProps {
-    title: string;
+    title: string | undefined | null;
     sectionHeading?: boolean;
 }
 

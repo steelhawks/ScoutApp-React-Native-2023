@@ -1,4 +1,3 @@
-// Copy this when you want to make a new screen page
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -25,7 +24,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Settings</Text>
                     <Text style={styles.infoText}>
-                        HawkEye {appVersion} {'\n'}
+                        HawkEye {DeviceInfo.getVersion()} {'\n'}
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                 </ScrollView>

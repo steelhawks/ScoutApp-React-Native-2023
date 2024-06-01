@@ -3,7 +3,7 @@ import React from 'react';
 import Heading from './Heading';
 
 interface SectionProps {
-    title: string;
+    title: string | null | undefined;
     queries: JSX.Element;
     style: any;
 }

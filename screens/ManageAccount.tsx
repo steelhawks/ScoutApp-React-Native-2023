@@ -16,14 +16,15 @@ const Stack = createStackNavigator();
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
 // use for typescript migration
-// interface ManageAccountProps {
-//     setUser: (user: any) => void;
-//     user: any;
-//     appVersion: string;
-//     eventName: string;
-// }
+interface ManageAccountProps {
+    setUser: (user: any) => void;
+    user: any;
+    appVersion: string;
+    eventName: string;
+    navigation: any;
+}
 
-const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
+const ManageAccount: React.FC<ManageAccountProps> = ({setUser, user, appVersion, eventName, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
 
@@ -87,20 +88,30 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                 <View style={styles.container}>
                     <Text style={styles.title}>Manage Account</Text>
                     <View style={styles.centerContent}>
+                        <Text style={styles.welcomeText}>
+                            Hello {user.name} {'\n'}
+                            {user.username !== 'Offline User' && (
+                                <>
+                                    Username: {user.username} {'\n'}
+                                    OSIS: {user.osis} {'\n'}
+                                </>
+                            )}
+                            Event: {eventName} {'\n'}
+                            App Version: {appVersion} {'\n'}
+                        </Text>
                         <Icon.Button
-                            padding={RFValue(8)}
                             borderRadius={5}
                             name="log-out"
                             size={RFValue(25)}
-                            color="white"
-                            alignSelf="center"
+                            color="white"                            
                             backgroundColor="rgba(136, 3, 21, 1)"
                             underlayColor="transparent"
                             style={{
-                                fontWeight: 'bold',
-                                fontSize: 20,
                                 backgroundColor: 'transparent',
                                 borderColor: 'transparent',
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                padding: 10,
                                 zIndex: 1,
                             }}
                             onPress={logOut}>
@@ -113,36 +124,24 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                                 Log Out
                             </Text>
                         </Icon.Button>
-                        <Text style={styles.welcomeText}>
-                            Hello {user.name} {'\n'}
-                            {user.username !== 'Offline User' && (
-                                <>
-                                    Username: {user.username} {'\n'}
-                                    OSIS: {user.osis} {'\n'}
-                                </>
-                            )}
-                            Event: {eventName} {'\n'}
-                            App Version: {appVersion} {'\n'}
-                        </Text>
                     </View>
-                    <AnimationLoader isLoading={isLoading} />
+                    <AnimationLoader isLoading={isLoading} onAnimationComplete={undefined} />
                 </View>
                 <View
                     style={{
                         borderWidth: 0,
                         position: 'absolute',
                         alignSelf: 'flex-start',
-                        bottom: RFValue(110), // Adjust this value as needed
+                        bottom: RFValue(110),
                     }}>
                     <Icon.Button
-                        paddingLeft={RFValue(10)}
                         name="globe"
                         size={RFValue(25)}
                         color="white"
-                        alignSelf="center"
                         backgroundColor="transparent"
                         underlayColor="transparent"
                         style={{
+                            paddingLeft: RFValue(10),
                             backgroundColor: 'transparent',
                             borderColor: 'transparent',
                             zIndex: 1,
@@ -164,7 +163,6 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                         name="settings"
                         size={RFValue(25)}
                         color="white"
-                        alignSelf="center"
                         backgroundColor="transparent"
                         underlayColor="transparent"
                         style={{
@@ -182,7 +180,6 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
                                 name="edit"
                                 size={RFValue(25)}
                                 color="white"
-                                alignSelf="center"
                                 backgroundColor="transparent"
                                 underlayColor="transparent"
                                 style={{
@@ -200,7 +197,7 @@ const ManageAccount = ({setUser, user, appVersion, eventName, navigation}) => {
         );
     };
 
-    const ScanNavigate = props => {
+    const ScanNavigate = (props: any) => {
         return (
             <SafeAreaView style={styles.avoidTabBar}>
                 <CameraView {...props} navigation={navigation} />

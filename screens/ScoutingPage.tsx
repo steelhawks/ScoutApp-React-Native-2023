@@ -12,10 +12,17 @@ import Auton from './Scouting/Auton';
 import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
-import {useDictStore} from '../contexts/dict.jsx';
+import {useDictStore} from '../contexts/dict';
 // import {fetchEventNameFromServer} from '../authentication/api';
 
-const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
+interface ScoutingPageProps {
+    user: any;
+    navigation: any;
+    setMatchCreated: (matchCreated: boolean) => void;
+    offlineMode: boolean;
+}
+
+const ScoutingPage: React.FC<ScoutingPageProps> = ({user, navigation, setMatchCreated, offlineMode}) => {
     const Tab = createMaterialTopTabNavigator();
 
     const [isDone, setIsDone] = useState(false);
@@ -28,31 +35,13 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
     const setDict = useDictStore(state => state.setDict);
 
     useEffect(() => {
-        var date = new Date().getDate();
-        var month = new Date().getMonth() + 1;
-        var year = new Date().getFullYear();
-        var hours = new Date().getHours();
-        var min = new Date().getMinutes();
-        var sec = new Date().getSeconds();
+        const date = new Date();
         setCurrentDate(
-            date +
-                '/' +
-                month +
-                '/' +
-                year +
-                ' ' +
-                hours +
-                ':' +
-                min +
-                ':' +
-                sec,
+            `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
         );
     }, []);
 
-    const [requiredQueriesCompleted, setRequiredQueriesCompleted] =
-        useState(false);
-
-    const [missingQueries, setMissingQueries] = useState([]);
+    const [missingQueries, setMissingQueries] = useState<string[]>([]);
 
     // define the required fields here
     // MAKE SURE THAT THEY ARE NULL IN THE DICT AS IT ONLY CHECKS
@@ -60,17 +49,9 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
     const requiredQueries = ['preloaded', 'robotLeft', 'didTeamPlayDefense'];
 
     // validation function to check if all required queries are completed
-    // const validateQueries = () => {
-    //     // check if all required queries have values
-    //     const allQueriesCompleted = requiredQueries.every(query => {
-    //         return dict[query] !== null && dict[query] !== '';
-    //     });
-    //     setRequiredQueriesCompleted(allQueriesCompleted);
-    // };
-
     const validateQueries = () => {
         // initialize an array to store the names of missing queries
-        const missingQueriesArray = [];
+        const missingQueriesArray: string[] = [];
         // check each required query
         requiredQueries.forEach(query => {
             // check if the value is null or an empty string
@@ -82,8 +63,7 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
         // set the missingQueries state with the array of missing query names
         setMissingQueries(missingQueriesArray);
         // check if all required queries are completed
-        const allQueriesCompleted = missingQueriesArray.length === 0;
-        setRequiredQueriesCompleted(allQueriesCompleted);
+        return missingQueriesArray.length === 0;
     };
 
     useEffect(() => {
@@ -91,7 +71,7 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
     }, [dict]);
 
     const endMatch = async () => {
-        if (requiredQueriesCompleted) {
+        if (validateQueries()) {
             setReadyToPlaySuccessAnimation(true);
             setIsDone(true);
             setDict('timeOfCreation', currentDate);
@@ -131,12 +111,10 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
         }
     }, [isDone, dict]);
 
-    const saveToJson = async data => {
+    const saveToJson = async (data: any) => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/${user.name.replace(/\s/g, '')}-${
-                dict.teamNumber
-            }-${dict.matchNumber}.json`;
+            const filePath = `${docDir}/${user.name.replace(/\s/g, '')}-${dict.teamNumber}-${dict.matchNumber}.json`;
 
             const jsonData = JSON.stringify(data, null, 4);
 
@@ -153,7 +131,7 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
                 },
                 {text: 'OK', onPress: () => setMatchCreated(false)},
             ]);
-        } catch (error) {
+        } catch (error: string | any) {
             console.error('Error saving data to file:', error.message);
         }
     };
@@ -176,7 +154,7 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
         ]);
     };
 
-    const AutonNavigate = props => {
+    const AutonNavigate = (props: any) => {
         return <Auton {...props} backConfirm={backConfirm} />;
     };
 
@@ -184,11 +162,11 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
         return <Teleop />;
     };
 
-    const TeleopReceivedNavigate = props => {
+    const TeleopReceivedNavigate = (props: any) => {
         return <TeleopReceived />;
     };
 
-    const EndgameNavigate = props => {
+    const EndgameNavigate = (props: any) => {
         return <Endgame {...props} endMatch={endMatch} />;
     };
 
@@ -198,7 +176,7 @@ const ScoutingPage = ({user, navigation, setMatchCreated, offlineMode}) => {
                 <Tab.Navigator
                     initialRouteName="Pre-Match"
                     screenOptions={{
-                        headerShown: false,
+                        // headerShown: false,
                         tabBarStyle: {
                             backgroundColor: 'black',
                         },
@@ -261,14 +239,14 @@ const styles = StyleSheet.create({
             textDecorationLine: 'none',
             fontFamily: 'JosefinSans-Regular',
         },
-        iconStyle: {
-            width: 20,
-            height: 20,
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 10,
-            margin: 10,
-        },
+        // iconStyle: {
+        //     width: 20,
+        //     height: 20,
+        //     borderWidth: 1,
+        //     borderColor: 'black',
+        //     borderRadius: 10,
+        //     margin: 10,
+        // },
         tabView: {
             flex: 1,
             backgroundColor: '#3498db', // Example color

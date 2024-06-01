@@ -292,7 +292,7 @@ const Login = ({
                             </Text>
                         </Icon.Button>
                         <Text style={styles.footer}>
-                            App Version: {appVersion} Build:{' '}
+                            App Version: {'v' + DeviceInfo.getVersion().toString()} Build:{' '}
                             {DeviceInfo.getBuildNumber()}
                         </Text>
                     </AvoidKeyboardContainer>

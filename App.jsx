@@ -22,6 +22,7 @@ import {
     RequestDefaultPermissions,
     RequestNotifications,
 } from './permissions/RequestPermissions';
+import DeviceInfo from 'react-native-device-info';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
@@ -33,7 +34,7 @@ Sentry.init({
 });
 
 const Tab = createBottomTabNavigator(); // new
-const appVersion = 'v1.6';
+const appVersion = 'v' + DeviceInfo.getVersion().toString();
 
 const App = () => {
     const [user, setUser] = useState(null);
