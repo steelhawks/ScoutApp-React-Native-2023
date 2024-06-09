@@ -24,6 +24,7 @@ import {
     fetchTeamDataFromServer,
     fetchEventNameFromServer,
 } from '../authentication/api';
+import * as Keychain from 'react-native-keychain';
 
 const Login = ({
     setUser,
@@ -50,6 +51,22 @@ const Login = ({
         })();
     });
 
+    const storeCredentials = async (username: string, password: string) => {
+        await Keychain.setGenericPassword(username, password);
+    };
+
+    const retrieveCredentials = async () => {
+        const credentials = await Keychain.getGenericPassword();
+        if (credentials) {
+            return {
+                username: credentials.username,
+                password: credentials.password,
+            };
+        } else {
+            return null;
+        }
+    };
+
     const handleBiometricLogin = async () => {
         if (!isBiometricSupported) {
             Alert.alert(
@@ -73,12 +90,16 @@ const Login = ({
         if (auth.success) {
             try {
                 // login info request
-                const username = (await AsyncStorage.getItem('username')) || '';
-                const osis = (await AsyncStorage.getItem('osis')) || '';
+                const credentials = await retrieveCredentials();
+
+                if (credentials === null) {
+                    Alert.alert('No credentials stored', 'Please log in manually');
+                    return;
+                }
 
                 const userData = await fetchUserCredentialsFromServer(
-                    JSON.parse(username),
-                    JSON.parse(osis),
+                    credentials.username,
+                    credentials.password,
                     appVersion,
                 );
 
@@ -117,7 +138,6 @@ const Login = ({
     };
 
     const handleLogin = async () => {
-        console.log(fs.DocumentDirectoryPath);
         setIsLoading(true);
         setOfflineMode(false);
 
@@ -128,8 +148,7 @@ const Login = ({
             return;
         }
 
-        await AsyncStorage.setItem('username', JSON.stringify(username));
-        await AsyncStorage.setItem('osis', JSON.stringify(osis));
+        storeCredentials(username, osis);
 
         try {
             // login info request
@@ -292,7 +311,8 @@ const Login = ({
                             </Text>
                         </Icon.Button>
                         <Text style={styles.footer}>
-                            App Version: {'v' + DeviceInfo.getVersion().toString()} Build:{' '}
+                            App Version:{' '}
+                            {'v' + DeviceInfo.getVersion().toString()} Build:{' '}
                             {DeviceInfo.getBuildNumber()}
                         </Text>
                     </AvoidKeyboardContainer>
@@ -309,7 +329,7 @@ const Login = ({
 
 const styles = StyleSheet.create({
     iconButton: {
-        alignSelf: "center",
+        alignSelf: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         backgroundColor: 'transparent',

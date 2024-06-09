@@ -23,6 +23,7 @@
     "@sentry/react-native": "^5.19.1",
     "axios": "^1.6.7",
     "expo": "^49.0.0",
+    "expo-barcode-scanner": "~12.5.3",
     "expo-camera": "~13.4.4",
     "expo-constants": "~14.4.2",
     "expo-local-authentication": "~13.4.1",
@@ -42,6 +43,7 @@
     "react-native-gesture-handler": "^2.16.0",
     "react-native-image-picker": "^7.1.0",
     "react-native-inappbrowser-reborn": "^3.7.0",
+    "react-native-keychain": "^8.2.0",
     "react-native-modal": "^13.0.1",
     "react-native-network-info": "^5.2.1",
     "react-native-orientation-locker": "^1.6.0",
@@ -61,8 +63,7 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-vision-camera": "^3.9.1",
     "rn-local-authentication": "^1.2.5",
-    "zustand": "^4.5.1",
-    "expo-barcode-scanner": "~12.5.3"
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
