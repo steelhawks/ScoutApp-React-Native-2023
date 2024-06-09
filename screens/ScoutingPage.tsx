@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {StyleSheet, View, Alert} from 'react-native';
+import {StyleSheet, View, Alert, KeyboardTypeOptions} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AnimationLoader from '../AnimationLoader';
@@ -13,6 +13,11 @@ import Teleop from './Scouting/Teleop';
 import TeleopReceived from './Scouting/TeleopReceived';
 import Endgame from './Scouting/Endgame';
 import {useDictStore} from '../contexts/dict';
+import Section from '../components/scouting_components/Section';
+import Checkbox from '../components/inputs/Checkbox';
+import Query from '../components/scouting_components/Query';
+import CustomTextInput from '../components/inputs/CustomTextInput';
+import RadioGroup from '../components/inputs/RadioGroup';
 // import {fetchEventNameFromServer} from '../authentication/api';
 
 interface ScoutingPageProps {
@@ -22,7 +27,12 @@ interface ScoutingPageProps {
     offlineMode: boolean;
 }
 
-const ScoutingPage: React.FC<ScoutingPageProps> = ({user, navigation, setMatchCreated, offlineMode}) => {
+const ScoutingPage: React.FC<ScoutingPageProps> = ({
+    user,
+    navigation,
+    setMatchCreated,
+    offlineMode,
+}) => {
     const Tab = createMaterialTopTabNavigator();
 
     const [isDone, setIsDone] = useState(false);
@@ -37,7 +47,9 @@ const ScoutingPage: React.FC<ScoutingPageProps> = ({user, navigation, setMatchCr
     useEffect(() => {
         const date = new Date();
         setCurrentDate(
-            `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+            `${date.getDate()}/${
+                date.getMonth() + 1
+            }/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
         );
     }, []);
 
@@ -114,7 +126,9 @@ const ScoutingPage: React.FC<ScoutingPageProps> = ({user, navigation, setMatchCr
     const saveToJson = async (data: any) => {
         try {
             const docDir = fs.DocumentDirectoryPath;
-            const filePath = `${docDir}/${user.name.replace(/\s/g, '')}-${dict.teamNumber}-${dict.matchNumber}.json`;
+            const filePath = `${docDir}/${user.name.replace(/\s/g, '')}-${
+                dict.teamNumber
+            }-${dict.matchNumber}.json`;
 
             const jsonData = JSON.stringify(data, null, 4);
 
@@ -168,6 +182,188 @@ const ScoutingPage: React.FC<ScoutingPageProps> = ({user, navigation, setMatchCr
 
     const EndgameNavigate = (props: any) => {
         return <Endgame {...props} endMatch={endMatch} />;
+    };
+
+    useEffect(() => {
+        buildFormFromJson();
+    }, []);
+
+    // fix later
+    const [multiQueries, setMultiQueries] = useState([]);
+    const handleMultiCheckboxQuery = (
+        isSelected: boolean,
+        key: React.Key | null | undefined,
+        id: any,
+    ) => {
+        setMultiQueries(prevMultiQueries => {
+            const updatedQueries = [...prevMultiQueries];
+
+            if (isSelected) {
+                updatedQueries.push(id);
+            } else {
+                const index = updatedQueries.indexOf(id);
+                if (index !== -1) {
+                    updatedQueries.splice(index, 1);
+                }
+            }
+
+            console.log(updatedQueries);
+            setDict(key, updatedQueries);
+            return updatedQueries;
+        });
+
+        // fix later
+        // setDict(key, prevDict => {
+        //     // make a copy of the current dict object
+        //     const updatedDict = {...prevDict};
+
+        //     if (isSelected) {
+        //     // if checkbox is selected, add id to the array
+        //     updatedDict[key].push(id);
+        //     } else {
+        //     // if checkbox is deselected, remove id from the array
+        //     const index = updatedDict[key].indexOf(id);
+        //     if (index !== -1) {
+        //         updatedDict[key].splice(index, 1);
+        //     }
+        //     }
+
+        //     // Return the updated dict object
+        //     console.log(updatedDict[key]);
+        //     return updatedDict;
+        // });
+    };
+
+    const [formSections, setFormSections] = useState([]);
+    const buildFormFromJson = async () => {
+        const docDir = fs.DocumentDirectoryPath + '/data/formData.json';
+        try {
+            const data = await fs.readFile(docDir);
+            const jsonData = JSON.parse(data);
+            const pitForm = jsonData.find(
+                (form: {type: string}) => form.type === 'pit',
+            );
+
+            const sections = pitForm.sections.map(
+                (section: {
+                    queries: {
+                        type: string;
+                        key: React.Key | null | undefined;
+                        title: string;
+                        placeholder: string;
+                        keyboardType: string;
+                        items: {
+                            key: React.Key | null | undefined;
+                            title: string;
+                            value: any;
+                        }[];
+                    }[];
+                    title: React.Key | null | undefined;
+                }) => {
+                    const queries = section.queries.map(
+                        (query: {
+                            type: string;
+                            key: React.Key | null | undefined;
+                            title: string;
+                            placeholder: string;
+                            keyboardType: string;
+                            items: {
+                                key: React.Key | null | undefined;
+                                title: string;
+                                value: any;
+                            }[];
+                        }) => {
+                            if (query.type === 'text') {
+                                return (
+                                    <Query
+                                        key={query.key}
+                                        title={query.title}
+                                        item={
+                                            <CustomTextInput
+                                                label={query.title}
+                                                placeholder={query.placeholder}
+                                                onChangeText={(text: any) =>
+                                                    setDict(query.key, text)
+                                                }
+                                                keyboardType={
+                                                    query.keyboardType as
+                                                        | KeyboardTypeOptions
+                                                        | undefined
+                                                }
+                                            />
+                                        }
+                                    />
+                                );
+                            } else if (query.type === 'radio-group') {
+                                return (
+                                    <Query
+                                        key={query.key}
+                                        title={query.title}
+                                        item={
+                                            // this probably doewsnt work check later
+                                            <RadioGroup
+                                                buttons={query.items.map((item: { key: React.Key | null | undefined; title: string; value: any; }) => {
+                                                    return {
+                                                        label: item.title,
+                                                        value: item.value,
+                                                    };
+                                                })}
+                                                onChange={(value: any) =>
+                                                    setDict(
+                                                        query.key,
+                                                        value,
+                                                    )
+                                                }
+                                            />
+                                        }
+                                    />
+                                );
+                            } else if (query.type == 'checkbox-group') {
+                                return query.items.map(
+                                    (item: {
+                                        key: React.Key | null | undefined;
+                                        title: string;
+                                        value: any;
+                                    }) => (
+                                        <Query
+                                            key={item.key}
+                                            title={item.title}
+                                            item={
+                                                <Checkbox
+                                                    onPress={selected => {
+                                                        handleMultiCheckboxQuery(
+                                                            selected,
+                                                            query.key,
+                                                            item.value,
+                                                        );
+                                                    }}
+                                                />
+                                            }
+                                        />
+                                    ),
+                                );
+                            }
+                        },
+                    );
+
+                    return (
+                        <Section
+                            key={section.title}
+                            title={section.title}
+                            queries={queries}
+                            style={[
+                                styles.sectionStyle,
+                                styles.patternSectionStyle,
+                            ]}
+                        />
+                    );
+                },
+            );
+
+            setFormSections(sections);
+        } catch (error: any) {
+            console.error('Error reading data from file:', error.message);
+        }
     };
 
     return (

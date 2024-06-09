@@ -3,8 +3,8 @@ import React from 'react';
 import Heading from './Heading';
 
 interface SectionProps {
-    title: string | null | undefined;
-    queries: JSX.Element;
+    title: string | null | undefined | number;
+    queries: JSX.Element | JSX.Element[];
     style: any;
 }
 

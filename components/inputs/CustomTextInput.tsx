@@ -1,12 +1,12 @@
 import React from 'react';
 import {RFValue} from 'react-native-responsive-fontsize';
-import {TextInput, Text, StyleSheet, View} from 'react-native';
+import {TextInput, Text, StyleSheet, View, KeyboardTypeOptions} from 'react-native';
 
 interface CustomTextInputProps {
     label: string;
     placeholder: string;
     onChangeText: (text: string) => void;
-    keyboardType: 'default' | 'numeric' | 'email-address' | 'phone-pad';
+    keyboardType: KeyboardTypeOptions | undefined;
 }
 
 const CustomTextInput: React.FC<CustomTextInputProps> = props => {
