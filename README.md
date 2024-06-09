@@ -1,72 +1,58 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<h1 align="center">Steel Hawks: Scout 24 | HawkEye</h1>
 
-# Getting Started
+![Static Badge](https://img.shields.io/badge/Team-2601-red?style=for-the-badge&link=https%3A%2F%2Fsteelhawks.org)
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+Scout 24 is the Steel Hawks defacto scouting app, written in React Native for both iOS and Android. It relys on ReactNative-Server-Sync-2024 but has an offline mode for user authentication and actions on the app.
 
-## Step 1: Start the Metro Server
+Features:
+* User authentication
+* Post match editing
+* Wireless and Offline Sync
+* Pit scouting and match scouting
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img width="20%" src="https://github.com/steelhawks/ScoutApp-React-Native-2023/blob/main/documentation/demonstration01.gif?raw=true">
+  <img width="20%" src="https://github.com/steelhawks/ScoutApp-React-Native-2023/blob/main/documentation/demonstration02.gif?raw=true">
+  <img width="20%" src="https://github.com/steelhawks/ScoutApp-React-Native-2023/blob/main/documentation/demonstration03.gif?raw=true">
+</div>
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Installation
+Follow these steps to get the app running on your local machine:
 
-```bash
-# using npm
-npm start
+This does not cover prerequisites such as Xcode or Android Studio. Please find another tutorial to help with that. Remember that for iOS development you NEED a Mac. If you can get Expo Go working you could have iOS working but for NATIVE support and for building, you NEED a Mac for iOS support.
 
-# OR using Yarn
-yarn start
-```
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/steelhawks/ScoutApp-React-Native-2023.git
+   cd ScoutApp-React-Native-2023
+   ```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+2. **Run the app**
+   ```bash
+   # For iOS (Only on Mac)
+   npx expo run:ios
+   
+   # For Android
+   npx expo run:android
+   ```
+## Maintaining
+### Code Quality
+* Consistent Code Style: Use a linter like ESLint and a formatter like Prettier to maintain consistent code style.
+* Type Safety: I recommend to continue using Typescript for static type casting and to catch silly errors.
+### Documentation
+* Inline Comments: Add comments to explain complex logic and decisions.
+* Update README: Keep this README updated with any significant changes to this project. 
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+### GitHub Build Actions
+There are multiple build actions but the most important one is the Build Android APK one. This is a very useful automation making Android APKs on each push to the main branch. Because of this, many experimental, developmental, or any other small changes should be pushed to the dev branch instead of the main branch. Once you are ready for a release create a pull request to main. In addition, before each pull request, make sure you change the data in the release-info.json, as that is what the GitHub automation reads from to name the release.
 
 # Troubleshooting
 
 If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Additionally for Expo click [here](https://docs.expo.dev/router/reference/troubleshooting/).
 
 # Learn More
 
