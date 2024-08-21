@@ -22,8 +22,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     fetchUserCredentialsFromServer,
     fetchTeamDataFromServer,
-    fetchEventNameFromServer,
+    fetchEventNameFromServer, fetchAfterLogin,
 } from '../authentication/api';
+import {supabase} from "../supabase";
+// import * as os from "node:os";
 import * as Keychain from 'react-native-keychain';
 
 const Login = ({
@@ -97,35 +99,37 @@ const Login = ({
                     return;
                 }
 
-                const userData = await fetchUserCredentialsFromServer(
-                    credentials.username,
-                    credentials.password,
-                    appVersion,
-                );
+                // const userData = await fetchUserCredentialsFromServer(
+                //     credentials.username,
+                //     credentials.password,
+                //     appVersion,
+                // );
 
-                if (!userData) {
-                    Alert.alert(
-                        'App Version Mismatch',
-                        'Please update the app',
-                    );
-                    return;
-                }
+                await handleLogin(credentials.username, credentials.password);
 
-                const eventName = await fetchEventNameFromServer();
-                setEventName(eventName.name);
+                // if (!userData) {
+                //     Alert.alert(
+                //         'App Version Mismatch',
+                //         'Please update the app',
+                //     );
+                //     return;
+                // }
 
-                // team data request
-                const allTeamData = await fetchTeamDataFromServer();
-                setTeamData(allTeamData);
-
-                if (userData.authenticated !== false) {
-                    const user = userData;
-                    console.log(user);
-                    setUser(user);
-                } else {
-                    console.error('Incorrect username or password');
-                    Alert.alert('Incorrect username or password');
-                }
+                // const eventName = await fetchEventNameFromServer();
+                // setEventName(eventName.name);
+                //
+                // // team data request
+                // const allTeamData = await fetchTeamDataFromServer();
+                // setTeamData(allTeamData);
+                //
+                // if (userData.authenticated !== false) {
+                //     const user = userData;
+                //     console.log(user);
+                //     setUser(user);
+                // } else {
+                //     console.error('Incorrect username or password');
+                //     Alert.alert('Incorrect username or password');
+                // }
             } catch (error) {
                 Alert.alert('Error connecting to the server', String(error));
                 console.error('Error connecting to the server', error);
@@ -137,47 +141,61 @@ const Login = ({
         }
     };
 
-    const handleLogin = async () => {
+    const handleLogin = async (_userName: string, password: string) => {
         setIsLoading(true);
         setOfflineMode(false);
 
         if (osis === '101') {
             console.log('Logging in with offline mode');
             setOfflineMode(true);
-            handleOfflineLogin();
+            await handleOfflineLogin();
             return;
         }
 
-        storeCredentials(username, osis);
+        storeCredentials(_userName, password);
 
         try {
             // login info request
-            const userData = await fetchUserCredentialsFromServer(
-                username,
-                osis,
-                appVersion,
-            );
+            const  {  data, error } = await supabase.auth.signInWithPassword({
+                email: _userName + '@nycstudents.net', // supabase uses email so just add domain at the end
+                password: password,
+            });
 
-            if (!userData) {
+            if (error) {
+                Alert.alert('Incorrect username or password')
+                return;
+            }
+
+            const userData = data.user?.user_metadata;
+            console.log(userData);
+
+            console.log(data.session?.access_token)
+
+
+            const userAuthenticity = await fetchAfterLogin(username, osis, appVersion, await data.session?.access_token)
+            if (!userAuthenticity) {
                 Alert.alert('App Version Mismatch', 'Please update the app');
                 return;
             }
 
             const eventName = await fetchEventNameFromServer();
             setEventName(eventName.name);
-
-            // team data request
+            //
+            // // team data request
             const allTeamData = await fetchTeamDataFromServer();
             setTeamData(allTeamData);
 
-            if (userData.authenticated !== false) {
-                const user = userData;
-                console.log(user);
-                setUser(user);
-            } else {
-                console.error('Incorrect username or password');
-                Alert.alert('Incorrect username or password');
-            }
+            const user = {
+                "id": userData.sub,
+                "name": userData.name,
+                "username": userData.username,
+                "osis": "1234",
+                "email": userData.email,
+                "role": userData.role,
+            };
+
+            console.log(user);
+            setUser(user);
         } catch (error) {
             Alert.alert('Error connecting to the server', String(error));
             console.error('Error connecting to the server', error);
@@ -256,7 +274,7 @@ const Login = ({
             handleBiometricLogin();
         } else {
             JSON.stringify(await AsyncStorage.setItem('biometric', 'false'));
-            handleLogin();
+            handleLogin(username, osis);
         }
     };
 

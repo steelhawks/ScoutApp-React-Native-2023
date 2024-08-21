@@ -670,7 +670,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QSXRGJG5V9;
+				DEVELOPMENT_TEAM = 2GW9354ST4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HawkEye;
@@ -686,7 +686,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.scout24;
+				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.hawkeye;
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -710,7 +710,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QSXRGJG5V9;
+				DEVELOPMENT_TEAM = 2GW9354ST4;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HawkEye;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -725,7 +725,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.scout24;
+				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.hawkeye;
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

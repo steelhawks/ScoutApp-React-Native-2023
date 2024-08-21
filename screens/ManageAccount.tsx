@@ -10,6 +10,7 @@ import SettingsPage from './SettingsPage';
 import {useDictStore, usePitDict} from '../contexts/dict.jsx';
 import {createStackNavigator} from '@react-navigation/stack';
 import {CameraView} from '../components/CameraView';
+import {supabase} from "../supabase";
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,7 @@ const ManageAccount: React.FC<ManageAccountProps> = ({setUser, user, appVersion,
 
         // then logout
         setUser(null);
+        await supabase.auth.signOut();
         setIsLoading(false);
     };
 

@@ -6,7 +6,32 @@ const eventNameSaveFilePath =
 const formDataSaveFilePath = RNFS.DocumentDirectoryPath + '/data/formData.json';
 
 // const SERVER_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-const SERVER_ENDPOINT = 'http://192.168.1.183:8080'; //dev
+const SERVER_ENDPOINT = 'http://192.168.1.245:8082'; //dev
+
+export const fetchAfterLogin = async (username: string, osis: string, appVersion: string, accessToken: string) => {
+    try {
+        const response = await fetch(`${SERVER_ENDPOINT}/get_data_after_login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({username, osis, appVersion, accessToken}),
+        });
+
+        if (response.ok) {
+            return true;
+        } else {
+            console.log(response);
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+        throw new Error(
+            `Error checking user authenticity data from the server: ${error}`,
+        )
+    }
+}
+
 export const fetchUserCredentialsFromServer = async (
     username: string,
     osis: string,
