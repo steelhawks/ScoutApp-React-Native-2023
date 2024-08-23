@@ -24,8 +24,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import EditPage from './EditPage';
 import QRCodeStyled from 'react-native-qrcode-styled';
 
-// const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-const UPLOAD_ENDPOINT = 'http://192.168.1.175:8082'; // dev
+const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
+// const UPLOAD_ENDPOINT = 'http://192.168.1.176:8082'; // dev
 const docDir = fs.DocumentDirectoryPath;
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
@@ -159,15 +159,37 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         });
     };
 
+    const showSyncOptions = async () => {
+        return await new Promise(resolve => {
+            if (!offlineMode) {
+                Alert.alert('Would you like to sync offline or online?', '', [
+                    {text: 'Sync Offline', onPress: () => resolve('offline')},
+                    {text: 'Sync Online', onPress: () => resolve('online')},
+                    {
+                        text: 'Cancel',
+                        onPress: () => resolve(null),
+                        style: 'cancel',
+                    },
+                ]);
+            } else {
+                resolve('offline');
+            }
+        });
+    }
+
     const handleSync = async () => {
-        // if (offlineMode) {
-        //     Alert.alert(
-        //         'Cannot sync while offline',
-        //         'Please log out and login when on Wi-Fi.',
-        //     );
-        //     return;
-        // }
-        const response = null;
+        if (jsonFiles.length === 0) {
+            Alert.alert('No files to sync');
+            return;
+        }
+
+        userChoice = await showSyncOptions();
+
+        if (userChoice === null) {
+            return;
+        }
+
+        setIsLoading(true);
 
         for (const json of jsonFiles) {
             if (json.endsWith('-synced.json')) {
@@ -179,18 +201,26 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             const content = await fs.readFile(path, 'utf8');
             const jsonData = JSON.parse(content);
 
-            if (!offlineMode) {
-                if (!(await syncToServer(jsonData))) {
-                    Alert.alert('Error syncing files to server');
-                    return;
+            try {
+                if (userChoice === 'online') {
+                    if (!(await syncToServer(jsonData))) {
+                        Alert.alert('Error syncing files to server');
+                        setIsLoading(false);
+                        return;
+                    }
+                } else {
+                    await syncOffline(jsonData);
                 }
-            } else {
-                await syncOffline(jsonData); // wait for the user to press "Continue"
-            }
 
-            await addSyncedSuffix(json);
+                await addSyncedSuffix(json);
+            } catch (error) {
+                Alert.alert('Error during sync', error.message);
+                setIsLoading(false);
+                return;
+            }
         }
-        // after successful syncing, set the refresh flag to trigger a re-render
+
+        // After successful syncing, set the refresh flag to trigger a re-render
         setRefreshFlag(prev => !prev);
 
         Alert.alert('Syncing Successful', '', [
@@ -203,9 +233,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             {text: 'OK'},
         ]);
 
-        if (response) {
-            setIsLoading(false);
-        }
+        setIsLoading(false);
     };
 
     const syncToServer = async data => {
@@ -255,34 +283,47 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
         const content = await fs.readFile(path, 'utf8');
         const jsonData = JSON.parse(content);
 
-        if (file.endsWith('-synced.json')) {
-            await new Promise(resolve => {
-                Alert.alert(
-                    'Are you sure, this is already synced on Airtable?',
-                    'This will create a duplicate, please tell an admin before you do this.',
-                    [
-                        {
-                            text: 'Cancel',
-                            style: 'cancel',
-                            onPress: () => {
-                                return;
-                            },
-                        },
-                        {
-                            text: 'Continue Anyways',
-                            style: 'destructive',
-                            onPress: () => resolve(),
-                        },
-                    ],
-                );
-            });
+        const userChoice = await showSyncOptions();
+
+        if (userChoice === null) {
+            return;
         }
-        if (await syncToServer(jsonData)) {
+
+        if (userChoice === 'online') {
+            if (file.endsWith('-synced.json')) {
+                await new Promise(resolve => {
+                    Alert.alert(
+                        'Are you sure, this is already synced on Airtable?',
+                        'This will create a duplicate, please tell an admin before you do this.',
+                        [
+                            {
+                                text: 'Cancel',
+                                style: 'cancel',
+                                onPress: () => {
+                                    return;
+                                },
+                            },
+                            {
+                                text: 'Continue Anyways',
+                                style: 'destructive',
+                                onPress: () => resolve(),
+                            },
+                        ],
+                    );
+                });
+            }
+            if (await syncToServer(jsonData)) {
+                Alert.alert('File forcefully synced.');
+                await addSyncedSuffix(file);
+                setRefreshFlag(prev => !prev);
+            } else {
+                Alert.alert('File failed to sync.');
+            }
+        } else {
+            await syncOffline(jsonData);
             Alert.alert('File forcefully synced.');
             await addSyncedSuffix(file);
             setRefreshFlag(prev => !prev);
-        } else {
-            Alert.alert('File failed to sync.');
         }
     };
 
@@ -477,25 +518,12 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                                 key={file}
                                 renderLeftActions={() => (
                                     <>
-                                        {/* <TouchableOpacity
-                                            style={styles.swipeSyncButton}
-                                            onPress={() =>
-                                                handleEditFile(file)
-                                            }>
-                                            <Text
-                                                style={styles.swipeDeleteText}>
-                                                Edit
-                                            </Text>
-                                        </TouchableOpacity> */}
-
                                         <TouchableOpacity
                                             style={styles.swipeSyncButton}
-                                            onPress={() =>
-                                                forceSync(file)
-                                            }>
+                                            onPress={() => forceSync(file)}>
                                             <Text
                                                 style={styles.swipeDeleteText}>
-                                                Force Sync
+                                                Sync
                                             </Text>
                                         </TouchableOpacity>
                                     </>
@@ -553,7 +581,8 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                         data
                     ) : (
                         <Text style={styles.infoText}>
-                            Select a file to view the data or double tap to edit.
+                            Select a file to view the data or double tap to
+                            edit.
                         </Text>
                     )}
                 </View>
@@ -599,7 +628,11 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             initialRouteName="DataPage"
             screenOptions={{headerShown: false}}>
             <Stack.Screen name="DataPage">{DataPageNavigate}</Stack.Screen>
-            <Stack.Screen name="EditPage" options={{headerShown: true, title: currentFile}}>{EditPageNavigate}</Stack.Screen>
+            <Stack.Screen
+                name="EditPage"
+                options={{headerShown: true, title: currentFile}}>
+                {EditPageNavigate}
+            </Stack.Screen>
         </Stack.Navigator>
     );
 };
