@@ -6,7 +6,7 @@ const eventNameSaveFilePath =
 const formDataSaveFilePath = RNFS.DocumentDirectoryPath + '/data/formData.json';
 
 // const SERVER_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-const SERVER_ENDPOINT = 'http://192.168.1.245:8082'; //dev
+const SERVER_ENDPOINT = 'http://192.168.1.175:8082'; //dev
 
 export const fetchAfterLogin = async (username: string, osis: string, appVersion: string, accessToken: string) => {
     try {

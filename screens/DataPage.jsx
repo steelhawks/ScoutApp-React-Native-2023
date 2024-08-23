@@ -25,7 +25,7 @@ import EditPage from './EditPage';
 import QRCodeStyled from 'react-native-qrcode-styled';
 
 // const UPLOAD_ENDPOINT = 'https://steelhawks.herokuapp.com'; // prod
-const UPLOAD_ENDPOINT = 'http://192.168.1.245:8082'; // dev
+const UPLOAD_ENDPOINT = 'http://192.168.1.175:8082'; // dev
 const docDir = fs.DocumentDirectoryPath;
 
 const DataPage = ({offlineMode, navigation, matchCreated}) => {
@@ -69,10 +69,23 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
             });
     }, [docDir, refreshFlag]); // include refreshFlag in the dependency array
 
+    const [lastTapTime, setLastTapTime] = useState(null);
+
     const handleJsonSelection = async selectedJson => {
         try {
+            const currentTime = Date.now();
+            const doubleTapThreshold = 300;
+
+            if (lastTapTime && currentTime - lastTapTime < doubleTapThreshold) {
+                if (jsonSelected === selectedJson) {
+                    handleEditFile(selectedJson);
+                    setJsonSelected(false);
+                    return;
+                }
+            }
+
+            setLastTapTime(currentTime);
             const path = fs.DocumentDirectoryPath + '/' + selectedJson;
-            console.log('Path to file', path);
             const content = await fs.readFile(path, 'utf8');
 
             // parses the JSON content and updates the dictionary
@@ -464,7 +477,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                                 key={file}
                                 renderLeftActions={() => (
                                     <>
-                                        <TouchableOpacity
+                                        {/* <TouchableOpacity
                                             style={styles.swipeSyncButton}
                                             onPress={() =>
                                                 handleEditFile(file)
@@ -472,6 +485,17 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                                             <Text
                                                 style={styles.swipeDeleteText}>
                                                 Edit
+                                            </Text>
+                                        </TouchableOpacity> */}
+
+                                        <TouchableOpacity
+                                            style={styles.swipeSyncButton}
+                                            onPress={() =>
+                                                forceSync(file)
+                                            }>
+                                            <Text
+                                                style={styles.swipeDeleteText}>
+                                                Force Sync
                                             </Text>
                                         </TouchableOpacity>
                                     </>
@@ -529,7 +553,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
                         data
                     ) : (
                         <Text style={styles.infoText}>
-                            Select a JSON file to view the data
+                            Select a file to view the data or double tap to edit.
                         </Text>
                     )}
                 </View>
