@@ -19,44 +19,85 @@ import DeviceInfo from 'react-native-device-info';
 import fs from 'react-native-fs';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-    createAccount
-} from '../authentication/api';
+import {createAccount} from '../authentication/api';
+import Animated, {FadeInDown, FadeInUp} from 'react-native-reanimated';
+import {Button} from 'react-native-paper';
 
 const CreateAccount = ({navigation}: any) => {
     const [email, setEmail] = useState('');
     const [osis, setOsis] = useState('');
     const [name, setName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const requestAccountCreation = async () => {
         const response = await createAccount(email, osis, name);
         console.log(response);
         if (response) {
-            Alert.alert('Account Created', 'You can now log in with your email and OSIS number.');
+            Alert.alert(
+                'Account Created',
+                'You can now log in with your email and OSIS number.',
+            );
             navigation.navigate('Login');
         } else {
-            Alert.alert('Error', 'An error occurred while creating your account. Please try again.');
+            Alert.alert(
+                'Error',
+                'An error occurred while creating your account. Please try again.',
+            );
         }
-    }
+    };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <SafeAreaView style={styles.container}>
+            <View>
                 <View style={styles.container}>
-                    <AvoidKeyboardContainer>
-                        <View style={styles.secondContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image
-                                    source={require('../assets/steelhawks.png')}
-                                    style={styles.image}
-                                />
-                            </View>
+                    <Image
+                        source={require('../assets/background.png')}
+                        style={styles.image}
+                    />
+
+                    <View style={styles.imageLayer}>
+                        <Animated.Image
+                            entering={FadeInUp.delay(200)
+                                .duration(1000)
+                                .springify()}
+                            style={styles.icons}
+                            source={require('../assets/hawk.png')}
+                        />
+                    </View>
+
+                    <View style={styles.form}>
+                        <View style={styles.inner}>
+                            <Animated.Text
+                                entering={FadeInUp.delay(400)
+                                    .duration(1000)
+                                    .springify()}
+                                style={styles.title}>
+                                New User
+                            </Animated.Text>
                         </View>
-                        <Text style={styles.title}>Sign Up</Text>
+                    </View>
+
+                    <Text style={[styles.title, {marginTop: RFValue(50)}]}>
+                        Welcome
+                    </Text>
+
+                    <Animated.View
+                        style={styles.login}
+                        entering={FadeInDown.delay(600)
+                            .duration(1000)
+                            .springify()}>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={'white'}
-                            placeholder="DOE Email"
+                            placeholder="Name"
+                            onChangeText={text => setName(text)}
+                            value={name}
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholderTextColor={'white'}
+                            placeholder="Email"
                             onChangeText={text => setEmail(text)}
                             value={email}
                             autoCapitalize="none"
@@ -70,19 +111,9 @@ const CreateAccount = ({navigation}: any) => {
                             value={osis}
                             keyboardType="numeric"
                         />
-                        <TextInput
-                            style={styles.input}
-                            placeholderTextColor={'white'}
-                            placeholder="Your Full Name"
-                            onChangeText={text => setName(text)}
-                            value={name}
-                            autoCapitalize="none"
-                            keyboardType="default"
-                        />
                         <Icon.Button
                             borderRadius={5}
                             name="log-in"
-                            // disabled={email !== null}
                             size={RFValue(25)}
                             color="white"
                             backgroundColor="rgba(136, 3, 21, 1)"
@@ -95,17 +126,93 @@ const CreateAccount = ({navigation}: any) => {
                                     fontSize: 20,
                                     color: 'white',
                                 }}>
-                                Create Account
+                                Create
                             </Text>
                         </Icon.Button>
-                    </AvoidKeyboardContainer>
+                    </Animated.View>
+
+                    <Animated.View
+                        style={styles.switchView}
+                        entering={FadeInDown.delay(800)
+                            .duration(1000)
+                            .springify()}>
+                        <Text style={{color: 'white'}}>
+                            Already have an account?
+                        </Text>
+                        <Button
+                            style={{paddingBottom: RFValue(1)}}
+                            onPress={() => {
+                                navigation.navigate('Login');
+                            }}>
+                            Log In
+                        </Button>
+                    </Animated.View>
+
+                    {/* <Animated.Text style={styles.footer} entering={FadeInDown.delay(800).duration(1000).springify()}>
+                Developed by Steel Hawks {'\n'}
+                Version: {appVersion}
+            </Animated.Text> */}
                 </View>
-            </SafeAreaView>
+
+                <AnimationLoader
+                    isLoading={isLoading}
+                    onAnimationComplete={undefined}
+                />
+            </View>
         </TouchableWithoutFeedback>
     );
 };
 
 const styles = StyleSheet.create({
+    switchView: {
+        padding: 0,
+        margin: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    login: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inner: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '80%', // Adjust the width as needed
+    },
+    form: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    container: {
+        backgroundColor: 'white',
+        height: '100%',
+        width: '100%',
+    },
+    icons: {
+        resizeMode: 'contain',
+        height: 100,
+        width: 200,
+        marginTop: RFValue(80),
+        marginBottom: 50,
+    },
+    imageLayer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        position: 'absolute',
+    },
+    title: {
+        fontSize: RFValue(40),
+        marginTop: RFValue(150),
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+    },
     iconButton: {
         alignSelf: 'center',
         fontWeight: 'bold',
@@ -118,62 +225,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: 200,
-        height: 200,
-        borderRadius: 10,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'black',
-        paddingHorizontal: RFValue(16),
-        borderRadius: RFValue(16),
-        paddingTop: RFValue(10),
-        alignItems: 'center',
-        shadowColor: '#000',
-        // shadowOffset: {
-        //     width: 0,
-        //     height: 2,
-        // },
-        // shadowOpacity: 0.2,
-        // shadowRadius: 3,
-        // elevation: 3,
-        paddingBottom: RFValue(15),
-        width: '90%',
-        alignSelf: 'center',
-    },
-    secondContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'black',
-        paddingHorizontal: 16,
-        borderRadius: 20,
-        margin: 10,
-        marginBottom: 50,
-        elevation: 3,
-        paddingTop: 10,
-        paddingBottom: -10,
-        width: '90%',
-        alignSelf: 'center',
+        backgroundColor: '#222',
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
     },
     background: {
         flex: 1,
         justifyContent: 'center',
     },
-    title: {
-        fontSize: RFValue(25),
-        fontWeight: 'bold',
-        marginBottom: RFValue(20),
-        color: 'white',
-        textAlign: 'center',
-    },
     input: {
-        padding: RFValue(10),
-        borderRadius: RFValue(5),
-        borderColor: 'gray',
+        paddingVertical: RFValue(12),
+        paddingHorizontal: RFValue(15),
+        height: RFValue(40),
+        borderRadius: RFValue(8),
+        borderColor: 'rgba(255, 255, 255, 0.5)',
         borderWidth: 1,
         marginBottom: RFValue(10),
-        color: 'white',
+        backgroundColor: 'rgba(24, 24, 25, 0.5)',
+        color: '#F9FAFB',
+        width: '80%',
+        fontSize: RFValue(16),
     },
     button: {
         backgroundColor: 'lightblue',
@@ -188,11 +260,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     footer: {
-        top: 15,
+        // top: 15,
         color: 'white',
         fontSize: RFValue(10),
         alignSelf: 'center',
         fontWeight: 'bold',
+        alignContent: 'center',
+        textAlign: 'center',
     },
 });
 

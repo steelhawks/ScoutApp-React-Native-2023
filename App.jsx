@@ -25,6 +25,7 @@ import {
 import DeviceInfo from 'react-native-device-info';
 import * as Sentry from '@sentry/react-native';
 import {supabase} from "./supabase";
+import { createStackNavigator } from '@react-navigation/stack';
 
 Sentry.init({
     dsn: 'https://08757a6e7744a5cd6a808c9c372f7ec8@o4506839099637760.ingest.us.sentry.io/4506839106060288',
@@ -113,7 +114,7 @@ const App = () => {
     };
 
     const LoginPageNavigate = props => {
-        const Tab = createMaterialTopTabNavigator();
+        const Tab = createStackNavigator();
         // request permissions
         RequestDefaultPermissions();
 
@@ -137,6 +138,9 @@ const App = () => {
                     name="Login"
                     component={LoginPage}
                     initialParams={{setUser: setUser}}
+                    options={{
+                        headerShown: false
+                    }}
                 />
                 <Tab.Screen
                     name="Create Account"
@@ -323,6 +327,9 @@ const App = () => {
                         <Tab.Screen
                             name="Login"
                             component={LoginPageNavigate}
+                            options={{
+                                headerShown: false,
+                            }}
                         />
                     </Tab.Navigator>
                 )}

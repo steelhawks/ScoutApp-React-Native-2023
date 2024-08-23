@@ -116,7 +116,7 @@ const DataPage = ({offlineMode, navigation, matchCreated}) => {
 
             // updates the boolean to false when the selected json is deselected
             setJsonSelected(prev =>
-                prev === selectedJson ? '' : selectedJson,
+                prev === selectedJson ? false : selectedJson,
             );
         } catch (error) {
             console.error('Error reading or parsing JSON file:', error);
