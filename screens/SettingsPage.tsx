@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
@@ -28,8 +28,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                 </ScrollView>
+                <Image source={require('../assets/hawk1.png')} style={styles.image} />
                 <Button onPress={() => navigation.navigate('ManageAccount')} label="Go Back" />
-
+                
                 {/* This is optional and for a loading screen */}
                 {/* <AnimationLoader
                 isLoading={isDone}
@@ -43,6 +44,11 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
 };
 
 const styles = StyleSheet.create({
+    image: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
+    },
     title: {
         paddingTop: RFValue(50),
         fontSize: RFValue(30),

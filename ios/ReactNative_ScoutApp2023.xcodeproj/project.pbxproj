@@ -65,6 +65,7 @@
 		7246BDF607797D0AE96DA6BA /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReactNative_ScoutApp2023/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; path = "Target Support Files/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests/Pods-ReactNative_ScoutApp2023-ReactNative_ScoutApp2023Tests.release.xcconfig"; sourceTree = "<group>"; };
+		BB0EEB6B2C9DC6F300CCD82B /* ReactNative_ScoutApp2023.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ReactNative_ScoutApp2023.entitlements; path = ReactNative_ScoutApp2023/ReactNative_ScoutApp2023.entitlements; sourceTree = "<group>"; };
 		BB5B91FE2B7B377100D1BEA7 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		BB5B91FF2B7B377100D1BEA7 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		BB5B92002B7B377100D1BEA7 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -128,6 +129,7 @@
 		13B07FAE1A68108700A75B9A /* ReactNative_ScoutApp2023 */ = {
 			isa = PBXGroup;
 			children = (
+				BB0EEB6B2C9DC6F300CCD82B /* ReactNative_ScoutApp2023.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -667,26 +669,27 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ReactNative_ScoutApp2023/ReactNative_ScoutApp2023.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = HawkEye;
+				INFOPLIST_KEY_CFBundleDisplayName = HawkScout;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.hawkeye;
+				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.scout24;
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -707,25 +710,26 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = ReactNative_ScoutApp2023/ReactNative_ScoutApp2023.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2GW9354ST4;
+				DEVELOPMENT_TEAM = QSXRGJG5V9;
 				INFOPLIST_FILE = ReactNative_ScoutApp2023/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = HawkEye;
+				INFOPLIST_KEY_CFBundleDisplayName = HawkScout;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.hawkeye;
+				PRODUCT_BUNDLE_IDENTIFIER = org.steelhawks.scout24;
 				PRODUCT_NAME = ReactNative_ScoutApp2023;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -808,10 +812,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 			};
@@ -882,10 +883,7 @@
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

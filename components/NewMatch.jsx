@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, Text, View, StyleSheet, Alert} from 'react-native';
+import {ScrollView, Text, View, StyleSheet, Alert, Image} from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import Button from './inputs/Button';
 import DriveStationUI from './inputs/DriveStationUI';
@@ -12,6 +12,7 @@ import {useDictStore, usePitDict} from '../contexts/dict.jsx';
 import Icon from 'react-native-vector-icons/Feather';
 import CounterBox from './inputs/CounterBox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 const NewMatch = ({
     teamData,
@@ -135,7 +136,7 @@ const NewMatch = ({
             />
 
             <DropdownComponent
-                value={matchType}
+                initialValue={matchType}
                 data={matchTypeData}
                 placeholder={'Select Match Type'}
                 // onValueChange={value => setDict('matchType', value)}
@@ -239,6 +240,9 @@ const NewMatch = ({
                                         label={'Create Match'}
                                         onPress={handleStartScouting}
                                     />
+                                    <View style={{alignItems: 'center'}}>
+                                        <Image source={require('../assets/hawk2.png')} style={styles.image} />
+                                    </View>
                                 </View>
                             </ScrollView>
                             <AnimationLoader isLoading={isLoading} />
@@ -251,6 +255,11 @@ const NewMatch = ({
 };
 
 const styles = StyleSheet.create({
+    image: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
+    },
     avoidTabBar: {
         flex: 1,
         backgroundColor: '#121212',

@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     },
     title: {
         position: 'absolute',
-        paddingBottom: RFValue(525),
+        paddingBottom: RFValue(300),
         fontSize: 36,
         fontWeight: 'bold',
         marginBottom: RFValue(20),
