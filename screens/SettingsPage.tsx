@@ -24,12 +24,12 @@ const SettingsPage: React.FC<SettingsPageProps> = ({setShowSettings, showSetting
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>Settings</Text>
                     <Text style={styles.infoText}>
-                        HawkEye {DeviceInfo.getVersion()} {'\n'}
+                        HawkScout {DeviceInfo.getVersion()} {'\n'}
                         Build: {DeviceInfo.getBuildNumber()}
                     </Text>
                 </ScrollView>
                 <Image source={require('../assets/hawk1.png')} style={styles.image} />
-                <Button onPress={() => navigation.navigate('ManageAccount')} label="Go Back" />
+                <Button onPress={() => navigation.navigate('Manage Account')} label="Go Back" />
                 
                 {/* This is optional and for a loading screen */}
                 {/* <AnimationLoader
