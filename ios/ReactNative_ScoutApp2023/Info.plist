@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>HawkEye</string>
+	<string>HawkScout</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -40,6 +40,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleEventsUsageDescription</key>
+	<string></string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string></string>
 	<key>NSCameraUsageDescription</key>

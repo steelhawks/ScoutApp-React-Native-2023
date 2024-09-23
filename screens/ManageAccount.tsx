@@ -8,10 +8,12 @@ import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {Platform} from 'react-native';
 import SettingsPage from './SettingsPage';
 import {useDictStore, usePitDict} from '../contexts/dict.jsx';
-import {createStackNavigator} from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {CameraView} from '../components/CameraView';
+import {supabase} from "../supabase";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const STEEL_HAWKS_URL = 'https://www.steelhawks.org/';
 
@@ -50,6 +52,7 @@ const ManageAccount: React.FC<ManageAccountProps> = ({setUser, user, appVersion,
 
         // then logout
         setUser(null);
+        await supabase.auth.signOut();
         setIsLoading(false);
     };
 
@@ -188,7 +191,7 @@ const ManageAccount: React.FC<ManageAccountProps> = ({setUser, user, appVersion,
                                     zIndex: 1,
                                 }}
                                 onPress={() => {
-                                    navigation.navigate('Scan');
+                                    navigation.navigate('Scan Data');
                                 }}
                             />
                         ))}
@@ -207,13 +210,13 @@ const ManageAccount: React.FC<ManageAccountProps> = ({setUser, user, appVersion,
 
     return (
         <Stack.Navigator
-            initialRouteName="Home"
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name="ManageAccount" component={ManageAccount} />
+            initialRouteName="Manage Account"
+            screenOptions={{headerShown: true, headerBackButtonMenuEnabled: true, headerBackVisible: true}}>
+            <Stack.Screen name="Manage Account" component={ManageAccount} options={{headerShown: false}} />
             <Stack.Screen name="Settings" component={Settings} />
             {user.role === 'scouter' ||
                 (user.role === 'admin' && (
-                    <Stack.Screen name="Scan" component={ScanNavigate} />
+                    <Stack.Screen name="Scan Data" component={ScanNavigate} />
                 ))}
         </Stack.Navigator>
     );
@@ -274,7 +277,8 @@ const styles = StyleSheet.create({
     },
     title: {
         position: 'absolute',
-        paddingBottom: RFValue(525),
+        // paddingBottom: RFValue(300),
+        height: '70%',
         fontSize: 36,
         fontWeight: 'bold',
         marginBottom: RFValue(20),

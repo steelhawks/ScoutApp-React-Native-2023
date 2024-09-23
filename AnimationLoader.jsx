@@ -8,11 +8,12 @@ const AnimatedLottieView = Animated.createAnimatedComponent(LottieView);
 const animationSources = {
     LOAD_01: require('./assets/anim_load_01.json'),
     LOAD_02: require('./assets/anim_load_02.json'),
-    SUCCESS_01: require('./assets/anim_success.json')
+    SUCCESS_01: require('./assets/anim_success.json'),
+    QR_SCANNER: require('./assets/anim_scanner.json')
     // Add more animation sources as needed
 };
 
-const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_02', onAnimationComplete }) => {
+const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_02', onAnimationComplete, width = 200, height = 200 }) => {
     const animationSource = animationSources[animationKey];
 
     const setOn = (duration, callback) => {
@@ -29,7 +30,7 @@ const AnimationLoader = ({ isLoading = false, loop = true, animationKey = 'LOAD_
                     source={animationSource}
                     autoPlay
                     loop={loop}
-                    style={{ width: 200, height: 200 }}
+                    style={{ width: width, height: height }}
                     onAnimationFinish={() => setOn(0, onAnimationComplete)} // Use setOn to delay the callback
                 />
             </View>

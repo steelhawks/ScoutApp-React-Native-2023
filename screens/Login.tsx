@@ -9,6 +9,7 @@ import {
     Keyboard,
     Platform,
     TouchableWithoutFeedback,
+    StatusBar,
 } from 'react-native';
 import AnimationLoader from '../AnimationLoader';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,7 +24,14 @@ import {
     fetchUserCredentialsFromServer,
     fetchTeamDataFromServer,
     fetchEventNameFromServer,
+    fetchAfterLogin,
 } from '../authentication/api';
+import {supabase} from '../supabase';
+// import * as os from "node:os";
+import * as Keychain from 'react-native-keychain';
+import { Button } from 'react-native-paper';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
 
 const Login = ({
     setUser,
@@ -50,6 +58,22 @@ const Login = ({
         })();
     });
 
+    const storeCredentials = async (username: string, password: string) => {
+        await Keychain.setGenericPassword(username, password);
+    };
+
+    const retrieveCredentials = async () => {
+        const credentials = await Keychain.getGenericPassword();
+        if (credentials) {
+            return {
+                username: credentials.username,
+                password: credentials.password,
+            };
+        } else {
+            return null;
+        }
+    };
+
     const handleBiometricLogin = async () => {
         if (!isBiometricSupported) {
             Alert.alert(
@@ -73,38 +97,47 @@ const Login = ({
         if (auth.success) {
             try {
                 // login info request
-                const username = (await AsyncStorage.getItem('username')) || '';
-                const osis = (await AsyncStorage.getItem('osis')) || '';
+                const credentials = await retrieveCredentials();
 
-                const userData = await fetchUserCredentialsFromServer(
-                    JSON.parse(username),
-                    JSON.parse(osis),
-                    appVersion,
-                );
-
-                if (!userData) {
+                if (credentials === null) {
                     Alert.alert(
-                        'App Version Mismatch',
-                        'Please update the app',
+                        'No credentials stored',
+                        'Please log in manually',
                     );
                     return;
                 }
 
-                const eventName = await fetchEventNameFromServer();
-                setEventName(eventName.name);
+                // const userData = await fetchUserCredentialsFromServer(
+                //     credentials.username,
+                //     credentials.password,
+                //     appVersion,
+                // );
 
-                // team data request
-                const allTeamData = await fetchTeamDataFromServer();
-                setTeamData(allTeamData);
+                await handleLogin(credentials.username, credentials.password);
 
-                if (userData.authenticated !== false) {
-                    const user = userData;
-                    console.log(user);
-                    setUser(user);
-                } else {
-                    console.error('Incorrect username or password');
-                    Alert.alert('Incorrect username or password');
-                }
+                // if (!userData) {
+                //     Alert.alert(
+                //         'App Version Mismatch',
+                //         'Please update the app',
+                //     );
+                //     return;
+                // }
+
+                // const eventName = await fetchEventNameFromServer();
+                // setEventName(eventName.name);
+                //
+                // // team data request
+                // const allTeamData = await fetchTeamDataFromServer();
+                // setTeamData(allTeamData);
+                //
+                // if (userData.authenticated !== false) {
+                //     const user = userData;
+                //     console.log(user);
+                //     setUser(user);
+                // } else {
+                //     console.error('Incorrect username or password');
+                //     Alert.alert('Incorrect username or password');
+                // }
             } catch (error) {
                 Alert.alert('Error connecting to the server', String(error));
                 console.error('Error connecting to the server', error);
@@ -116,49 +149,65 @@ const Login = ({
         }
     };
 
-    const handleLogin = async () => {
-        console.log(fs.DocumentDirectoryPath);
+    const handleLogin = async (_userName: string, password: string) => {
         setIsLoading(true);
         setOfflineMode(false);
 
         if (osis === '101') {
             console.log('Logging in with offline mode');
             setOfflineMode(true);
-            handleOfflineLogin();
+            await handleOfflineLogin();
             return;
         }
 
-        await AsyncStorage.setItem('username', JSON.stringify(username));
-        await AsyncStorage.setItem('osis', JSON.stringify(osis));
+        storeCredentials(_userName, password);
 
         try {
             // login info request
-            const userData = await fetchUserCredentialsFromServer(
+            const {data, error} = await supabase.auth.signInWithPassword({
+                email: _userName + '@nycstudents.net', // supabase uses email so just add domain at the end
+                password: password,
+            });
+
+            if (error) {
+                Alert.alert('Incorrect username or password');
+                return;
+            }
+
+            const userData = data.user?.user_metadata;
+            console.log(userData);
+
+            console.log(data.session?.access_token);
+
+            const userAuthenticity = await fetchAfterLogin(
                 username,
                 osis,
                 appVersion,
+                await data.session?.access_token,
             );
-
-            if (!userData) {
+            if (!userAuthenticity) {
                 Alert.alert('App Version Mismatch', 'Please update the app');
                 return;
             }
 
             const eventName = await fetchEventNameFromServer();
             setEventName(eventName.name);
-
-            // team data request
+            //
+            // // team data request
             const allTeamData = await fetchTeamDataFromServer();
             setTeamData(allTeamData);
 
-            if (userData.authenticated !== false) {
-                const user = userData;
-                console.log(user);
-                setUser(user);
-            } else {
-                console.error('Incorrect username or password');
-                Alert.alert('Incorrect username or password');
-            }
+            const user = {
+                id: userData.sub,
+                name: userData.name,
+                username: userData.username,
+                osis: '1234',
+                email: userData.email,
+                role: userData.role,
+            };
+
+            console.log(user);
+            setUser(user);
         } catch (error) {
             Alert.alert('Error connecting to the server', String(error));
             console.error('Error connecting to the server', error);
@@ -237,24 +286,40 @@ const Login = ({
             handleBiometricLogin();
         } else {
             JSON.stringify(await AsyncStorage.setItem('biometric', 'false'));
-            handleLogin();
+            handleLogin(username, osis);
         }
     };
 
+    const navigation = useNavigation();
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <SafeAreaView style={styles.container}>
+            <View>
                 <View style={styles.container}>
-                    <AvoidKeyboardContainer>
-                        <View style={styles.secondContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image
-                                    source={require('../assets/steelhawks.png')}
-                                    style={styles.image}
-                                />
-                            </View>
+                    <Image
+                        source={require('../assets/background.png')}
+                        style={styles.image}
+                    />
+
+                    <View style={styles.imageLayer}>
+                        <Animated.Image
+                            entering={FadeInUp.delay(200).duration(1000).springify()}
+                            style={styles.icons}
+                            source={require('../assets/hawk.png')}
+                        />
+                    </View>
+
+                    <View style={styles.form}>
+                        <View style={styles.inner}>
+                            <Animated.Text entering={FadeInUp.delay(400).duration(1000).springify()} style={styles.title}>Login</Animated.Text>
                         </View>
-                        <Text style={styles.title}>Hello</Text>
+                    </View>
+
+                    <Text style={[styles.title, {marginTop: RFValue(50)}]}>
+                        Hello
+                    </Text>
+
+                    <Animated.View style={styles.login} entering={FadeInDown.delay(600).duration(1000).springify()}>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={'white'}
@@ -279,10 +344,9 @@ const Login = ({
                             color="white"
                             backgroundColor="rgba(136, 3, 21, 1)"
                             underlayColor="transparent"
-                            style={styles.iconButton} // Remove the array brackets here
+                            style={styles.iconButton}
                             onPress={chooseLoginType}>
                             <Text
-                                // eslint-disable-next-line react-native/no-inline-styles
                                 style={{
                                     fontWeight: 'bold',
                                     fontSize: 20,
@@ -291,25 +355,84 @@ const Login = ({
                                 Log In
                             </Text>
                         </Icon.Button>
-                        <Text style={styles.footer}>
-                            App Version: {'v' + DeviceInfo.getVersion().toString()} Build:{' '}
-                            {DeviceInfo.getBuildNumber()}
-                        </Text>
-                    </AvoidKeyboardContainer>
+                    </Animated.View>
+
+                    <Animated.View style={styles.switchView} entering={FadeInDown.delay(800).duration(1000).springify()}>
+                        <Text style={{color: 'white'}}>Don't have an account?</Text>
+                        <Button
+                            style={{paddingBottom: RFValue(1)}}
+                            onPress={() => {
+                                navigation.navigate('Create Account');
+                            }}>Sign Up</Button>
+                    </Animated.View>
+
+                    <Animated.Text style={styles.footer} entering={FadeInDown.delay(800).duration(1000).springify()}>
+                        Developed by Steel Hawks {'\n'}
+                        Version: {appVersion}
+                    </Animated.Text>
                 </View>
 
                 <AnimationLoader
                     isLoading={isLoading}
                     onAnimationComplete={undefined}
                 />
-            </SafeAreaView>
+            </View>
         </TouchableWithoutFeedback>
     );
 };
 
 const styles = StyleSheet.create({
+    switchView: {
+        padding: 0,
+        margin: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    login: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inner: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '80%', // Adjust the width as needed
+    },
+    form: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    container: {
+        backgroundColor: 'white',
+        height: '100%',
+        width: '100%',
+    },
+    icons: {
+        resizeMode: 'contain',
+        height: 100,
+        width: 200,
+        marginTop: RFValue(80),
+        marginBottom: 50,
+    },
+    imageLayer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        position: 'absolute',
+    },
+    title: {
+        fontSize: RFValue(40),
+        marginTop: RFValue(150),
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+    },
     iconButton: {
-        alignSelf: "center",
+        alignSelf: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         backgroundColor: 'transparent',
@@ -320,62 +443,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: 200,
-        height: 200,
-        borderRadius: 10,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'black',
-        paddingHorizontal: RFValue(16),
-        borderRadius: RFValue(16),
-        paddingTop: RFValue(10),
-        alignItems: 'center',
-        shadowColor: '#000',
-        // shadowOffset: {
-        //     width: 0,
-        //     height: 2,
-        // },
-        // shadowOpacity: 0.2,
-        // shadowRadius: 3,
-        // elevation: 3,
-        paddingBottom: RFValue(15),
-        width: '90%',
-        alignSelf: 'center',
-    },
-    secondContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'black',
-        paddingHorizontal: 16,
-        borderRadius: 20,
-        margin: 10,
-        marginBottom: 50,
-        elevation: 3,
-        paddingTop: 10,
-        paddingBottom: -10,
-        width: '90%',
-        alignSelf: 'center',
+        backgroundColor: '#222',
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
     },
     background: {
         flex: 1,
         justifyContent: 'center',
     },
-    title: {
-        fontSize: RFValue(25),
-        fontWeight: 'bold',
-        marginBottom: RFValue(20),
-        color: 'white',
-        textAlign: 'center',
-    },
     input: {
-        padding: RFValue(10),
-        borderRadius: RFValue(5),
-        borderColor: 'gray',
+        paddingVertical: RFValue(12),
+        paddingHorizontal: RFValue(15),
+        height: RFValue(40),
+        borderRadius: RFValue(8),
+        borderColor: 'rgba(255, 255, 255, 0.5)',
         borderWidth: 1,
         marginBottom: RFValue(10),
-        color: 'white',
+        backgroundColor: 'rgba(24, 24, 25, 0.5)',
+        color: '#F9FAFB',
+        width: '80%',
+        fontSize: RFValue(16),
     },
     button: {
         backgroundColor: 'lightblue',
@@ -390,11 +478,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     footer: {
-        top: 15,
+        // top: 15,
         color: 'white',
         fontSize: RFValue(10),
         alignSelf: 'center',
         fontWeight: 'bold',
+        alignContent: 'center',
+        textAlign: 'center',
     },
 });
 

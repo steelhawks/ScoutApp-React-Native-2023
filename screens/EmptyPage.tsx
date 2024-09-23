@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import AnimationLoader from '../AnimationLoader';
 import Button from '../components/inputs/Button';
@@ -15,12 +15,15 @@ const EmptyPage = ({navigation, matchCreated}: {navigation: any, matchCreated: b
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{flex: 1, paddingBottom: RFValue(100)}}>
                 <Text style={styles.title}>No Matches</Text>
-                <Icon
+                {/* <Icon
                     name="file-minus"
                     size={RFValue(100)}
                     color="white"
                     style={{alignSelf: 'center', paddingTop: RFValue(60)}}
-                />
+                /> */}
+                <View style={{alignSelf: 'center', paddingTop: RFValue(30)}}>
+                    <Image source={require('../assets/frc_hawk.png')} style={styles.image} />
+                </View>
                 <View style={{flexDirection: 'row', paddingTop: RFValue(80)}}>
                     <Button
                         label="Create Match"
@@ -33,6 +36,11 @@ const EmptyPage = ({navigation, matchCreated}: {navigation: any, matchCreated: b
 };
 
 const styles = StyleSheet.create({
+    image: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
+    },
     title: {
         paddingTop: RFValue(50),
         fontSize: RFValue(30),

@@ -106,9 +106,9 @@ PODS:
     - hermes-engine/Pre-built (= 0.72.10)
   - hermes-engine/Pre-built (0.72.10)
   - libevent (2.1.12)
-  - lottie-ios (3.4.4)
-  - lottie-react-native (5.1.6):
-    - lottie-ios (~> 3.4.0)
+  - lottie-ios (4.4.3)
+  - lottie-react-native (6.7.2):
+    - lottie-ios (= 4.4.3)
     - React-Core
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
@@ -558,6 +558,8 @@ PODS:
     - React-Core
   - RNInAppBrowser (3.7.0):
     - React-Core
+  - RNKeychain (8.2.0):
+    - React-Core
   - RNPermissions (4.1.4):
     - React-Core
   - RNReanimated (3.3.0):
@@ -592,16 +594,14 @@ PODS:
   - RNScreens (3.22.1):
     - React-Core
     - React-RCTImage
-  - RNSentry (5.19.1):
+  - RNSentry (5.30.0):
     - hermes-engine
     - React-Core
     - React-hermes
-    - Sentry/HybridSDK (= 8.17.1)
+    - Sentry/HybridSDK (= 8.34.0)
   - RNSVG (15.3.0):
     - React-Core
-  - Sentry/HybridSDK (8.17.1):
-    - SentryPrivate (= 8.17.1)
-  - SentryPrivate (8.17.1)
+  - Sentry/HybridSDK (8.34.0)
   - SocketRocket (0.6.1)
   - VisionCamera (3.9.1):
     - React
@@ -707,6 +707,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -731,7 +732,6 @@ SPEC REPOS:
     - lottie-ios
     - OpenSSL-Universal
     - Sentry
-    - SentryPrivate
     - SocketRocket
     - YogaKit
     - ZXingObjC
@@ -869,6 +869,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNInAppBrowser:
     :path: "../node_modules/react-native-inappbrowser-reborn"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -914,8 +916,8 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 90e4033deb00bee33330a9f15eff0f874bd82f6d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
+  lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418
+  lottie-react-native: a917e1c5f6124551ea433644ba1aaf71955e4d2a
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: b4d3068afa6f52ec5260a8417053b1f1b421483d
@@ -964,13 +966,13 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 69d0a928253547ef857a7be4f453220b9c472e07
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
+  RNKeychain: bfe3d12bf4620fe488771c414530bf16e88f3678
   RNPermissions: fdbf20401069d01894d193ccf8debc9f11886267
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
-  RNSentry: 6872121e0af7aa9f3f50643f557d69adc8f7ecdc
+  RNSentry: 038afe562a53fa0ec791e1cd9fb66239c77a2818
   RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
-  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
-  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
+  Sentry: 1183df2306eea74ff0564c4bb1c2577ccd15d054
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   VisionCamera: 52f98e7628f9deea3e311c3b6d4870bb44445e05
   Yoga: d0003f849d2b5224c072cef6568b540d8bb15cd3

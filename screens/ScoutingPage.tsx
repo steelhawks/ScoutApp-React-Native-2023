@@ -349,7 +349,7 @@ const ScoutingPage: React.FC<ScoutingPageProps> = ({
                     return (
                         <Section
                             key={section.title}
-                            title={section.title}
+                            title={section.title?.toString()}
                             queries={queries}
                             style={[
                                 styles.sectionStyle,
